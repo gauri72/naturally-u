@@ -20,7 +20,7 @@ function ProductPage() {
       <img src={product.images?.[0]?.url} alt={product.name} />
       <div>
         <h1>{product.name}</h1>
-        <p className="product-page__price">${product.price.toFixed(2)}</p>
+        <p className="product-page__price">€{product.price.toFixed(2)}</p>
         <p>{product.description}</p>
         <button className="btn btn--primary" onClick={() => addItem(product)}>Add to Cart</button>
       </div>

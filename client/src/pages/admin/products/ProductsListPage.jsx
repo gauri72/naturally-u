@@ -29,7 +29,7 @@ function ProductsListPage() {
           {products.map((p) => (
             <tr key={p._id}>
               <td>{p.name}</td>
-              <td>${p.price.toFixed(2)}</td>
+              <td>€{p.price.toFixed(2)}</td>
               <td>{p.stock}</td>
               <td>
                 <Link to={`/admin/products/${p._id}/edit`}>Edit</Link>{' '}

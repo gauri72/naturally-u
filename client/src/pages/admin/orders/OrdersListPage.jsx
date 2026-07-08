@@ -22,7 +22,7 @@ function OrdersListPage() {
             <tr key={o._id}>
               <td>{o.orderNumber}</td>
               <td>{o.customer?.email}</td>
-              <td>${o.total.toFixed(2)}</td>
+              <td>€{o.total.toFixed(2)}</td>
               <td>
                 <select value={o.orderStatus} onChange={(e) => handleStatusChange(o._id, e.target.value)}>
                   <option value="processing">Processing</option>

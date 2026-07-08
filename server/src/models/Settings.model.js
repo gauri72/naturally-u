@@ -11,7 +11,7 @@ const settingsSchema = new mongoose.Schema(
       messages: {
         type: [String],
         default: [
-          'Free shipping on orders over $75',
+          'Free shipping on orders over €75',
           'Handcrafted in small batches with love',
           '15% OFF your first order — NATURALLY15',
         ],

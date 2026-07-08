@@ -26,7 +26,7 @@ function ProductCard({ product }) {
         <h4>{product.name}</h4>
         <div className="product-card__row">
           <div className="product-card__meta">
-            <p className="product-card__price">${product.price.toFixed(2)}</p>
+            <p className="product-card__price">€{product.price.toFixed(2)}</p>
             {product.ratingCount > 0 && (
               <p className="product-card__rating">
                 <Stars rating={product.ratingAverage} /> ({product.ratingCount})

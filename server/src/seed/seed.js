@@ -209,11 +209,17 @@ const run = async () => {
     },
     copyrightText: '© 2026 Naturally You. All rights reserved.',
   };
+  const announcementMessages = [
+    'Free shipping on orders over €75',
+    'Handcrafted in small batches with love',
+    '15% OFF your first order — NATURALLY15',
+  ];
 
   const existingSettings = await Settings.findOne();
   if (!existingSettings) {
     await Settings.create({
       navLinks: footerContent.navLinks,
+      announcementBar: { messages: announcementMessages },
       footer: {
         shopLinks: footerContent.shopLinks,
         customerCareLinks: footerContent.customerCareLinks,
@@ -224,6 +230,7 @@ const run = async () => {
     logger.info('Default settings created.');
   } else {
     existingSettings.navLinks = footerContent.navLinks;
+    existingSettings.announcementBar.messages = announcementMessages;
     existingSettings.footer.shopLinks = footerContent.shopLinks;
     existingSettings.footer.customerCareLinks = footerContent.customerCareLinks;
     existingSettings.footer.connect.email = footerContent.connect.email;

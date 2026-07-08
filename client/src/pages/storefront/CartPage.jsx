@@ -17,7 +17,7 @@ function CartPage() {
           <img src={item.image} alt={item.name} />
           <div>
             <h4>{item.name}</h4>
-            <p>${item.price.toFixed(2)}</p>
+            <p>€{item.price.toFixed(2)}</p>
             <input
               type="number"
               min="1"
@@ -28,7 +28,7 @@ function CartPage() {
           </div>
         </div>
       ))}
-      <p className="cart-page__subtotal">Subtotal: ${subtotal.toFixed(2)}</p>
+      <p className="cart-page__subtotal">Subtotal: €{subtotal.toFixed(2)}</p>
       <Link to="/checkout" className="btn btn--primary">Checkout</Link>
     </section>
   );
