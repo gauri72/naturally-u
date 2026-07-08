@@ -1,0 +1,11 @@
+.product-page {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: var(--space-xl) var(--space-lg);
+  display: flex;
+  gap: var(--space-xl);
+  flex-wrap: wrap;
+}
+.product-page img { flex: 1 1 400px; border-radius: var(--radius-md); }
+.product-page > div { flex: 1 1 400px; }
+.product-page__price { font-size: 1.5rem; font-weight: 600; color: var(--color-primary); }

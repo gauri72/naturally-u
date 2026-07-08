@@ -1,0 +1,7 @@
+h1, h2, h3, h4 {
+  font-family: var(--font-heading);
+  color: var(--color-primary);
+  margin: 0;
+}
+p { margin: 0; line-height: 1.6; }
+.text-accent { font-family: var(--font-accent); }

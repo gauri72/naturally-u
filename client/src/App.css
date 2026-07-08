@@ -1,0 +1,7 @@
+/* Root app-level layout only. Component-specific styles live alongside
+   their component (Component.jsx + Component.css side by side). */
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}

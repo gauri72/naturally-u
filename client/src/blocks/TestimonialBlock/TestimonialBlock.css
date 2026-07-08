@@ -1,0 +1,151 @@
+.testimonial-block {
+  max-width: var(--max-width);
+  margin: 0 auto var(--space-2xl);
+  padding: 0 var(--space-lg);
+}
+
+.testimonial-block__card {
+  position: relative;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--color-primary) 55%, #8FD98A) 0%,
+    var(--color-primary) 40%,
+    color-mix(in srgb, var(--color-primary) 60%, black) 100%
+  );
+  color: var(--color-white);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: stretch;
+  overflow: hidden;
+  min-height: 200px;
+}
+
+.testimonial-block__leaf-icon {
+  display: none;
+}
+
+.testimonial-block__content {
+  flex: 1 1 60%;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-lg) var(--space-xl) var(--space-lg) var(--space-lg);
+}
+
+.testimonial-block__text-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-top: calc(-1 * var(--space-lg));
+}
+
+.testimonial-block__card blockquote {
+  font-family: var(--font-accent);
+  font-size: 1.9rem;
+  line-height: 1.25;
+  white-space: pre-line;
+  margin: 0 0 0 var(--space-md);
+}
+
+.testimonial-block__quote-mark {
+  display: block;
+  font-family: var(--font-heading);
+  color: var(--color-accent);
+  font-size: 3.5rem;
+  line-height: 1;
+  font-style: normal;
+  margin-bottom: var(--space-xs);
+}
+
+.testimonial-block__author {
+  margin-top: var(--space-sm);
+  margin-left: var(--space-md);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.testimonial-block__image-wrap {
+  position: relative;
+  flex: 0 0 34%;
+  align-self: stretch;
+}
+
+.testimonial-block__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Fades the photo in from transparent on its left edge, revealing the
+     card's own gradient background underneath — this guarantees an exact
+     color match at the seam (same gradient layer) instead of an
+     approximated overlay that can show a visible line. */
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 55%);
+  mask-image: linear-gradient(to right, transparent 0%, black 55%);
+}
+
+.testimonial-block__dots {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+}
+
+.testimonial-block__dots button {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  border: none;
+  padding: 0;
+  background-color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.testimonial-block__dots button.active {
+  background-color: var(--color-accent);
+  transform: scale(1.25);
+}
+
+@media (max-width: 768px) {
+  .testimonial-block {
+    margin-bottom: var(--space-lg);
+    padding: 0 var(--space-md);
+  }
+
+  .testimonial-block__card {
+    min-height: 0;
+  }
+
+  .testimonial-block__image-wrap {
+    display: none;
+  }
+
+  .testimonial-block__content {
+    padding: var(--space-lg);
+  }
+
+  .testimonial-block__card blockquote {
+    font-size: 1.5rem;
+  }
+
+  .testimonial-block__quote-mark {
+    display: none;
+  }
+
+  .testimonial-block__text-group {
+    margin-top: 0;
+  }
+
+  .testimonial-block__leaf-icon {
+    display: block;
+    position: absolute;
+    bottom: var(--space-md);
+    right: var(--space-md);
+    width: 56px;
+    height: 56px;
+    color: var(--color-white);
+    opacity: 0.35;
+  }
+}

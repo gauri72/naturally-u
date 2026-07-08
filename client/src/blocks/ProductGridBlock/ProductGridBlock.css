@@ -1,0 +1,113 @@
+.product-grid-block {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: var(--space-xl) var(--space-lg);
+}
+
+.product-grid-block__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-lg);
+}
+
+.product-grid-block__header h2 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  color: var(--color-text);
+}
+
+.product-grid-block__view-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--radius-md);
+  border: 2px solid var(--color-accent-dark);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--color-text);
+  white-space: nowrap;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease, color 0.2s ease;
+}
+
+.product-grid-block__view-all:hover {
+  background-color: var(--color-accent-dark);
+  color: var(--color-white);
+  box-shadow: 0 8px 18px rgba(212, 160, 23, 0.3);
+  transform: translateY(-2px);
+}
+
+.product-grid-block__view-all:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.product-grid-block__view-all-short {
+  display: none;
+}
+
+.product-grid-block__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-lg);
+}
+
+@media (max-width: 768px) {
+  .product-grid-block {
+    padding: var(--space-lg) var(--space-md);
+    border-top: 2px solid var(--color-accent-dark);
+  }
+
+  .product-grid-block__header h2 svg {
+    display: none;
+  }
+
+  .product-grid-block__view-all {
+    padding: 0;
+    border: none;
+    color: var(--color-text);
+  }
+
+  .product-grid-block__view-all:hover {
+    background-color: transparent;
+    box-shadow: none;
+    transform: none;
+    color: var(--color-primary);
+    text-decoration: underline;
+  }
+
+  .product-grid-block__view-all:focus-visible {
+    outline-offset: 4px;
+  }
+
+  .product-grid-block__view-all svg {
+    display: none;
+  }
+
+  .product-grid-block__view-all-full {
+    display: none;
+  }
+
+  .product-grid-block__view-all-short {
+    display: inline;
+  }
+
+  .product-grid-block__grid {
+    display: flex;
+    gap: var(--space-lg);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--space-md);
+    margin: 0 calc(-1 * var(--space-md));
+    padding: var(--space-sm) var(--space-md) var(--space-lg);
+  }
+
+  .product-grid-block__grid > * {
+    flex: 0 0 31%;
+    min-width: 140px;
+    scroll-snap-align: start;
+  }
+}

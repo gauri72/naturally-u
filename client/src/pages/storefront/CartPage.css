@@ -1,0 +1,4 @@
+.cart-page { max-width: var(--max-width); margin: 0 auto; padding: var(--space-xl) var(--space-lg); }
+.cart-page__item { display: flex; gap: var(--space-md); margin-bottom: var(--space-md); }
+.cart-page__item img { width: 80px; height: 80px; object-fit: cover; border-radius: var(--radius-sm); }
+.cart-page__subtotal { font-size: 1.2rem; font-weight: 600; margin: var(--space-lg) 0; }

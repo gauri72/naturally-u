@@ -1,0 +1,4 @@
+.page-loading, .page-error {
+  text-align: center;
+  padding: var(--space-2xl);
+}

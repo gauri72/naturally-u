@@ -1,0 +1,36 @@
+/* Design tokens pulled directly from the reference design's color palette
+   and typography spec. Change these to re-theme the entire site. */
+:root {
+  /* Colors */
+  --color-primary: #3FA34D;      /* green - buttons, header accents */
+  --color-accent: #F7E54D;       /* yellow - secondary buttons, badges */
+  --color-accent-dark: #D4A017;  /* dark yellow/gold - gradient shade */
+  --color-background: #FFF7E6;   /* warm cream - page background */
+  --color-brown: #8A6E51;        /* text/footer accents */
+  --color-text: #2B2B28;
+  --color-text-muted: #6B6B63;
+  --color-white: #FFFFFF;
+  --color-border: #E8E0CC;
+
+  /* Typography */
+  --font-heading: 'Playfair Display', serif;
+  --font-body: 'Quicksand', sans-serif;
+  --font-accent: 'Caveat', cursive;
+
+  /* Spacing scale */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 40px;
+  --space-2xl: 64px;
+
+  /* Radius / shadow */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-full: 999px;
+  --shadow-card: 0 2px 10px rgba(0, 0, 0, 0.06);
+
+  /* Layout */
+  --max-width: 1280px;
+}

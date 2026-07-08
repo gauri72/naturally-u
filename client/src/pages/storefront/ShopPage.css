@@ -1,0 +1,7 @@
+.shop-page { max-width: var(--max-width); margin: 0 auto; padding: var(--space-xl) var(--space-lg); }
+.shop-page__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-lg);
+  margin-top: var(--space-lg);
+}
