@@ -29,17 +29,35 @@ const settingsSchema = new mongoose.Schema(
         type: [{ label: String, path: String }],
         default: [
           { label: 'Shop All', path: '/shop' },
+          { label: 'Best Sellers', path: '/shop?tag=bestseller' },
+          { label: 'New Arrivals', path: '/shop?tag=new' },
           { label: 'Gift Sets', path: '/gift-sets' },
         ],
       },
       customerCareLinks: {
         type: [{ label: String, path: String }],
-        default: [{ label: 'Contact Us', path: 'mailto:hello@naturallyu.com' }],
+        default: [
+          { label: 'Contact Us', path: 'mailto:hello@naturallyu.com' },
+          { label: 'FAQ', path: '/faq' },
+          { label: 'Shipping & Returns', path: '/shipping-returns' },
+          { label: 'Track Your Order', path: '/track-order' },
+        ],
       },
       connect: {
         email: { type: String, default: 'hello@naturallyu.com' },
-        phone: String,
-        social: [{ platform: String, url: String }],
+        // Placeholder contact/social details so the footer isn't blank pre-launch —
+        // 555 is the standard non-dialable placeholder area code; social URLs use
+        // the brand handle as a guess and should be swapped for real accounts in
+        // Admin > Site Settings.
+        phone: { type: String, default: '+1 (555) 010-0143' },
+        social: {
+          type: [{ platform: String, url: String }],
+          default: [
+            { platform: 'facebook', url: 'https://facebook.com/naturallyu' },
+            { platform: 'instagram', url: 'https://instagram.com/naturallyu' },
+            { platform: 'pinterest', url: 'https://pinterest.com/naturallyu' },
+          ],
+        },
       },
       copyrightText: { type: String, default: '© 2024 Naturally You. All rights reserved.' },
     },

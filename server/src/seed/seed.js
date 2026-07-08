@@ -198,6 +198,8 @@ const run = async () => {
     if (!existingSettings.footer.shopLinks?.length) {
       existingSettings.footer.shopLinks = [
         { label: 'Shop All', path: '/shop' },
+        { label: 'Best Sellers', path: '/shop?tag=bestseller' },
+        { label: 'New Arrivals', path: '/shop?tag=new' },
         { label: 'Gift Sets', path: '/gift-sets' },
       ];
       changed = true;
@@ -205,11 +207,26 @@ const run = async () => {
     if (!existingSettings.footer.customerCareLinks?.length) {
       existingSettings.footer.customerCareLinks = [
         { label: 'Contact Us', path: 'mailto:hello@naturallyu.com' },
+        { label: 'FAQ', path: '/faq' },
+        { label: 'Shipping & Returns', path: '/shipping-returns' },
+        { label: 'Track Your Order', path: '/track-order' },
       ];
       changed = true;
     }
     if (!existingSettings.footer.connect?.email) {
       existingSettings.footer.connect.email = 'hello@naturallyu.com';
+      changed = true;
+    }
+    if (!existingSettings.footer.connect?.phone) {
+      existingSettings.footer.connect.phone = '+1 (555) 010-0143';
+      changed = true;
+    }
+    if (!existingSettings.footer.connect?.social?.length) {
+      existingSettings.footer.connect.social = [
+        { platform: 'facebook', url: 'https://facebook.com/naturallyu' },
+        { platform: 'instagram', url: 'https://instagram.com/naturallyu' },
+        { platform: 'pinterest', url: 'https://pinterest.com/naturallyu' },
+      ];
       changed = true;
     }
     if (changed) {
