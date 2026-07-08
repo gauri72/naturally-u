@@ -10,18 +10,23 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     getMeRequest()
       .then((res) => setAdmin(res.data))
-      .catch(() => setAdmin(null))
+      .catch(() => {
+        localStorage.removeItem('adminToken');
+        setAdmin(null);
+      })
       .finally(() => setLoading(false));
   }, []);
 
   const login = async (credentials) => {
     const res = await loginRequest(credentials);
+    localStorage.setItem('adminToken', res.data.token);
     setAdmin(res.data);
     return res.data;
   };
 
   const logout = async () => {
     await logoutRequest();
+    localStorage.removeItem('adminToken');
     setAdmin(null);
   };
 
