@@ -17,49 +17,40 @@ const settingsSchema = new mongoose.Schema(
         ],
       },
     },
-    navLinks: {
-      type: [{ label: String, path: String }],
-      default: [
-        { label: 'Shop', path: '/shop' },
-        { label: 'Gift Sets', path: '/gift-sets' },
-      ],
-    },
+    navLinks: [{ label: String, path: String }],
     footer: {
       shopLinks: {
         type: [{ label: String, path: String }],
         default: [
-          { label: 'Shop All', path: '/shop' },
-          { label: 'Best Sellers', path: '/shop?tag=bestseller' },
-          { label: 'New Arrivals', path: '/shop?tag=new' },
+          { label: 'All Products', path: '/shop' },
+          { label: 'Soaps', path: '/shop?category=soaps' },
+          { label: 'Skincare', path: '/shop?category=skincare' },
           { label: 'Gift Sets', path: '/gift-sets' },
+          { label: 'New Arrivals', path: '/shop?sort=new' },
         ],
       },
       customerCareLinks: {
         type: [{ label: String, path: String }],
         default: [
-          { label: 'Contact Us', path: 'mailto:hello@naturallyu.com' },
           { label: 'FAQ', path: '/faq' },
           { label: 'Shipping & Returns', path: '/shipping-returns' },
-          { label: 'Track Your Order', path: '/track-order' },
+          { label: 'Privacy Policy', path: '/privacy-policy' },
+          { label: 'Terms & Conditions', path: '/terms' },
         ],
       },
       connect: {
-        email: { type: String, default: 'hello@naturallyu.com' },
-        // Placeholder contact/social details so the footer isn't blank pre-launch —
-        // 555 is the standard non-dialable placeholder area code; social URLs use
-        // the brand handle as a guess and should be swapped for real accounts in
-        // Admin > Site Settings.
-        phone: { type: String, default: '+1 (555) 010-0143' },
+        email: { type: String, default: 'hello@naturallyou.com' },
+        phone: { type: String, default: '+1 555 123-4567' },
         social: {
           type: [{ platform: String, url: String }],
           default: [
-            { platform: 'facebook', url: 'https://facebook.com/naturallyu' },
-            { platform: 'instagram', url: 'https://instagram.com/naturallyu' },
-            { platform: 'pinterest', url: 'https://pinterest.com/naturallyu' },
+            { platform: 'facebook', url: 'https://facebook.com/naturallyou' },
+            { platform: 'instagram', url: 'https://instagram.com/naturallyou' },
+            { platform: 'pinterest', url: 'https://pinterest.com/naturallyou' },
           ],
         },
       },
-      copyrightText: { type: String, default: '© 2024 Naturally You. All rights reserved.' },
+      copyrightText: { type: String, default: '© 2026 Naturally You. All rights reserved.' },
     },
     theme: {
       primaryColor: { type: String, default: '#3FA34D' },

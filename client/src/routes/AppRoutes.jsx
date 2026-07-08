@@ -12,6 +12,8 @@ import GiftSetsPage from '../pages/storefront/GiftSetsPage.jsx';
 import FaqPage from '../pages/storefront/FaqPage.jsx';
 import ShippingReturnsPage from '../pages/storefront/ShippingReturnsPage.jsx';
 import TrackOrderPage from '../pages/storefront/TrackOrderPage.jsx';
+import PrivacyPolicyPage from '../pages/storefront/PrivacyPolicyPage.jsx';
+import TermsPage from '../pages/storefront/TermsPage.jsx';
 import NotFoundPage from '../pages/storefront/NotFoundPage.jsx';
 
 import LoginPage from '../pages/admin/LoginPage.jsx';
@@ -37,6 +39,8 @@ function AppRoutes() {
         <Route path="/faq" element={<FaqPage />} />
         <Route path="/shipping-returns" element={<ShippingReturnsPage />} />
         <Route path="/track-order" element={<TrackOrderPage />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+        <Route path="/terms" element={<TermsPage />} />
       </Route>
 
       {/* Admin - protected */}

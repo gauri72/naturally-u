@@ -13,14 +13,21 @@ function ShopPage() {
   const [products, setProducts] = useState([]);
   const [searchParams] = useSearchParams();
   const tag = searchParams.get('tag') || '';
+  const category = searchParams.get('category') || '';
 
   useEffect(() => {
-    getProducts(tag ? { tag } : {}).then((res) => setProducts(res.data.products)).catch(console.error);
-  }, [tag]);
+    const params = {};
+    if (tag) params.tag = tag;
+    if (category) params.category = category;
+    getProducts(params).then((res) => setProducts(res.data.products)).catch(console.error);
+  }, [tag, category]);
+
+  const title = TITLES_BY_TAG[tag]
+    || (category ? category.charAt(0).toUpperCase() + category.slice(1) : 'Shop All Products');
 
   return (
     <section className="shop-page">
-      <h1>{TITLES_BY_TAG[tag] || 'Shop All Products'}</h1>
+      <h1>{title}</h1>
       <div className="shop-page__grid">
         {products.map((p) => <ProductCard key={p._id} product={p} />)}
       </div>

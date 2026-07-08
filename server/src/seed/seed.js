@@ -180,61 +180,58 @@ const run = async () => {
     logger.info('Home page already exists, skipping.');
   }
 
+  // Canonical footer content - kept in sync with what's configured locally so
+  // every environment (including ones seeded before this content existed)
+  // ends up showing the same thing.
+  const footerContent = {
+    navLinks: [],
+    shopLinks: [
+      { label: 'All Products', path: '/shop' },
+      { label: 'Soaps', path: '/shop?category=soaps' },
+      { label: 'Skincare', path: '/shop?category=skincare' },
+      { label: 'Gift Sets', path: '/gift-sets' },
+      { label: 'New Arrivals', path: '/shop?sort=new' },
+    ],
+    customerCareLinks: [
+      { label: 'FAQ', path: '/faq' },
+      { label: 'Shipping & Returns', path: '/shipping-returns' },
+      { label: 'Privacy Policy', path: '/privacy-policy' },
+      { label: 'Terms & Conditions', path: '/terms' },
+    ],
+    connect: {
+      email: 'hello@naturallyou.com',
+      phone: '+1 555 123-4567',
+      social: [
+        { platform: 'facebook', url: 'https://facebook.com/naturallyou' },
+        { platform: 'instagram', url: 'https://instagram.com/naturallyou' },
+        { platform: 'pinterest', url: 'https://pinterest.com/naturallyou' },
+      ],
+    },
+    copyrightText: '© 2026 Naturally You. All rights reserved.',
+  };
+
   const existingSettings = await Settings.findOne();
   if (!existingSettings) {
-    await Settings.create({});
+    await Settings.create({
+      navLinks: footerContent.navLinks,
+      footer: {
+        shopLinks: footerContent.shopLinks,
+        customerCareLinks: footerContent.customerCareLinks,
+        connect: footerContent.connect,
+        copyrightText: footerContent.copyrightText,
+      },
+    });
     logger.info('Default settings created.');
   } else {
-    // Backfill footer/nav content on a settings doc that was created before
-    // these fields had defaults (e.g. via the earlier bare `Settings.create({})`).
-    let changed = false;
-    if (!existingSettings.navLinks?.length) {
-      existingSettings.navLinks = [
-        { label: 'Shop', path: '/shop' },
-        { label: 'Gift Sets', path: '/gift-sets' },
-      ];
-      changed = true;
-    }
-    if (!existingSettings.footer.shopLinks?.length) {
-      existingSettings.footer.shopLinks = [
-        { label: 'Shop All', path: '/shop' },
-        { label: 'Best Sellers', path: '/shop?tag=bestseller' },
-        { label: 'New Arrivals', path: '/shop?tag=new' },
-        { label: 'Gift Sets', path: '/gift-sets' },
-      ];
-      changed = true;
-    }
-    if (!existingSettings.footer.customerCareLinks?.length) {
-      existingSettings.footer.customerCareLinks = [
-        { label: 'Contact Us', path: 'mailto:hello@naturallyu.com' },
-        { label: 'FAQ', path: '/faq' },
-        { label: 'Shipping & Returns', path: '/shipping-returns' },
-        { label: 'Track Your Order', path: '/track-order' },
-      ];
-      changed = true;
-    }
-    if (!existingSettings.footer.connect?.email) {
-      existingSettings.footer.connect.email = 'hello@naturallyu.com';
-      changed = true;
-    }
-    if (!existingSettings.footer.connect?.phone) {
-      existingSettings.footer.connect.phone = '+1 (555) 010-0143';
-      changed = true;
-    }
-    if (!existingSettings.footer.connect?.social?.length) {
-      existingSettings.footer.connect.social = [
-        { platform: 'facebook', url: 'https://facebook.com/naturallyu' },
-        { platform: 'instagram', url: 'https://instagram.com/naturallyu' },
-        { platform: 'pinterest', url: 'https://pinterest.com/naturallyu' },
-      ];
-      changed = true;
-    }
-    if (changed) {
-      await existingSettings.save();
-      logger.info('Backfilled missing footer content on existing settings.');
-    } else {
-      logger.info('Settings already populated, skipping.');
-    }
+    existingSettings.navLinks = footerContent.navLinks;
+    existingSettings.footer.shopLinks = footerContent.shopLinks;
+    existingSettings.footer.customerCareLinks = footerContent.customerCareLinks;
+    existingSettings.footer.connect.email = footerContent.connect.email;
+    existingSettings.footer.connect.phone = footerContent.connect.phone;
+    existingSettings.footer.connect.social = footerContent.connect.social;
+    existingSettings.footer.copyrightText = footerContent.copyrightText;
+    await existingSettings.save();
+    logger.info('Footer content synced to match reference content.');
   }
 
   for (const product of bestsellerProducts) {

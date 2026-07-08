@@ -1,12 +1,23 @@
 const asyncHandler = require('express-async-handler');
 const Product = require('../models/Product.model');
+const Category = require('../models/Category.model');
 
 // @route GET /api/products?tag=bestseller&category=soaps&page=1&limit=12
 const getProducts = asyncHandler(async (req, res) => {
   const { tag, category, search, page = 1, limit = 12 } = req.query;
   const filter = { isActive: true };
   if (tag) filter.tags = tag;
-  if (category) filter.category = category;
+  if (category) {
+    // `category` here is a slug, not the ObjectId the field actually stores -
+    // resolve it first so an unmatched/unknown slug returns no results
+    // instead of throwing a Mongoose CastError.
+    const categoryDoc = await Category.findOne({ slug: category });
+    if (!categoryDoc) {
+      res.json({ products: [], total: 0, page: Number(page), pages: 0 });
+      return;
+    }
+    filter.category = categoryDoc._id;
+  }
   if (search) filter.$text = { $search: search };
 
   const products = await Product.find(filter)
