@@ -17,12 +17,27 @@ const settingsSchema = new mongoose.Schema(
         ],
       },
     },
-    navLinks: [{ label: String, path: String }],
+    navLinks: {
+      type: [{ label: String, path: String }],
+      default: [
+        { label: 'Shop', path: '/shop' },
+        { label: 'Gift Sets', path: '/gift-sets' },
+      ],
+    },
     footer: {
-      shopLinks: [{ label: String, path: String }],
-      customerCareLinks: [{ label: String, path: String }],
+      shopLinks: {
+        type: [{ label: String, path: String }],
+        default: [
+          { label: 'Shop All', path: '/shop' },
+          { label: 'Gift Sets', path: '/gift-sets' },
+        ],
+      },
+      customerCareLinks: {
+        type: [{ label: String, path: String }],
+        default: [{ label: 'Contact Us', path: 'mailto:hello@naturallyu.com' }],
+      },
       connect: {
-        email: String,
+        email: { type: String, default: 'hello@naturallyu.com' },
         phone: String,
         social: [{ platform: String, url: String }],
       },

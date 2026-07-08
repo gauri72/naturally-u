@@ -184,6 +184,40 @@ const run = async () => {
   if (!existingSettings) {
     await Settings.create({});
     logger.info('Default settings created.');
+  } else {
+    // Backfill footer/nav content on a settings doc that was created before
+    // these fields had defaults (e.g. via the earlier bare `Settings.create({})`).
+    let changed = false;
+    if (!existingSettings.navLinks?.length) {
+      existingSettings.navLinks = [
+        { label: 'Shop', path: '/shop' },
+        { label: 'Gift Sets', path: '/gift-sets' },
+      ];
+      changed = true;
+    }
+    if (!existingSettings.footer.shopLinks?.length) {
+      existingSettings.footer.shopLinks = [
+        { label: 'Shop All', path: '/shop' },
+        { label: 'Gift Sets', path: '/gift-sets' },
+      ];
+      changed = true;
+    }
+    if (!existingSettings.footer.customerCareLinks?.length) {
+      existingSettings.footer.customerCareLinks = [
+        { label: 'Contact Us', path: 'mailto:hello@naturallyu.com' },
+      ];
+      changed = true;
+    }
+    if (!existingSettings.footer.connect?.email) {
+      existingSettings.footer.connect.email = 'hello@naturallyu.com';
+      changed = true;
+    }
+    if (changed) {
+      await existingSettings.save();
+      logger.info('Backfilled missing footer content on existing settings.');
+    } else {
+      logger.info('Settings already populated, skipping.');
+    }
   }
 
   for (const product of bestsellerProducts) {
