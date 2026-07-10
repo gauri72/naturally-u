@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Image } from '@phosphor-icons/react';
 import { uploadImage } from '../../../api/media.api';
 import toast from 'react-hot-toast';
 
@@ -22,16 +23,27 @@ function MediaLibraryPage() {
 
   return (
     <div>
-      <h1>Media Library</h1>
-      <input type="file" accept="image/*" onChange={handleUpload} />
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, 120px)', gap: '1rem', marginTop: '1rem' }}>
-        {uploaded.map((img) => (
-          <div key={img.key}>
-            <img src={img.url} alt="" style={{ width: '100%' }} />
-            <input readOnly value={img.url} onFocus={(e) => e.target.select()} style={{ fontSize: '0.6rem', width: '100%' }} />
-          </div>
-        ))}
+      <div className="admin-page-header">
+        <h1>Media Library</h1>
+        <div className="admin-page-header__actions">
+          <input type="file" accept="image/*" onChange={handleUpload} />
+        </div>
       </div>
+      {uploaded.length === 0 ? (
+        <div className="admin-empty-state">
+          <Image size={40} />
+          <p>No uploads this session yet.</p>
+        </div>
+      ) : (
+        <div className="admin-grid">
+          {uploaded.map((img) => (
+            <div key={img.key} className="admin-card">
+              <img src={img.url} alt="" style={{ width: '100%', borderRadius: 'var(--radius-sm)', aspectRatio: '1', objectFit: 'cover' }} />
+              <input readOnly value={img.url} onFocus={(e) => e.target.select()} style={{ marginTop: 'var(--space-sm)', fontSize: '0.7rem', width: '100%' }} />
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

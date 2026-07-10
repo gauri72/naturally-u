@@ -1,0 +1,30 @@
+.not-found-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 60vh;
+  padding: var(--space-2xl) var(--space-lg);
+}
+
+.not-found-page svg {
+  color: var(--color-accent-dark);
+  margin-bottom: var(--space-md);
+}
+
+.not-found-page h1 {
+  font-size: 4rem;
+}
+
+.not-found-page p {
+  color: var(--color-text-muted);
+  margin: var(--space-sm) 0 var(--space-lg);
+}
+
+.not-found-page__actions {
+  display: flex;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+  justify-content: center;
+}

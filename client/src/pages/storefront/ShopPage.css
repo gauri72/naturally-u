@@ -5,3 +5,31 @@
   gap: var(--space-lg);
   margin-top: var(--space-lg);
 }
+
+.shop-page__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.shop-page__sort {
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  background: var(--color-white);
+}
+
+.shop-page__empty {
+  text-align: center;
+  padding: var(--space-2xl) var(--space-lg);
+  color: var(--color-text-muted);
+}
+
+.shop-page__empty svg {
+  opacity: 0.5;
+  margin-bottom: var(--space-sm);
+}

@@ -20,20 +20,26 @@ function SiteSettingsPage() {
 
   return (
     <div>
-      <h1>Site Settings</h1>
-      <label>Site Name</label>
-      <input
-        value={settings.siteName}
-        onChange={(e) => setSettings({ ...settings, siteName: e.target.value })}
-      />
-      <br /><br />
-      <label>Footer Copyright Text</label>
-      <input
-        value={settings.footer?.copyrightText || ''}
-        onChange={(e) => setSettings({ ...settings, footer: { ...settings.footer, copyrightText: e.target.value } })}
-      />
-      <br /><br />
-      <button className="btn btn--primary" onClick={handleSave}>Save Settings</button>
+      <div className="admin-page-header">
+        <h1>Site Settings</h1>
+      </div>
+      <div className="admin-form">
+        <div className="admin-field">
+          <label>Site Name</label>
+          <input
+            value={settings.siteName}
+            onChange={(e) => setSettings({ ...settings, siteName: e.target.value })}
+          />
+        </div>
+        <div className="admin-field">
+          <label>Footer Copyright Text</label>
+          <input
+            value={settings.footer?.copyrightText || ''}
+            onChange={(e) => setSettings({ ...settings, footer: { ...settings.footer, copyrightText: e.target.value } })}
+          />
+        </div>
+        <button className="btn btn--primary" onClick={handleSave} style={{ alignSelf: 'flex-start' }}>Save Settings</button>
+      </div>
     </div>
   );
 }

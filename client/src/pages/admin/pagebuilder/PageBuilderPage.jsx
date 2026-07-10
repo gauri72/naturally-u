@@ -7,12 +7,14 @@ import {
   SortableContext, verticalListSortingStrategy, arrayMove,
 } from '@dnd-kit/sortable';
 import toast from 'react-hot-toast';
+import { Eye } from '@phosphor-icons/react';
 import {
   getPageForAdmin, reorderBlocks, updateBlock, deleteBlock, addBlock, setPageStatus,
 } from '../../../api/pages.api';
 import { blockMeta } from '../../../blocks/registry/blockRegistry';
 import SortableBlockRow from './SortableBlockRow.jsx';
 import BlockEditorPanel from './BlockEditorPanel.jsx';
+import PagePreviewModal from './PagePreviewModal.jsx';
 import './PageBuilderPage.css';
 
 /**
@@ -33,6 +35,7 @@ function PageBuilderPage() {
   const { slug } = useParams();
   const [page, setPage] = useState(null);
   const [editingBlock, setEditingBlock] = useState(null);
+  const [previewOpen, setPreviewOpen] = useState(false);
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
 
@@ -103,15 +106,19 @@ function PageBuilderPage() {
 
   return (
     <div className="page-builder">
-      <div className="page-builder__header">
-        <h2>{page.title} <span className={`status-pill status-pill--${page.status}`}>{page.status}</span></h2>
-        <div className="page-builder__actions">
+      <div className="admin-page-header">
+        <h1>{page.title} <span className={`status-pill status-pill--${page.status}`}>{page.status}</span></h1>
+        <div className="admin-page-header__actions">
           <select onChange={(e) => e.target.value && handleAddBlock(e.target.value)} value="">
             <option value="">+ Add Block</option>
             {Object.entries(blockMeta).map(([type, meta]) => (
               <option key={type} value={type}>{meta.label}</option>
             ))}
           </select>
+          <button className="btn btn--secondary" onClick={() => setPreviewOpen(true)}>
+            <Eye size={16} style={{ verticalAlign: '-2px', marginRight: 4 }} />
+            Preview
+          </button>
           <button className="btn btn--primary" onClick={handlePublishToggle}>
             {page.status === 'published' ? 'Unpublish' : 'Publish'}
           </button>
@@ -141,6 +148,10 @@ function PageBuilderPage() {
           onClose={() => setEditingBlock(null)}
           onSaved={() => { setEditingBlock(null); loadPage(); }}
         />
+      )}
+
+      {previewOpen && (
+        <PagePreviewModal page={page} onClose={() => setPreviewOpen(false)} />
       )}
     </div>
   );

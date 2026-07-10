@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 // (nav links, footer, announcement bar, social links, theme tokens).
 const settingsSchema = new mongoose.Schema(
   {
-    siteName: { type: String, default: 'Naturally You' },
+    siteName: { type: String, default: 'NaturallyU' },
     logoUrl: { type: String },
     announcementBar: {
       enabled: { type: Boolean, default: true },
@@ -39,18 +39,18 @@ const settingsSchema = new mongoose.Schema(
         ],
       },
       connect: {
-        email: { type: String, default: 'hello@naturallyou.com' },
+        email: { type: String, default: 'hello@naturallyu.com' },
         phone: { type: String, default: '+1 555 123-4567' },
         social: {
           type: [{ platform: String, url: String }],
           default: [
-            { platform: 'facebook', url: 'https://facebook.com/naturallyou' },
-            { platform: 'instagram', url: 'https://instagram.com/naturallyou' },
-            { platform: 'pinterest', url: 'https://pinterest.com/naturallyou' },
+            { platform: 'facebook', url: 'https://facebook.com/naturallyu' },
+            { platform: 'instagram', url: 'https://instagram.com/naturallyu' },
+            { platform: 'pinterest', url: 'https://pinterest.com/naturallyu' },
           ],
         },
       },
-      copyrightText: { type: String, default: '© 2026 Naturally You. All rights reserved.' },
+      copyrightText: { type: String, default: '© 2026 NaturallyU. All rights reserved.' },
     },
     theme: {
       primaryColor: { type: String, default: '#3FA34D' },

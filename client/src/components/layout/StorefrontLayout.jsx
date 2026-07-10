@@ -3,6 +3,8 @@ import { Outlet } from 'react-router-dom';
 import Header from '../common/Header.jsx';
 import FooterBlock from '../../blocks/FooterBlock/FooterBlock.jsx';
 import AnnouncementBarBlock from '../../blocks/AnnouncementBarBlock/AnnouncementBarBlock.jsx';
+import ScrollToTop from '../common/ScrollToTop.jsx';
+import ErrorBoundary from '../common/ErrorBoundary.jsx';
 import { getSettings } from '../../api/settings.api';
 
 // Wraps every public storefront page. The announcement bar sits above
@@ -20,12 +22,15 @@ function StorefrontLayout() {
 
   return (
     <>
+      <ScrollToTop />
       {announcementBar?.enabled && (
         <AnnouncementBarBlock messages={announcementBar.messages} />
       )}
       <Header />
       <main>
-        <Outlet />
+        <ErrorBoundary>
+          <Outlet />
+        </ErrorBoundary>
       </main>
       <FooterBlock />
     </>

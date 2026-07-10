@@ -170,7 +170,7 @@ const run = async () => {
     await Page.create({
       slug: 'home',
       title: 'Home',
-      metaDescription: 'Naturally You — handmade soaps and skin care.',
+      metaDescription: 'NaturallyU — handmade soaps and skin care.',
       status: 'published',
       publishedAt: new Date(),
       blocks: homeBlocks,
@@ -199,15 +199,15 @@ const run = async () => {
       { label: 'Terms & Conditions', path: '/terms' },
     ],
     connect: {
-      email: 'hello@naturallyou.com',
+      email: 'hello@naturallyu.com',
       phone: '+1 555 123-4567',
       social: [
-        { platform: 'facebook', url: 'https://facebook.com/naturallyou' },
-        { platform: 'instagram', url: 'https://instagram.com/naturallyou' },
-        { platform: 'pinterest', url: 'https://pinterest.com/naturallyou' },
+        { platform: 'facebook', url: 'https://facebook.com/naturallyu' },
+        { platform: 'instagram', url: 'https://instagram.com/naturallyu' },
+        { platform: 'pinterest', url: 'https://pinterest.com/naturallyu' },
       ],
     },
-    copyrightText: '© 2026 Naturally You. All rights reserved.',
+    copyrightText: '© 2026 NaturallyU. All rights reserved.',
   };
   const announcementMessages = [
     'Free shipping on orders over €75',

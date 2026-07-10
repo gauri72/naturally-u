@@ -1,4 +1,4 @@
-# Naturally You — MERN E-Commerce with CMS Page Builder
+# NaturallyU — MERN E-Commerce with CMS Page Builder
 
 A block-based, CMS-editable e-commerce site (handmade soaps & skin care),
 built on the MERN stack, deployable on Render (static frontend + web

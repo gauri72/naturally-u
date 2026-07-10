@@ -1,0 +1,63 @@
+.workshops-page {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: var(--space-xl) var(--space-lg) var(--space-2xl);
+}
+
+.workshops-page__hero {
+  text-align: center;
+  max-width: 560px;
+  margin: 0 auto var(--space-2xl);
+}
+
+.workshops-page__hero p {
+  color: var(--color-text-muted);
+  margin-top: var(--space-sm);
+}
+
+.workshops-page__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-lg);
+  margin-bottom: var(--space-2xl);
+}
+
+.workshops-page__card {
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  text-align: center;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.workshops-page__card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 28px rgba(43, 43, 40, 0.1);
+}
+
+.workshops-page__card svg {
+  color: var(--color-primary);
+  margin-bottom: var(--space-sm);
+}
+
+.workshops-page__card h3 {
+  margin-bottom: var(--space-xs);
+}
+
+.workshops-page__card p {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.workshops-page__cta {
+  text-align: center;
+  background: color-mix(in srgb, var(--color-background) 94%, var(--color-brown) 6%);
+  border-radius: var(--radius-md);
+  padding: var(--space-2xl);
+}
+
+.workshops-page__cta p {
+  color: var(--color-text-muted);
+  margin: var(--space-sm) 0 var(--space-lg);
+}

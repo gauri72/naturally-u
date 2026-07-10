@@ -1,7 +1,7 @@
 .block-editor-panel__overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.4);
+  background: rgba(43, 43, 40, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -12,8 +12,51 @@
   background: var(--color-white);
   padding: var(--space-lg);
   border-radius: var(--radius-md);
-  width: 500px;
+  box-shadow: 0 16px 40px rgba(43, 43, 40, 0.25);
+  width: 640px;
   max-width: 90vw;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.block-editor-panel h3 {
+  margin-bottom: var(--space-md);
+}
+
+.block-editor-panel__tabs {
+  display: flex;
+  gap: var(--space-xs);
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: var(--space-md);
+}
+
+.block-editor-panel__tab {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: var(--space-sm) var(--space-md);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.block-editor-panel__tab:hover { color: var(--color-text); }
+
+.block-editor-panel__tab.is-active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+}
+
+.block-editor-panel__body {
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding-right: var(--space-xs);
 }
 
 .block-editor-panel textarea {
@@ -23,12 +66,35 @@
   padding: var(--space-sm);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.block-editor-panel__error { color: #c0392b; font-size: 0.85rem; }
+.block-editor-panel textarea:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(63, 163, 77, 0.12);
+  outline: none;
+}
+
+.block-editor-panel__error { color: #B5433A; font-size: 0.85rem; margin-top: var(--space-sm); }
 .block-editor-panel__actions {
   display: flex;
   justify-content: flex-end;
   gap: var(--space-sm);
   margin-top: var(--space-md);
+}
+
+.block-editor-panel__actions button:first-child {
+  background: transparent;
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-lg);
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.block-editor-panel__actions button:first-child:hover {
+  border-color: var(--color-text-muted);
+  color: var(--color-text);
 }

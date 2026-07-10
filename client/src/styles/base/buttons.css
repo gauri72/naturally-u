@@ -34,3 +34,14 @@
 }
 
 .btn--sm { padding: var(--space-xs) var(--space-md); font-size: 0.8rem; }
+
+.btn--danger {
+  background-color: #B5433A;
+  color: var(--color-white);
+}
+
+.btn--danger:hover {
+  background-color: color-mix(in srgb, #B5433A 85%, black);
+  box-shadow: 0 8px 18px rgba(181, 67, 58, 0.35);
+  transform: translateY(-2px);
+}

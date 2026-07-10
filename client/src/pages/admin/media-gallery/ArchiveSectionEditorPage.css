@@ -1,0 +1,18 @@
+.archive-section-editor__name-input {
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.archive-section-editor__meta-row {
+  display: flex;
+  gap: var(--space-lg);
+  align-items: flex-start;
+  margin-bottom: var(--space-xl);
+}
+
+.archive-section-editor__checkbox {
+  width: 20px;
+  height: 20px;
+  margin-top: var(--space-xs);
+  accent-color: var(--color-primary);
+}

@@ -1,12 +1,3 @@
-.page-builder__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--space-lg);
-}
-
-.page-builder__actions { display: flex; gap: var(--space-sm); }
-
 .status-pill {
   font-size: 0.7rem;
   padding: 2px 8px;

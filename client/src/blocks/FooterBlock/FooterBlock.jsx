@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
   FacebookLogo, InstagramLogo, PinterestLogo, EnvelopeSimple, Phone, MapPin, CaretDown,
 } from '@phosphor-icons/react';
@@ -85,7 +86,7 @@ function FooterBlock() {
         <FooterSection title="Shop" sectionKey="shop" openSection={openSection} onToggle={toggleSection}>
           <ul>
             {settings.footer?.shopLinks?.map((link) => (
-              <li key={link.path}><a href={link.path}>{link.label}</a></li>
+              <li key={link.path}><Link to={link.path}>{link.label}</Link></li>
             ))}
           </ul>
         </FooterSection>
@@ -93,7 +94,7 @@ function FooterBlock() {
         <FooterSection title="Customer Care" sectionKey="care" openSection={openSection} onToggle={toggleSection}>
           <ul>
             {settings.footer?.customerCareLinks?.map((link) => (
-              <li key={link.path}><a href={link.path}>{link.label}</a></li>
+              <li key={link.path}><Link to={link.path}>{link.label}</Link></li>
             ))}
           </ul>
         </FooterSection>

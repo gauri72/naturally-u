@@ -15,6 +15,9 @@ import TrackOrderPage from '../pages/storefront/TrackOrderPage.jsx';
 import PrivacyPolicyPage from '../pages/storefront/PrivacyPolicyPage.jsx';
 import TermsPage from '../pages/storefront/TermsPage.jsx';
 import NotFoundPage from '../pages/storefront/NotFoundPage.jsx';
+import AboutMakerPage from '../pages/storefront/AboutMakerPage.jsx';
+import WorkshopsPage from '../pages/storefront/WorkshopsPage.jsx';
+import ContactPage from '../pages/storefront/ContactPage.jsx';
 
 import LoginPage from '../pages/admin/LoginPage.jsx';
 import DashboardPage from '../pages/admin/dashboard/DashboardPage.jsx';
@@ -24,6 +27,10 @@ import ProductFormPage from '../pages/admin/products/ProductFormPage.jsx';
 import OrdersListPage from '../pages/admin/orders/OrdersListPage.jsx';
 import MediaLibraryPage from '../pages/admin/media/MediaLibraryPage.jsx';
 import SiteSettingsPage from '../pages/admin/settings/SiteSettingsPage.jsx';
+import MediaGalleryHomePage from '../pages/admin/media-gallery/MediaGalleryHomePage.jsx';
+import ArchiveListPage from '../pages/admin/media-gallery/ArchiveListPage.jsx';
+import ArchivePageDetailPage from '../pages/admin/media-gallery/ArchivePageDetailPage.jsx';
+import ArchiveSectionEditorPage from '../pages/admin/media-gallery/ArchiveSectionEditorPage.jsx';
 
 function AppRoutes() {
   return (
@@ -41,6 +48,10 @@ function AppRoutes() {
         <Route path="/track-order" element={<TrackOrderPage />} />
         <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
         <Route path="/terms" element={<TermsPage />} />
+        <Route path="/about-the-maker" element={<AboutMakerPage />} />
+        <Route path="/workshops" element={<WorkshopsPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Route>
 
       {/* Admin - protected */}
@@ -60,10 +71,12 @@ function AppRoutes() {
         <Route path="products/:id/edit" element={<ProductFormPage />} />
         <Route path="orders" element={<OrdersListPage />} />
         <Route path="media" element={<MediaLibraryPage />} />
+        <Route path="media-gallery" element={<MediaGalleryHomePage />} />
+        <Route path="media-gallery/archive" element={<ArchiveListPage />} />
+        <Route path="media-gallery/archive/:pageSlug" element={<ArchivePageDetailPage />} />
+        <Route path="media-gallery/archive/:pageSlug/sections/:sectionId" element={<ArchiveSectionEditorPage />} />
         <Route path="settings" element={<SiteSettingsPage />} />
       </Route>
-
-      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }

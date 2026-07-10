@@ -1,0 +1,101 @@
+.contact-page {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: var(--space-xl) var(--space-lg) var(--space-2xl);
+}
+
+.contact-page__hero {
+  text-align: center;
+  max-width: 560px;
+  margin: 0 auto var(--space-2xl);
+}
+
+.contact-page__hero p {
+  color: var(--color-text-muted);
+  margin-top: var(--space-sm);
+}
+
+.contact-page__layout {
+  display: flex;
+  gap: var(--space-xl);
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.contact-page__info {
+  flex: 1 1 260px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.contact-page__info-card {
+  display: flex;
+  gap: var(--space-md);
+  align-items: flex-start;
+  background: color-mix(in srgb, var(--color-background) 94%, var(--color-brown) 6%);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+}
+
+.contact-page__info-card svg {
+  color: var(--color-primary);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.contact-page__info-card h3 {
+  font-size: 0.95rem;
+  margin-bottom: 2px;
+}
+
+.contact-page__info-card a {
+  color: var(--color-text);
+  text-decoration: underline;
+}
+
+.contact-page__info-card p {
+  color: var(--color-text);
+}
+
+.contact-page__form {
+  flex: 2 1 380px;
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.contact-page__form label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.contact-page__form input,
+.contact-page__form textarea {
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--color-text);
+  resize: vertical;
+}
+
+.contact-page__form input:focus,
+.contact-page__form textarea:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(63, 163, 77, 0.12);
+  outline: none;
+}
+
+.contact-page__form button {
+  align-self: flex-start;
+}

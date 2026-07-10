@@ -1,0 +1,26 @@
+.legal-page {
+  max-width: 700px;
+}
+
+.legal-page__updated {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  margin-top: var(--space-xs);
+}
+
+.legal-page__section {
+  margin-top: var(--space-xl);
+}
+
+.legal-page__section h3 {
+  margin-bottom: var(--space-xs);
+}
+
+.legal-page__section p {
+  color: var(--color-text-muted);
+}
+
+.legal-page__section a {
+  color: var(--color-primary);
+  text-decoration: underline;
+}

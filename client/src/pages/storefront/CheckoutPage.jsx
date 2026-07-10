@@ -1,15 +1,30 @@
 import { useState } from 'react';
+import { CreditCard, Truck } from '@phosphor-icons/react';
 import { useCart } from '../../context/CartContext.jsx';
 import { validateCart } from '../../api/cart.api';
 import { createOrder } from '../../api/orders.api';
 import toast from 'react-hot-toast';
 import './CheckoutPage.css';
 
+const CONTACT_FIELDS = [
+  { name: 'name', label: 'Full Name' },
+  { name: 'email', label: 'Email', type: 'email' },
+  { name: 'phone', label: 'Phone', type: 'tel' },
+];
+
+const ADDRESS_FIELDS = [
+  { name: 'line1', label: 'Address' },
+  { name: 'city', label: 'City' },
+  { name: 'state', label: 'State / Province' },
+  { name: 'postalCode', label: 'Postal Code' },
+  { name: 'country', label: 'Country' },
+];
+
 // NOTE: Stripe Elements integration goes here. Kept minimal/stubbed
 // so the flow (validate -> create order -> payment) is clear without
 // pulling in Stripe-specific setup into the scaffold.
 function CheckoutPage() {
-  const { items, clearCart } = useCart();
+  const { items, clearCart, subtotal } = useCart();
   const [form, setForm] = useState({ name: '', email: '', phone: '', line1: '', city: '', state: '', postalCode: '', country: '' });
   const [submitting, setSubmitting] = useState(false);
 
@@ -40,21 +55,68 @@ function CheckoutPage() {
   return (
     <section className="checkout-page">
       <h1>Checkout</h1>
-      <form onSubmit={handleSubmit}>
-        {Object.keys(form).map((field) => (
-          <input
-            key={field}
-            name={field}
-            placeholder={field}
-            value={form[field]}
-            onChange={handleChange}
-            required
-          />
-        ))}
-        <button type="submit" className="btn btn--primary" disabled={submitting}>
-          {submitting ? 'Placing order…' : 'Place Order'}
-        </button>
-      </form>
+      <div className="checkout-page__layout">
+        <form className="checkout-page__form" onSubmit={handleSubmit}>
+          <h3>Contact</h3>
+          <div className="checkout-page__field-grid">
+            {CONTACT_FIELDS.map((field) => (
+              <label key={field.name} className="checkout-field">
+                {field.label}
+                <input
+                  type={field.type || 'text'}
+                  name={field.name}
+                  value={form[field.name]}
+                  onChange={handleChange}
+                  required
+                />
+              </label>
+            ))}
+          </div>
+
+          <h3>Shipping Address</h3>
+          <div className="checkout-page__field-grid">
+            {ADDRESS_FIELDS.map((field) => (
+              <label key={field.name} className="checkout-field">
+                {field.label}
+                <input
+                  name={field.name}
+                  value={form[field.name]}
+                  onChange={handleChange}
+                  required
+                />
+              </label>
+            ))}
+          </div>
+
+          <button type="submit" className="btn btn--primary checkout-page__submit" disabled={submitting}>
+            {submitting ? 'Placing order…' : 'Place Order'}
+          </button>
+        </form>
+
+        <aside className="checkout-page__summary">
+          <h3><Truck size={18} weight="regular" /> Order Summary</h3>
+          <div className="checkout-page__summary-items">
+            {items.map((item) => (
+              <div className="checkout-page__summary-item" key={item.productId}>
+                <span>{item.name} × {item.quantity}</span>
+                <span>€{(item.price * item.quantity).toFixed(2)}</span>
+              </div>
+            ))}
+          </div>
+          <div className="checkout-page__summary-row">
+            <span>Subtotal</span>
+            <span>€{subtotal.toFixed(2)}</span>
+          </div>
+          <p className="checkout-page__shipping-note">Shipping calculated after order review.</p>
+          <div className="checkout-page__summary-row checkout-page__summary-row--total">
+            <span>Total</span>
+            <span>€{subtotal.toFixed(2)}</span>
+          </div>
+          <p className="checkout-page__payment-note">
+            <CreditCard size={16} weight="regular" /> Payment is collected securely on the next step.
+          </p>
+        </aside>
+      </div>
     </section>
   );
 }

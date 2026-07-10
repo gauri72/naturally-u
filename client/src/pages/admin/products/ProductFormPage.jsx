@@ -36,15 +36,35 @@ function ProductFormPage() {
 
   return (
     <div>
-      <h1>{isEdit ? 'Edit' : 'New'} Product</h1>
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: 500 }}>
-        <input name="name" placeholder="Name" value={form.name} onChange={handleChange} required />
-        <input name="slug" placeholder="Slug" value={form.slug} onChange={handleChange} required />
-        <textarea name="description" placeholder="Description" value={form.description} onChange={handleChange} required />
-        <input name="price" type="number" placeholder="Price" value={form.price} onChange={handleChange} required />
-        <input name="stock" type="number" placeholder="Stock" value={form.stock} onChange={handleChange} required />
-        <input type="file" accept="image/*" onChange={handleImageUpload} />
-        <button type="submit" className="btn btn--primary">Save Product</button>
+      <div className="admin-page-header">
+        <h1>{isEdit ? 'Edit' : 'New'} Product</h1>
+      </div>
+      <form onSubmit={handleSubmit} className="admin-form">
+        <div className="admin-field">
+          <label>Name</label>
+          <input name="name" value={form.name} onChange={handleChange} required />
+        </div>
+        <div className="admin-field">
+          <label>Slug</label>
+          <input name="slug" value={form.slug} onChange={handleChange} required />
+        </div>
+        <div className="admin-field">
+          <label>Description</label>
+          <textarea name="description" rows={4} value={form.description} onChange={handleChange} required />
+        </div>
+        <div className="admin-field">
+          <label>Price</label>
+          <input name="price" type="number" value={form.price} onChange={handleChange} required />
+        </div>
+        <div className="admin-field">
+          <label>Stock</label>
+          <input name="stock" type="number" value={form.stock} onChange={handleChange} required />
+        </div>
+        <div className="admin-field">
+          <label>Image</label>
+          <input type="file" accept="image/*" onChange={handleImageUpload} />
+        </div>
+        <button type="submit" className="btn btn--primary" style={{ alignSelf: 'flex-start' }}>Save Product</button>
       </form>
     </div>
   );

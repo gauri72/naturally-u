@@ -19,6 +19,8 @@ const reviewRoutes = require('./routes/review.routes');
 const mediaRoutes = require('./routes/media.routes');
 const settingsRoutes = require('./routes/settings.routes');
 const newsletterRoutes = require('./routes/newsletter.routes');
+const archiveRoutes = require('./routes/archive.routes');
+const contactRoutes = require('./routes/contact.routes');
 
 const app = express();
 
@@ -48,6 +50,8 @@ app.use('/api/reviews', reviewRoutes);
 app.use('/api/media', mediaRoutes);       // S3 uploads for admin media library
 app.use('/api/settings', settingsRoutes); // global site settings (theme, nav, footer)
 app.use('/api/newsletter', newsletterRoutes);
+app.use('/api/archive', archiveRoutes);   // Media Gallery: archived legacy naturallyu.nl content
+app.use('/api/contact', contactRoutes);   // public contact form submissions
 
 app.use(notFound);
 app.use(errorHandler); // must be last
