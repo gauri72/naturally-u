@@ -1,46 +1,30 @@
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { getPageBySlug } from '../../api/pages.api';
+import PageRenderer from '../../blocks/registry/PageRenderer.jsx';
 import './LegalPage.css';
 
+// CMS-driven: fetch the 'terms' Page document (ordered blocks) and hand it
+// to PageRenderer. To edit this page's content, use /admin/pages/terms - no
+// code changes needed.
 function TermsPage() {
+  const [page, setPage] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    getPageBySlug('terms')
+      .then((res) => setPage(res.data))
+      .catch((err) => {
+        console.error('[TermsPage] failed to load page:', err);
+        setError('Unable to load page content.');
+      });
+  }, []);
+
+  if (error) return <p className="page-error">{error}</p>;
+  if (!page) return <p className="page-loading">Loading…</p>;
+
   return (
     <section className="shop-page legal-page">
-      <h1>Terms &amp; Conditions</h1>
-      <p className="legal-page__updated">Last updated: 2026</p>
-
-      <div className="legal-page__section">
-        <h3>Orders &amp; Payment</h3>
-        <p>
-          By placing an order with NaturallyU, you agree to pay the listed price plus any
-          applicable shipping. Orders are handcrafted to order and may take a few extra days
-          to prepare before shipping.
-        </p>
-      </div>
-
-      <div className="legal-page__section">
-        <h3>Shipping &amp; Returns</h3>
-        <p>
-          See our <Link to="/shipping-returns">Shipping &amp; Returns</Link> page for shipping
-          costs, timelines, and our 30-day return policy.
-        </p>
-      </div>
-
-      <div className="legal-page__section">
-        <h3>Product Disclaimer</h3>
-        <p>
-          Our products are not prescription products, but rather timeless beauty secrets drawn
-          from nature. A patch test is recommended before first use of any product.
-        </p>
-      </div>
-
-      <div className="legal-page__section">
-        <h3>Governing Law</h3>
-        <p>These terms are governed by the laws of the jurisdiction in which NaturallyU operates.</p>
-      </div>
-
-      <div className="legal-page__section">
-        <h3>Contact</h3>
-        <p>Questions about these terms? Reach out via our Contact page.</p>
-      </div>
+      <PageRenderer blocks={page.blocks} />
     </section>
   );
 }

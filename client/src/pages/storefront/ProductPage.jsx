@@ -1,12 +1,51 @@
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import {
+  CaretDown,
+  ShieldCheck,
+  Truck,
+  ArrowUUpLeft,
+  Sparkle,
+  Leaf,
+} from '@phosphor-icons/react';
 import { getProductBySlug } from '../../api/products.api';
+import { getPageBySlug } from '../../api/pages.api';
 import { useCart } from '../../context/CartContext.jsx';
 import './ProductPage.css';
+
+// The product's own name/price/description/images are data-driven; the
+// surrounding editorial copy (eyebrow, usage tips, shipping/returns
+// blurbs, disclaimer) is shared across every product and comes from the
+// 'product-template' CMS page (/admin/pages/product-template).
+
+function AccordionSection({ id, icon, title, defaultOpen = false, children }) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <div className="product-page__accordion-item">
+      <button
+        type="button"
+        className="product-page__accordion-trigger"
+        aria-expanded={open}
+        aria-controls={id}
+        onClick={() => setOpen((o) => !o)}
+      >
+        <span className="product-page__accordion-label">
+          {icon}
+          {title}
+        </span>
+        <CaretDown weight="bold" className={`product-page__accordion-caret ${open ? 'is-open' : ''}`} />
+      </button>
+      <div id={id} className={`product-page__accordion-panel ${open ? 'is-open' : ''}`}>
+        <div className="product-page__accordion-panel-inner">{children}</div>
+      </div>
+    </div>
+  );
+}
 
 function ProductPage() {
   const { slug } = useParams();
   const [product, setProduct] = useState(null);
+  const [content, setContent] = useState(null);
   const [selectedImage, setSelectedImage] = useState(0);
   const { addItem } = useCart();
 
@@ -15,14 +54,31 @@ function ProductPage() {
     getProductBySlug(slug).then((res) => setProduct(res.data)).catch(console.error);
   }, [slug]);
 
-  if (!product) return <p className="page-loading">Loading…</p>;
+  useEffect(() => {
+    getPageBySlug('product-template')
+      .then((res) => setContent(res.data.blocks.find((b) => b.blockType === 'productPageContent')?.props || {}))
+      .catch(console.error);
+  }, []);
+
+  if (!product || !content) return <p className="page-loading">Loading…</p>;
 
   const images = product.images || [];
+  const usageByTag = content.usageByTag || [];
+  const primaryTag = (product.tags || []).find((t) => usageByTag.some((u) => u.tag === t));
+  const usage = usageByTag.find((u) => u.tag === primaryTag)?.text || content.defaultUsage;
+  const inStock = product.stock > 0;
 
   return (
     <section className="product-page">
       <div className="product-page__gallery">
-        <img className="product-page__main-image" src={images[selectedImage]?.url} alt={images[selectedImage]?.alt || product.name} />
+        <div className="product-page__main-image-wrap">
+          <img
+            className="product-page__main-image"
+            src={images[selectedImage]?.url}
+            alt={images[selectedImage]?.alt || product.name}
+          />
+          <Leaf size={34} weight="regular" className="product-page__image-badge" aria-hidden="true" />
+        </div>
         {images.length > 1 && (
           <div className="product-page__thumbs">
             {images.map((img, i) => (
@@ -38,24 +94,101 @@ function ProductPage() {
           </div>
         )}
       </div>
-      <div>
+
+      <div className="product-page__details">
+        <span className="product-page__eyebrow">
+          <Sparkle size={14} weight="fill" /> {content.eyebrow}
+        </span>
         <h1>{product.name}</h1>
         {product.shortDescription && <p className="product-page__tagline">{product.shortDescription}</p>}
-        <p className="product-page__price">€{product.price.toFixed(2)}</p>
-        <p>{product.description}</p>
 
-        {product.ingredients?.length > 0 && (
-          <div className="product-page__ingredients">
-            <h3>Ingredients</h3>
-            <ul>
-              {product.ingredients.map((ingredient) => (
-                <li key={ingredient}>{ingredient}</li>
-              ))}
-            </ul>
+        <div className="product-page__buy-box">
+          <div className="product-page__price-row">
+            <p className="product-page__price">€{product.price.toFixed(2)}</p>
+            <span className={`product-page__stock ${inStock ? 'is-in-stock' : 'is-out-of-stock'}`}>
+              {inStock ? 'In stock' : 'Out of stock'}
+            </span>
           </div>
-        )}
+          <p className="product-page__tax-note">Sales tax included.</p>
+          <button
+            className="btn btn--primary product-page__add-btn"
+            onClick={() => addItem(product)}
+            disabled={!inStock}
+          >
+            {inStock ? 'Add to Cart' : 'Out of Stock'}
+          </button>
+        </div>
 
-        <button className="btn btn--primary" onClick={() => addItem(product)}>Add to Cart</button>
+        <p className="product-page__description">{product.description}</p>
+
+        <div className="product-page__accordions">
+          <AccordionSection
+            id="product-info"
+            icon={<Sparkle size={18} weight="regular" />}
+            title="Product Info"
+            defaultOpen
+          >
+            <dl className="product-page__info-list">
+              <div>
+                <dt>Made</dt>
+                <dd>{content.madeText}</dd>
+              </div>
+              <div>
+                <dt>Ingredients</dt>
+                <dd>
+                  {product.ingredients?.length > 0 ? (
+                    <ul className="product-page__ingredients">
+                      {product.ingredients.map((ingredient) => (
+                        <li key={ingredient}>{ingredient}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    'See product description above'
+                  )}
+                </dd>
+              </div>
+              <div>
+                <dt>Free from</dt>
+                <dd>{content.freeFromText}</dd>
+              </div>
+            </dl>
+          </AccordionSection>
+
+          <AccordionSection
+            id="how-to-use"
+            icon={<Leaf size={18} weight="regular" />}
+            title="How to Use"
+          >
+            <p>{usage}</p>
+          </AccordionSection>
+
+          <AccordionSection
+            id="shipping-info"
+            icon={<Truck size={18} weight="regular" />}
+            title="Shipping Info"
+          >
+            <p>{content.shippingBlurb}</p>
+            <Link to="/shipping-returns" className="product-page__accordion-link">
+              Full shipping details →
+            </Link>
+          </AccordionSection>
+
+          <AccordionSection
+            id="returns-policy"
+            icon={<ArrowUUpLeft size={18} weight="regular" />}
+            title="Return & Refund Policy"
+          >
+            <p>{content.returnsBlurb}</p>
+            <Link to="/contact" className="product-page__accordion-link">
+              Contact us →
+            </Link>
+          </AccordionSection>
+        </div>
+
+        <div className="product-page__disclaimer">
+          <ShieldCheck size={20} weight="regular" className="product-page__disclaimer-icon" aria-hidden="true" />
+          <p>{content.disclaimerText}</p>
+        </div>
       </div>
     </section>
   );

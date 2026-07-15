@@ -5,6 +5,7 @@ const {
   getPageForAdmin,
   listPages,
   createPage,
+  deletePage,
   addBlock,
   updateBlock,
   reorderBlocks,
@@ -26,5 +27,6 @@ router.put('/:slug/reorder', protect, reorderBlocks);
 router.post('/:slug/blocks', protect, addBlock);
 router.put('/:slug/blocks/:blockId', protect, updateBlock);
 router.delete('/:slug/blocks/:blockId', protect, deleteBlock);
+router.delete('/:slug', protect, deletePage);
 
 module.exports = router;

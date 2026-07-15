@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CreditCard, Truck } from '@phosphor-icons/react';
 import { useCart } from '../../context/CartContext.jsx';
 import { validateCart } from '../../api/cart.api';
 import { createOrder } from '../../api/orders.api';
+import { getPageBySlug } from '../../api/pages.api';
 import toast from 'react-hot-toast';
 import './CheckoutPage.css';
 
@@ -20,6 +21,8 @@ const ADDRESS_FIELDS = [
   { name: 'country', label: 'Country' },
 ];
 
+// Heading + summary notes come from the 'checkout' CMS page
+// (/admin/pages/checkout); the checkout flow itself stays fully functional.
 // NOTE: Stripe Elements integration goes here. Kept minimal/stubbed
 // so the flow (validate -> create order -> payment) is clear without
 // pulling in Stripe-specific setup into the scaffold.
@@ -27,6 +30,11 @@ function CheckoutPage() {
   const { items, clearCart, subtotal } = useCart();
   const [form, setForm] = useState({ name: '', email: '', phone: '', line1: '', city: '', state: '', postalCode: '', country: '' });
   const [submitting, setSubmitting] = useState(false);
+  const [page, setPage] = useState(null);
+
+  useEffect(() => {
+    getPageBySlug('checkout').then((res) => setPage(res.data)).catch(console.error);
+  }, []);
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -52,9 +60,14 @@ function CheckoutPage() {
     }
   };
 
+  if (!page) return <p className="page-loading">Loading…</p>;
+
+  const hero = page.blocks.find((b) => b.blockType === 'pageHero')?.props || {};
+  const content = page.blocks.find((b) => b.blockType === 'checkoutPageContent')?.props || {};
+
   return (
     <section className="checkout-page">
-      <h1>Checkout</h1>
+      <h1>{hero.heading}</h1>
       <div className="checkout-page__layout">
         <form className="checkout-page__form" onSubmit={handleSubmit}>
           <h3>Contact</h3>
@@ -107,13 +120,13 @@ function CheckoutPage() {
             <span>Subtotal</span>
             <span>€{subtotal.toFixed(2)}</span>
           </div>
-          <p className="checkout-page__shipping-note">Shipping calculated after order review.</p>
+          <p className="checkout-page__shipping-note">{content.shippingNoteText}</p>
           <div className="checkout-page__summary-row checkout-page__summary-row--total">
             <span>Total</span>
             <span>€{subtotal.toFixed(2)}</span>
           </div>
           <p className="checkout-page__payment-note">
-            <CreditCard size={16} weight="regular" /> Payment is collected securely on the next step.
+            <CreditCard size={16} weight="regular" /> {content.paymentNoteText}
           </p>
         </aside>
       </div>

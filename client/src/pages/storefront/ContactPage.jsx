@@ -1,12 +1,27 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { EnvelopeSimple, Phone, MapPin } from '@phosphor-icons/react';
 import toast from 'react-hot-toast';
 import { submitContactMessage } from '../../api/contact.api';
+import { getPageBySlug } from '../../api/pages.api';
+import PageHeroBlock from '../../blocks/PageHeroBlock/PageHeroBlock.jsx';
 import './ContactPage.css';
 
+// Hero copy + contact info come from the 'contact' CMS page
+// (/admin/pages/contact); the form itself stays fully functional/code-driven.
 function ContactPage() {
   const [form, setForm] = useState({ name: '', email: '', message: '' });
   const [submitting, setSubmitting] = useState(false);
+  const [page, setPage] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    getPageBySlug('contact')
+      .then((res) => setPage(res.data))
+      .catch((err) => {
+        console.error('[ContactPage] failed to load page:', err);
+        setError('Unable to load page content.');
+      });
+  }, []);
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -24,12 +39,16 @@ function ContactPage() {
     }
   };
 
+  if (error) return <p className="page-error">{error}</p>;
+  if (!page) return <p className="page-loading">Loading…</p>;
+
+  const hero = page.blocks.find((b) => b.blockType === 'pageHero')?.props || {};
+  const content = page.blocks.find((b) => b.blockType === 'contactPageContent')?.props || {};
+  const telHref = content.phone ? `tel:${content.phone.replace(/[^\d+]/g, '')}` : undefined;
+
   return (
     <section className="contact-page">
-      <div className="contact-page__hero">
-        <h1>Contact Us</h1>
-        <p>Questions about a product, a workshop, or an order? We'd love to hear from you.</p>
-      </div>
+      <PageHeroBlock variant="contact" heading={hero.heading} subtext={hero.subtext} />
 
       <div className="contact-page__layout">
         <div className="contact-page__info">
@@ -37,21 +56,21 @@ function ContactPage() {
             <EnvelopeSimple size={24} weight="regular" />
             <div>
               <h3>Email</h3>
-              <a href="mailto:hello@naturallyu.com">hello@naturallyu.com</a>
+              <a href={`mailto:${content.email}`}>{content.email}</a>
             </div>
           </div>
           <div className="contact-page__info-card">
             <Phone size={24} weight="regular" />
             <div>
               <h3>Phone</h3>
-              <a href="tel:+15551234567">+1 555 123-4567</a>
+              <a href={telHref}>{content.phone}</a>
             </div>
           </div>
           <div className="contact-page__info-card">
             <MapPin size={24} weight="regular" />
             <div>
               <h3>Location</h3>
-              <p>Den Haag, Netherlands</p>
+              <p>{content.location}</p>
             </div>
           </div>
         </div>

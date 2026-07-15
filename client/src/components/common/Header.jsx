@@ -9,7 +9,7 @@ import './Header.css';
 const navLinks = [
   { label: 'Shop', path: '/shop' },
   { label: 'Gift Sets', path: '/gift-sets' },
-  { label: 'About the Maker', path: '/about-the-maker' },
+  { label: 'About', path: '/about-the-maker' },
   { label: 'Workshops', path: '/workshops' },
   { label: 'Contact', path: '/contact' },
 ];
@@ -42,7 +42,8 @@ function Header() {
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     if (!searchQuery.trim()) return;
-    navigate(`/shop?search=${encodeURIComponent(searchQuery.trim())}`);
+    // Site-wide search (products + CMS pages), not just the shop catalog
+    navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
     setSearchOpen(false);
     setSearchQuery('');
   };
@@ -88,7 +89,7 @@ function Header() {
               <input
                 ref={searchInputRef}
                 type="search"
-                placeholder="Search products…"
+                placeholder="Search the site…"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />

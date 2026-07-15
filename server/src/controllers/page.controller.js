@@ -54,6 +54,23 @@ const createPage = asyncHandler(async (req, res) => {
   res.status(201).json(page);
 });
 
+// @desc    Delete an entire page
+// @route   DELETE /api/pages/:slug
+// @access  Private
+const deletePage = asyncHandler(async (req, res) => {
+  // The storefront root renders the 'home' page, so it must always exist.
+  if (req.params.slug === 'home') {
+    res.status(400);
+    throw new Error('The home page cannot be deleted');
+  }
+  const page = await Page.findOneAndDelete({ slug: req.params.slug });
+  if (!page) {
+    res.status(404);
+    throw new Error('Page not found');
+  }
+  res.json({ message: 'Page deleted', slug: page.slug });
+});
+
 // @desc    Add a block to a page
 // @route   POST /api/pages/:slug/blocks
 // @access  Private
@@ -181,6 +198,7 @@ module.exports = {
   getPageForAdmin,
   listPages,
   createPage,
+  deletePage,
   addBlock,
   updateBlock,
   reorderBlocks,

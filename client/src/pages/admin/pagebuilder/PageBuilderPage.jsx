@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import {
   DndContext, closestCenter, PointerSensor, useSensor, useSensors,
 } from '@dnd-kit/core';
@@ -7,7 +7,7 @@ import {
   SortableContext, verticalListSortingStrategy, arrayMove,
 } from '@dnd-kit/sortable';
 import toast from 'react-hot-toast';
-import { Eye } from '@phosphor-icons/react';
+import { Eye, ArrowLeft } from '@phosphor-icons/react';
 import {
   getPageForAdmin, reorderBlocks, updateBlock, deleteBlock, addBlock, setPageStatus,
 } from '../../../api/pages.api';
@@ -106,14 +106,19 @@ function PageBuilderPage() {
 
   return (
     <div className="page-builder">
+      <Link to="/admin/pages" className="admin-page-header__back">
+        <ArrowLeft size={14} /> All pages
+      </Link>
       <div className="admin-page-header">
         <h1>{page.title} <span className={`status-pill status-pill--${page.status}`}>{page.status}</span></h1>
         <div className="admin-page-header__actions">
           <select onChange={(e) => e.target.value && handleAddBlock(e.target.value)} value="">
             <option value="">+ Add Block</option>
-            {Object.entries(blockMeta).map(([type, meta]) => (
-              <option key={type} value={type}>{meta.label}</option>
-            ))}
+            {Object.entries(blockMeta)
+              .filter(([, meta]) => !meta.hidden)
+              .map(([type, meta]) => (
+                <option key={type} value={type}>{meta.label}</option>
+              ))}
           </select>
           <button className="btn btn--secondary" onClick={() => setPreviewOpen(true)}>
             <Eye size={16} style={{ verticalAlign: '-2px', marginRight: 4 }} />

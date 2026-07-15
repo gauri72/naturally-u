@@ -21,6 +21,7 @@ const settingsRoutes = require('./routes/settings.routes');
 const newsletterRoutes = require('./routes/newsletter.routes');
 const archiveRoutes = require('./routes/archive.routes');
 const contactRoutes = require('./routes/contact.routes');
+const searchRoutes = require('./routes/search.routes');
 
 const app = express();
 
@@ -52,6 +53,7 @@ app.use('/api/settings', settingsRoutes); // global site settings (theme, nav, f
 app.use('/api/newsletter', newsletterRoutes);
 app.use('/api/archive', archiveRoutes);   // Media Gallery: archived legacy naturallyu.nl content
 app.use('/api/contact', contactRoutes);   // public contact form submissions
+app.use('/api/search', searchRoutes);     // site-wide search (products + CMS pages)
 
 app.use(notFound);
 app.use(errorHandler); // must be last

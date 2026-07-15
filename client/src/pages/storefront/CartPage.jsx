@@ -1,25 +1,45 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Minus, Plus, Trash, ShoppingBag } from '@phosphor-icons/react';
 import { useCart } from '../../context/CartContext.jsx';
+import { getPageBySlug } from '../../api/pages.api';
+import PageHeroBlock from '../../blocks/PageHeroBlock/PageHeroBlock.jsx';
+import renderInlineLinks from '../../utils/renderInlineLinks.jsx';
 import './CartPage.css';
 
+// Headings, empty-state copy and the shipping note come from the 'cart' CMS
+// page (/admin/pages/cart); cart state/actions stay fully functional.
 function CartPage() {
   const { items, removeItem, updateQuantity, subtotal } = useCart();
+  const [page, setPage] = useState(null);
+
+  useEffect(() => {
+    getPageBySlug('cart').then((res) => setPage(res.data)).catch(console.error);
+  }, []);
+
+  if (!page) return <p className="page-loading">Loading…</p>;
+
+  const hero = page.blocks.find((b) => b.blockType === 'pageHero')?.props || {};
+  const content = page.blocks.find((b) => b.blockType === 'cartPageContent')?.props || {};
 
   if (items.length === 0) {
     return (
       <section className="cart-page cart-page--empty">
-        <ShoppingBag size={48} weight="regular" />
-        <h1>Your cart is empty</h1>
-        <p>Looks like you haven&rsquo;t added anything yet.</p>
-        <Link to="/shop" className="btn btn--primary">Shop Now</Link>
+        <PageHeroBlock
+          variant="cart-empty"
+          icon="shopping-bag"
+          heading={content.emptyHeading}
+          subtext={content.emptySubtext}
+          ctaLabel={content.emptyCtaLabel}
+          ctaLink="/shop"
+        />
       </section>
     );
   }
 
   return (
     <section className="cart-page">
-      <h1>Your Cart</h1>
+      <h1>{hero.heading}</h1>
       <div className="cart-page__layout">
         <div className="cart-page__list">
           {items.map((item) => (
@@ -67,9 +87,7 @@ function CartPage() {
             <span>Subtotal</span>
             <span>€{subtotal.toFixed(2)}</span>
           </div>
-          <p className="cart-page__shipping-note">
-            Shipping calculated at checkout. See <Link to="/shipping-returns">Shipping &amp; Returns</Link>.
-          </p>
+          <p className="cart-page__shipping-note">{renderInlineLinks(content.shippingNoteText)}</p>
           <Link to="/checkout" className="btn btn--primary cart-page__checkout-btn">Checkout</Link>
         </div>
       </div>

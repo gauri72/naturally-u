@@ -57,10 +57,10 @@ function DashboardPage() {
 
       <h3 style={{ marginBottom: 'var(--space-md)' }}>Manage</h3>
       <div className="admin-grid">
-        <Link to="/admin/pages/home" className="admin-card admin-card--interactive">
+        <Link to="/admin/pages" className="admin-card admin-card--interactive">
           <SquaresFour size={28} color="var(--color-primary)" />
-          <h3 style={{ marginTop: 'var(--space-sm)' }}>Page Builder</h3>
-          <p style={{ color: 'var(--color-text-muted)', fontSize: '0.85rem' }}>Edit the homepage's blocks.</p>
+          <h3 style={{ marginTop: 'var(--space-sm)' }}>Pages</h3>
+          <p style={{ color: 'var(--color-text-muted)', fontSize: '0.85rem' }}>Build &amp; edit any page's blocks.</p>
         </Link>
         <Link to="/admin/media" className="admin-card admin-card--interactive">
           <Images size={28} color="var(--color-primary)" />

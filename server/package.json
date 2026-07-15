@@ -9,7 +9,9 @@
     "dev": "nodemon src/server.js",
     "seed": "node src/seed/seed.js",
     "seed:archive": "node src/seed/seedArchive.js",
-    "seed:products": "node src/seed/seedRealProducts.js"
+    "seed:products": "node src/seed/seedRealProducts.js",
+    "migrate:content": "node src/seed/migrateOldContent.js",
+    "seed:storefront-pages": "node src/seed/seedStorefrontPages.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

@@ -1,6 +1,8 @@
-import { useState } from 'react';
-import { Package, CheckCircle } from '@phosphor-icons/react';
+import { useEffect, useState } from 'react';
+import { CheckCircle } from '@phosphor-icons/react';
 import { getOrderById } from '../../api/orders.api';
+import { getPageBySlug } from '../../api/pages.api';
+import PageHeroBlock from '../../blocks/PageHeroBlock/PageHeroBlock.jsx';
 import './TrackOrderPage.css';
 
 const STATUS_LABEL = {
@@ -10,11 +12,18 @@ const STATUS_LABEL = {
   cancelled: 'Cancelled',
 };
 
+// Heading/intro copy comes from the 'track-order' CMS page
+// (/admin/pages/track-order); the order lookup itself stays fully functional.
 function TrackOrderPage() {
   const [orderId, setOrderId] = useState('');
   const [order, setOrder] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(null);
+
+  useEffect(() => {
+    getPageBySlug('track-order').then((res) => setPage(res.data)).catch(console.error);
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,12 +40,14 @@ function TrackOrderPage() {
     }
   };
 
+  if (!page) return <p className="page-loading">Loading…</p>;
+
+  const hero = page.blocks.find((b) => b.blockType === 'pageHero')?.props || {};
+
   return (
     <section className="shop-page track-order-page">
       <div className="track-order-page__card">
-        <Package size={36} weight="regular" className="track-order-page__icon" />
-        <h1>Track Your Order</h1>
-        <p>Enter the order ID from your confirmation email.</p>
+        <PageHeroBlock variant="track-order" icon="package" heading={hero.heading} subtext={hero.subtext} />
         <form onSubmit={handleSubmit} className="track-order-page__form">
           <input
             type="text"

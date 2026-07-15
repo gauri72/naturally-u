@@ -168,7 +168,11 @@ const deleteSectionImage = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error('Image not found');
   }
-  await deleteObject(image.key);
+  // Seeded archive images reference local files bundled with the frontend
+  // (key "local:<path>", see seedArchive.js) - nothing to delete in S3.
+  if (!image.key.startsWith('local:')) {
+    await deleteObject(image.key);
+  }
   section.images.pull(req.params.imageId);
   await page.save();
   res.json(page);

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { MagnifyingGlass } from '@phosphor-icons/react';
 import { getProducts } from '../../api/products.api';
+import { getPageBySlug } from '../../api/pages.api';
 import ProductCard from '../../components/product/ProductCard.jsx';
 import './ShopPage.css';
 
@@ -9,9 +10,13 @@ const TITLES_BY_TAG = {
   bestseller: 'Best Sellers',
 };
 
+// The page title is computed from the active filter/sort/search, so it stays
+// code-driven; the static tax note comes from the 'shop' CMS page
+// (/admin/pages/shop).
 function ShopPage() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [pageContent, setPageContent] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const tag = searchParams.get('tag') || '';
   const category = searchParams.get('category') || '';
@@ -30,6 +35,12 @@ function ShopPage() {
       .finally(() => setLoading(false));
   }, [tag, category, search]);
 
+  useEffect(() => {
+    getPageBySlug('shop')
+      .then((res) => setPageContent(res.data.blocks.find((b) => b.blockType === 'shopPageContent')?.props || {}))
+      .catch(console.error);
+  }, []);
+
   const sortedProducts = useMemo(() => {
     if (sort === 'new') {
       return [...products].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -47,7 +58,10 @@ function ShopPage() {
   return (
     <section className="shop-page">
       <div className="shop-page__header">
-        <h1>{title}</h1>
+        <div>
+          <h1>{title}</h1>
+          <p className="shop-page__tax-note">{pageContent?.taxNote}</p>
+        </div>
         <select
           className="shop-page__sort"
           value={sort}

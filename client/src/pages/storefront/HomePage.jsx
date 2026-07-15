@@ -22,7 +22,13 @@ function HomePage() {
   if (error) return <p className="page-error">{error}</p>;
   if (!page) return <p className="page-loading">Loading…</p>;
 
-  return <PageRenderer blocks={page.blocks} />;
+  // Wrapper applies one consistent vertical rhythm across all home sections
+  // (see HomePage.css) regardless of each block's own margins.
+  return (
+    <div className="home-blocks">
+      <PageRenderer blocks={page.blocks} />
+    </div>
+  );
 }
 
 export default HomePage;

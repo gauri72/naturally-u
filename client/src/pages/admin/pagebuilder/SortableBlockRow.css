@@ -5,15 +5,83 @@
   background: var(--color-white);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  padding: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
   margin-bottom: var(--space-sm);
-  transition: border-color 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.block-row:hover { border-color: var(--color-accent-dark); }
+.block-row:hover {
+  border-color: var(--color-accent-dark);
+  box-shadow: var(--shadow-card);
+}
 
-.block-row--hidden { opacity: 0.5; }
+.block-row--hidden { opacity: 0.55; }
 
 .block-row__handle { cursor: grab; flex-shrink: 0; }
-.block-row__label { flex: 1; font-weight: 600; font-family: var(--font-body); }
+
+.block-row__icon {
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--color-primary) 10%, var(--color-white));
+  color: var(--color-primary);
+}
+
+.block-row__text { flex: 1; min-width: 0; }
+
+.block-row__title-line {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.block-row__label {
+  font-weight: 600;
+  font-family: var(--font-body);
+  color: var(--color-text);
+}
+
+.block-row__chip {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.66rem;
+  line-height: 1;
+  color: var(--color-text-muted);
+  background: color-mix(in srgb, var(--color-background) 70%, var(--color-white));
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  padding: 3px 8px;
+}
+
+.block-row__chip--variant {
+  color: var(--color-primary);
+  border-color: color-mix(in srgb, var(--color-primary) 30%, var(--color-border));
+  background: color-mix(in srgb, var(--color-primary) 7%, var(--color-white));
+}
+
+.block-row__hidden-chip {
+  font-size: 0.66rem;
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-brown);
+  background: color-mix(in srgb, var(--color-accent) 30%, var(--color-white));
+  border-radius: var(--radius-full);
+  padding: 3px 8px;
+}
+
+.block-row__summary {
+  margin-top: 3px;
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .block-row__actions { display: flex; gap: var(--space-xs); flex-shrink: 0; }

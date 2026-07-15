@@ -18,9 +18,12 @@ import NotFoundPage from '../pages/storefront/NotFoundPage.jsx';
 import AboutMakerPage from '../pages/storefront/AboutMakerPage.jsx';
 import WorkshopsPage from '../pages/storefront/WorkshopsPage.jsx';
 import ContactPage from '../pages/storefront/ContactPage.jsx';
+import SearchPage from '../pages/storefront/SearchPage.jsx';
+import CmsPage from '../pages/storefront/CmsPage.jsx';
 
 import LoginPage from '../pages/admin/LoginPage.jsx';
 import DashboardPage from '../pages/admin/dashboard/DashboardPage.jsx';
+import PagesListPage from '../pages/admin/pagebuilder/PagesListPage.jsx';
 import PageBuilderPage from '../pages/admin/pagebuilder/PageBuilderPage.jsx';
 import ProductsListPage from '../pages/admin/products/ProductsListPage.jsx';
 import ProductFormPage from '../pages/admin/products/ProductFormPage.jsx';
@@ -51,6 +54,11 @@ function AppRoutes() {
         <Route path="/about-the-maker" element={<AboutMakerPage />} />
         <Route path="/workshops" element={<WorkshopsPage />} />
         <Route path="/contact" element={<ContactPage />} />
+        <Route path="/search" element={<SearchPage />} />
+        {/* Generic CMS pages by slug (e.g. /about-2); static routes above
+            rank higher in react-router matching, and /admin is a separate
+            top-level static route, so neither is shadowed. */}
+        <Route path="/:slug" element={<CmsPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
 
@@ -65,6 +73,7 @@ function AppRoutes() {
         }
       >
         <Route index element={<DashboardPage />} />
+        <Route path="pages" element={<PagesListPage />} />
         <Route path="pages/:slug" element={<PageBuilderPage />} />
         <Route path="products" element={<ProductsListPage />} />
         <Route path="products/new" element={<ProductFormPage />} />

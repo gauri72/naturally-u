@@ -1,58 +1,30 @@
-import { useState } from 'react';
-import { CaretDown } from '@phosphor-icons/react';
+import { useEffect, useState } from 'react';
+import { getPageBySlug } from '../../api/pages.api';
+import PageRenderer from '../../blocks/registry/PageRenderer.jsx';
 import './FaqPage.css';
 
-const faqs = [
-  {
-    question: 'What are your products made of?',
-    answer: 'Every bar is handmade in small batches using natural oils, butters, and botanicals — no synthetic detergents or artificial fillers.',
-  },
-  {
-    question: 'How long does shipping take?',
-    answer: 'Orders are handcrafted to order, so please allow a few extra days for production before your package ships.',
-  },
-  {
-    question: 'What does shipping cost?',
-    answer: 'Shipping ranges from €6.75–€12.95 depending on your region, and orders over €50–€100 (region-dependent) ship free.',
-  },
-  {
-    question: 'Can I return a product?',
-    answer: 'Yes — returns are accepted within 30 days of delivery. See our Shipping & Returns page for the full policy.',
-  },
-  {
-    question: 'Are your products tested on skin before selling?',
-    answer: 'We recommend a patch test before first use of any product, since everyone\'s skin reacts a little differently to natural ingredients.',
-  },
-  {
-    question: 'Do you offer workshops?',
-    answer: 'Yes — we run signature soap-making workshops for groups and birthday parties. Visit our Workshops page to get in touch.',
-  },
-];
-
+// CMS-driven: fetch the 'faq' Page document (ordered blocks) and hand it to
+// PageRenderer. To edit this page's content, use /admin/pages/faq - no code
+// changes needed.
 function FaqPage() {
-  const [openIndex, setOpenIndex] = useState(0);
+  const [page, setPage] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    getPageBySlug('faq')
+      .then((res) => setPage(res.data))
+      .catch((err) => {
+        console.error('[FaqPage] failed to load page:', err);
+        setError('Unable to load page content.');
+      });
+  }, []);
+
+  if (error) return <p className="page-error">{error}</p>;
+  if (!page) return <p className="page-loading">Loading…</p>;
 
   return (
     <section className="shop-page faq-page">
-      <h1>Frequently Asked Questions</h1>
-      <div className="faq-page__list">
-        {faqs.map((faq, i) => (
-          <div key={faq.question} className="faq-page__item">
-            <button
-              type="button"
-              className="faq-page__question"
-              onClick={() => setOpenIndex(openIndex === i ? null : i)}
-              aria-expanded={openIndex === i}
-            >
-              {faq.question}
-              <CaretDown weight="bold" className={`faq-page__caret ${openIndex === i ? 'is-open' : ''}`} />
-            </button>
-            <div className={`faq-page__answer ${openIndex === i ? 'is-open' : ''}`}>
-              <p>{faq.answer}</p>
-            </div>
-          </div>
-        ))}
-      </div>
+      <PageRenderer blocks={page.blocks} />
     </section>
   );
 }

@@ -31,9 +31,9 @@ function AdminLayout() {
             <House size={20} />
             <span>Dashboard</span>
           </NavLink>
-          <NavLink to="/admin/pages/home" className="admin-layout__nav-link">
+          <NavLink to="/admin/pages" className="admin-layout__nav-link">
             <SquaresFour size={20} />
-            <span>Page Builder</span>
+            <span>Pages</span>
           </NavLink>
           <NavLink to="/admin/products" className="admin-layout__nav-link">
             <Package size={20} />

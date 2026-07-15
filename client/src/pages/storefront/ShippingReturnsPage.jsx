@@ -1,29 +1,30 @@
-import { Truck, ArrowUUpLeft } from '@phosphor-icons/react';
+import { useEffect, useState } from 'react';
+import { getPageBySlug } from '../../api/pages.api';
+import PageRenderer from '../../blocks/registry/PageRenderer.jsx';
 import './ShippingReturnsPage.css';
 
+// CMS-driven: fetch the 'shipping-returns' Page document (ordered blocks)
+// and hand it to PageRenderer. To edit this page's content, use
+// /admin/pages/shipping-returns - no code changes needed.
 function ShippingReturnsPage() {
+  const [page, setPage] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    getPageBySlug('shipping-returns')
+      .then((res) => setPage(res.data))
+      .catch((err) => {
+        console.error('[ShippingReturnsPage] failed to load page:', err);
+        setError('Unable to load page content.');
+      });
+  }, []);
+
+  if (error) return <p className="page-error">{error}</p>;
+  if (!page) return <p className="page-loading">Loading…</p>;
+
   return (
     <section className="shop-page shipping-returns-page">
-      <h1>Shipping &amp; Returns</h1>
-      <div className="shipping-returns-page__grid">
-        <div className="shipping-returns-page__card">
-          <Truck size={28} weight="regular" />
-          <h3>Shipping</h3>
-          <p>
-            We ship worldwide. Orders are handcrafted to order, so please allow a few extra days for production
-            before your package ships. Shipping costs range from €6.75 to €12.95 depending on your region, and
-            orders over €50&ndash;€100 (region-dependent) ship free.
-          </p>
-        </div>
-        <div className="shipping-returns-page__card">
-          <ArrowUUpLeft size={28} weight="regular" />
-          <h3>Returns</h3>
-          <p>
-            If something arrives damaged or isn&rsquo;t right, contact us and we&rsquo;ll make it right. Returns are
-            accepted within 30 days of delivery.
-          </p>
-        </div>
-      </div>
+      <PageRenderer blocks={page.blocks} />
     </section>
   );
 }
