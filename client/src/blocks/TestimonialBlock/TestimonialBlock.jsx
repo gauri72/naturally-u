@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Leaf } from '@phosphor-icons/react';
+import { useLang } from '../../i18n/LanguageContext.jsx';
 import fallbackPhoto from '../../assets/images/home/testimonials-image.png';
 import './TestimonialBlock.css';
 
@@ -14,6 +15,7 @@ const AUTOPLAY_MS = 4000;
 // Author/quote text should use proper typographic apostrophes (’)
 // rather than straight quotes ('), matching the reference design.
 function TestimonialBlock({ testimonials = [] }) {
+  const { t: tr } = useLang();
   const [index, setIndex] = useState(0);
 
   // Auto-advance every 4s. Keyed on `index` so the timer resets after each
@@ -36,7 +38,7 @@ function TestimonialBlock({ testimonials = [] }) {
         <div className="testimonial-block__content">
           <span className="testimonial-block__quote-mark" aria-hidden="true">“</span>
           <div className="testimonial-block__text-group">
-            <blockquote>“{t.quote}”</blockquote>
+            <blockquote>“{tr(t.quote)}”</blockquote>
             <p className="testimonial-block__author">— {t.author}</p>
           </div>
           {testimonials.length > 1 && (

@@ -11,6 +11,7 @@ import {
 } from '../../../api/archive.api';
 import ImageUploadGrid from '../../../components/admin/ImageUploadGrid';
 import './ArchiveSectionEditorPage.css';
+import { useLang } from '../../../i18n/LanguageContext.jsx';
 
 // Labels for known meta keys; anything else gets a prettified key name.
 const META_LABELS = {
@@ -30,6 +31,7 @@ const metaLabel = (key) =>
   META_LABELS[key] || key.replace(/([A-Z])/g, ' $1').replace(/^./, (c) => c.toUpperCase());
 
 function ArchiveSectionEditorPage() {
+  const { t } = useLang();
   const { pageSlug, sectionId } = useParams();
   const [page, setPage] = useState(null);
 
@@ -37,12 +39,12 @@ function ArchiveSectionEditorPage() {
 
   useEffect(() => { load(); }, [pageSlug, sectionId]);
 
-  if (!page) return <p>Loading...</p>;
+  if (!page) return <p>{t('Loading...')}</p>;
 
   const sections = [...page.sections].sort((a, b) => a.order - b.order);
   const index = sections.findIndex((s) => s._id === sectionId);
   const section = sections[index];
-  if (!section) return <p>Section not found.</p>;
+  if (!section) return <p>{t('Section not found.')}</p>;
 
   const prev = index > 0 ? sections[index - 1] : null;
   const next = index < sections.length - 1 ? sections[index + 1] : null;
@@ -50,12 +52,12 @@ function ArchiveSectionEditorPage() {
   const handleBlurField = async (field, value) => {
     if (section[field] === value) return;
     await updateSection(pageSlug, sectionId, { [field]: value });
-    toast.success('Saved');
+    toast.success(t('Saved'));
   };
 
   const handleMetaChange = async (key, value) => {
     await updateSection(pageSlug, sectionId, { meta: { ...section.meta, [key]: value } });
-    toast.success('Saved');
+    toast.success(t('Saved'));
     load();
   };
 
@@ -69,13 +71,13 @@ function ArchiveSectionEditorPage() {
         </Link>
         <div className="archive-section-editor__nav">
           <span className="archive-section-editor__position">
-            Section {index + 1} of {sections.length}
+            {t('Section')} {index + 1} / {sections.length}
           </span>
           {prev ? (
             <Link
               to={`/admin/media-gallery/archive/${pageSlug}/sections/${prev._id}`}
               className="icon-btn"
-              title={`Previous: ${prev.name}`}
+              title={`${t('Previous')}: ${prev.name}`}
             >
               <CaretLeft size={18} weight="bold" />
             </Link>
@@ -86,7 +88,7 @@ function ArchiveSectionEditorPage() {
             <Link
               to={`/admin/media-gallery/archive/${pageSlug}/sections/${next._id}`}
               className="icon-btn"
-              title={`Next: ${next.name}`}
+              title={`${t('Next')}: ${next.name}`}
             >
               <CaretRight size={18} weight="bold" />
             </Link>
@@ -97,7 +99,7 @@ function ArchiveSectionEditorPage() {
       </div>
 
       <div className="admin-field" style={{ marginBottom: 'var(--space-lg)' }}>
-        <label>Section name</label>
+        <label>{t('Section name')}</label>
         <input
           key={`name-${sectionId}`}
           defaultValue={section.name}
@@ -107,7 +109,7 @@ function ArchiveSectionEditorPage() {
       </div>
 
       <div className="admin-field" style={{ marginBottom: 'var(--space-lg)' }}>
-        <label>Content</label>
+        <label>{t('Content')}</label>
         <textarea
           key={`content-${sectionId}`}
           defaultValue={section.content}
@@ -118,11 +120,11 @@ function ArchiveSectionEditorPage() {
 
       {metaEntries.length > 0 && (
         <>
-          <h3 style={{ marginBottom: 'var(--space-sm)' }}>Details</h3>
+          <h3 style={{ marginBottom: 'var(--space-sm)' }}>{t('Details')}</h3>
           <div className="archive-section-editor__meta-row">
             {metaEntries.map(([key, value]) => (
               <div className="admin-field" key={`${sectionId}-${key}`} style={{ minWidth: 160, maxWidth: 360 }}>
-                <label>{metaLabel(key)}</label>
+                <label>{t(metaLabel(key))}</label>
                 {typeof value === 'boolean' ? (
                   <input
                     type="checkbox"
@@ -144,7 +146,7 @@ function ArchiveSectionEditorPage() {
         </>
       )}
 
-      <h3 style={{ marginBottom: 'var(--space-sm)' }}>Images</h3>
+      <h3 style={{ marginBottom: 'var(--space-sm)' }}>{t('Images')}</h3>
       <ImageUploadGrid
         images={[...section.images].sort((a, b) => a.order - b.order)}
         onUpload={async (file) => {

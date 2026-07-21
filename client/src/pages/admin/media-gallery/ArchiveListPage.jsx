@@ -6,6 +6,7 @@ import {
 } from '@phosphor-icons/react';
 import { listArchivePages } from '../../../api/archive.api';
 import './ArchiveListPage.css';
+import { useLang } from '../../../i18n/LanguageContext.jsx';
 
 // Recognizable icon per archived legacy page
 const PAGE_ICONS = {
@@ -18,6 +19,7 @@ const PAGE_ICONS = {
 };
 
 function ArchiveListPage() {
+  const { t } = useLang();
   const [pages, setPages] = useState(null);
   const navigate = useNavigate();
 
@@ -25,7 +27,7 @@ function ArchiveListPage() {
     listArchivePages().then((res) => setPages(res.data));
   }, []);
 
-  if (!pages) return <p>Loading...</p>;
+  if (!pages) return <p>{t('Loading...')}</p>;
 
   const totals = pages.reduce(
     (acc, p) => ({ sections: acc.sections + p.sectionCount, images: acc.images + p.imageCount }),
@@ -35,22 +37,21 @@ function ArchiveListPage() {
   return (
     <div>
       <div className="admin-page-header">
-        <h1>Archive</h1>
+        <h1>{t('Archive')}</h1>
       </div>
       <p className="archive-list__intro">
-        The complete content of the legacy naturallyu.nl website, preserved verbatim page by page —
-        every section of text, every photo, and the site-wide elements (navigation, logo, footer, social links).
+        {t('The complete content of the legacy naturallyu.nl website, preserved verbatim page by page — every section of text, every photo, and the site-wide elements (navigation, logo, footer, social links).')}
       </p>
 
       <div className="archive-list__stats">
         <span className="archive-list__stat">
-          <FileText size={16} weight="regular" /> {pages.length} pages
+          <FileText size={16} weight="regular" /> {pages.length} {t('pages')}
         </span>
         <span className="archive-list__stat">
-          <Rows size={16} weight="regular" /> {totals.sections} sections
+          <Rows size={16} weight="regular" /> {totals.sections} {t('sections')}
         </span>
         <span className="archive-list__stat">
-          <Images size={16} weight="regular" /> {totals.images} images
+          <Images size={16} weight="regular" /> {totals.images} {t('images')}
         </span>
       </div>
 
@@ -78,8 +79,8 @@ function ArchiveListPage() {
                 </div>
               </div>
               <div className="archive-list__card-counts">
-                <span className="badge badge--neutral">{p.sectionCount} section{p.sectionCount === 1 ? '' : 's'}</span>
-                <span className="badge badge--neutral">{p.imageCount} image{p.imageCount === 1 ? '' : 's'}</span>
+                <span className="badge badge--neutral">{p.sectionCount} {p.sectionCount === 1 ? t('section') : t('sections')}</span>
+                <span className="badge badge--neutral">{p.imageCount} {p.imageCount === 1 ? t('image') : t('images')}</span>
               </div>
               <a
                 href={p.sourceUrl}

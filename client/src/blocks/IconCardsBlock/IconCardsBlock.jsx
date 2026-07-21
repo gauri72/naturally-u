@@ -2,6 +2,7 @@ import { HandHeart, Leaf, Sparkle, UsersThree, Cake, Truck, ArrowUUpLeft } from 
 import '../../pages/storefront/AboutMakerPage.css';
 import '../../pages/storefront/WorkshopsPage.css';
 import '../../pages/storefront/ShippingReturnsPage.css';
+import { useLang } from '../../i18n/LanguageContext.jsx';
 
 const ICONS = {
   handheart: HandHeart,
@@ -23,6 +24,7 @@ const VARIANTS = {
 // Icon+title+text card grid, reused for the About page's "values" grid,
 // Workshops' 3-card grid, and Shipping & Returns' 2-card grid.
 function IconCardsBlock({ variant = 'workshops', items = [] }) {
+  const { t } = useLang();
   const { wrap, card, size } = VARIANTS[variant] || VARIANTS.workshops;
   return (
     <div className={wrap}>
@@ -31,8 +33,8 @@ function IconCardsBlock({ variant = 'workshops', items = [] }) {
         return (
           <div className={card} key={item.title || i}>
             <Icon size={size} weight="regular" />
-            <h3>{item.title}</h3>
-            <p>{item.text}</p>
+            <h3>{t(item.title)}</h3>
+            <p>{t(item.text)}</p>
           </div>
         );
       })}

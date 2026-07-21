@@ -16,6 +16,7 @@ import SortableBlockRow from './SortableBlockRow.jsx';
 import BlockEditorPanel from './BlockEditorPanel.jsx';
 import PagePreviewModal from './PagePreviewModal.jsx';
 import './PageBuilderPage.css';
+import { useLang } from '../../../i18n/LanguageContext.jsx';
 
 /**
  * Admin Page Builder
@@ -32,6 +33,7 @@ import './PageBuilderPage.css';
  * edit via admin panel."
  */
 function PageBuilderPage() {
+  const { t } = useLang();
   const { slug } = useParams();
   const [page, setPage] = useState(null);
   const [editingBlock, setEditingBlock] = useState(null);
@@ -40,7 +42,7 @@ function PageBuilderPage() {
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
 
   const loadPage = () => {
-    getPageForAdmin(slug).then((res) => setPage(res.data)).catch(() => toast.error('Failed to load page'));
+    getPageForAdmin(slug).then((res) => setPage(res.data)).catch(() => toast.error(t('Failed to load page')));
   };
 
   useEffect(loadPage, [slug]);
@@ -58,7 +60,7 @@ function PageBuilderPage() {
     try {
       await reorderBlocks(slug, newBlocks.map((b) => b._id));
     } catch {
-      toast.error('Failed to save new order');
+      toast.error(t('Failed to save new order'));
       loadPage(); // revert on failure
     }
   };
@@ -68,17 +70,17 @@ function PageBuilderPage() {
       await updateBlock(slug, block._id, { visible: !block.visible });
       loadPage();
     } catch {
-      toast.error('Failed to update visibility');
+      toast.error(t('Failed to update visibility'));
     }
   };
 
   const handleDelete = async (block) => {
-    if (!window.confirm(`Delete "${blockMeta[block.blockType]?.label || block.blockType}" block?`)) return;
+    if (!window.confirm(`${t('Delete this block?')} (${t(blockMeta[block.blockType]?.label || block.blockType)})`)) return;
     try {
       await deleteBlock(slug, block._id);
       loadPage();
     } catch {
-      toast.error('Failed to delete block');
+      toast.error(t('Failed to delete block'));
     }
   };
 
@@ -87,7 +89,7 @@ function PageBuilderPage() {
       await addBlock(slug, { blockType, props: blockMeta[blockType].defaultProps });
       loadPage();
     } catch {
-      toast.error('Failed to add block');
+      toast.error(t('Failed to add block'));
     }
   };
 
@@ -95,37 +97,37 @@ function PageBuilderPage() {
     const nextStatus = page.status === 'published' ? 'draft' : 'published';
     try {
       await setPageStatus(slug, nextStatus);
-      toast.success(`Page ${nextStatus}`);
+      toast.success(`${t('Page')} ${t(nextStatus)}`);
       loadPage();
     } catch {
-      toast.error('Failed to update status');
+      toast.error(t('Failed to update status'));
     }
   };
 
-  if (!page) return <p>Loading…</p>;
+  if (!page) return <p>{t('Loading…')}</p>;
 
   return (
     <div className="page-builder">
       <Link to="/admin/pages" className="admin-page-header__back">
-        <ArrowLeft size={14} /> All pages
+        <ArrowLeft size={14} /> {t('All pages')}
       </Link>
       <div className="admin-page-header">
-        <h1>{page.title} <span className={`status-pill status-pill--${page.status}`}>{page.status}</span></h1>
+        <h1>{page.title} <span className={`status-pill status-pill--${page.status}`}>{t(page.status)}</span></h1>
         <div className="admin-page-header__actions">
           <select onChange={(e) => e.target.value && handleAddBlock(e.target.value)} value="">
-            <option value="">+ Add Block</option>
+            <option value="">{t('+ Add Block')}</option>
             {Object.entries(blockMeta)
               .filter(([, meta]) => !meta.hidden)
               .map(([type, meta]) => (
-                <option key={type} value={type}>{meta.label}</option>
+                <option key={type} value={type}>{t(meta.label)}</option>
               ))}
           </select>
           <button className="btn btn--secondary" onClick={() => setPreviewOpen(true)}>
             <Eye size={16} style={{ verticalAlign: '-2px', marginRight: 4 }} />
-            Preview
+            {t('Preview')}
           </button>
           <button className="btn btn--primary" onClick={handlePublishToggle}>
-            {page.status === 'published' ? 'Unpublish' : 'Publish'}
+            {page.status === 'published' ? t('Unpublish') : t('Publish')}
           </button>
         </div>
       </div>

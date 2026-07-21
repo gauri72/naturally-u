@@ -4,6 +4,7 @@ import { Plus, PencilSimple, Trash, ArrowSquareOut, X } from '@phosphor-icons/re
 import toast from 'react-hot-toast';
 import { listPages, createPage, deletePage } from '../../../api/pages.api';
 import './BlockEditorPanel.css'; // reuse the modal overlay/panel styling
+import { useLang } from '../../../i18n/LanguageContext.jsx';
 
 // Storefront path for a page slug ('home' is the site root).
 const storefrontPath = (slug) => (slug === 'home' ? '/' : `/${slug}`);
@@ -17,6 +18,7 @@ const slugify = (str) =>
     .replace(/^-+|-+$/g, '');
 
 function CreatePageModal({ onClose, onCreated }) {
+  const { t } = useLang();
   const [title, setTitle] = useState('');
   const [slug, setSlug] = useState('');
   const [slugTouched, setSlugTouched] = useState(false);
@@ -33,17 +35,17 @@ function CreatePageModal({ onClose, onCreated }) {
     e.preventDefault();
     const cleanSlug = slugify(slug);
     if (!title.trim() || !cleanSlug) {
-      toast.error('Title and slug are required');
+      toast.error(t('Title and slug are required'));
       return;
     }
     setSubmitting(true);
     try {
       await createPage({ slug: cleanSlug, title: title.trim() });
-      toast.success('Page created');
+      toast.success(t('Page created'));
       onCreated();
       navigate(`/admin/pages/${cleanSlug}`); // jump straight into the builder
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to create page');
+      toast.error(err.response?.data?.message || t('Failed to create page'));
       setSubmitting(false);
     }
   };
@@ -52,22 +54,22 @@ function CreatePageModal({ onClose, onCreated }) {
     <div className="block-editor-panel__overlay" onClick={onClose}>
       <div className="block-editor-panel" onClick={(e) => e.stopPropagation()}>
         <div className="admin-page-header" style={{ marginBottom: 'var(--space-md)' }}>
-          <h3>New Page</h3>
-          <button className="icon-btn" onClick={onClose} aria-label="Close"><X size={18} /></button>
+          <h3>{t('New Page')}</h3>
+          <button className="icon-btn" onClick={onClose} aria-label={t('Close')}><X size={18} /></button>
         </div>
         <form className="admin-form" onSubmit={handleSubmit} style={{ maxWidth: '100%' }}>
           <div className="admin-field">
-            <label htmlFor="new-page-title">Title</label>
+            <label htmlFor="new-page-title">{t('Title')}</label>
             <input
               id="new-page-title"
               value={title}
               onChange={handleTitleChange}
-              placeholder="e.g. Our Ingredients"
+              placeholder={t('e.g. Our Ingredients')}
               autoFocus
             />
           </div>
           <div className="admin-field">
-            <label htmlFor="new-page-slug">Slug (URL)</label>
+            <label htmlFor="new-page-slug">{t('Slug (URL)')}</label>
             <input
               id="new-page-slug"
               value={slug}
@@ -75,13 +77,13 @@ function CreatePageModal({ onClose, onCreated }) {
               placeholder="our-ingredients"
             />
             <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>
-              Published at <code>{storefrontPath(slugify(slug) || 'slug')}</code>
+              {t('Published at')} <code>{storefrontPath(slugify(slug) || 'slug')}</code>
             </span>
           </div>
           <div className="block-editor-panel__actions">
-            <button type="button" onClick={onClose}>Cancel</button>
+            <button type="button" onClick={onClose}>{t('Cancel')}</button>
             <button type="submit" className="btn btn--primary" disabled={submitting}>
-              {submitting ? 'Creating…' : 'Create & Edit'}
+              {submitting ? t('Creating…') : t('Create & Edit')}
             </button>
           </div>
         </form>
@@ -91,6 +93,7 @@ function CreatePageModal({ onClose, onCreated }) {
 }
 
 function PagesListPage() {
+  const { t } = useLang();
   const [pages, setPages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
@@ -99,7 +102,7 @@ function PagesListPage() {
     setLoading(true);
     listPages()
       .then((res) => setPages(res.data))
-      .catch(() => toast.error('Failed to load pages'))
+      .catch(() => toast.error(t('Failed to load pages')))
       .finally(() => setLoading(false));
   };
 
@@ -107,40 +110,39 @@ function PagesListPage() {
 
   const handleDelete = async (page) => {
     if (page.slug === 'home') {
-      toast.error('The home page cannot be deleted');
+      toast.error(t('The home page cannot be deleted'));
       return;
     }
-    if (!window.confirm(`Delete the "${page.title}" page? This removes all its blocks and cannot be undone.`)) return;
+    if (!window.confirm(`${t('Delete this page? This removes all its blocks and cannot be undone.')} (${page.title})`)) return;
     try {
       await deletePage(page.slug);
-      toast.success('Page deleted');
+      toast.success(t('Page deleted'));
       load();
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to delete page');
+      toast.error(err.response?.data?.message || t('Failed to delete page'));
     }
   };
 
   return (
     <div>
       <div className="admin-page-header">
-        <h1>Pages</h1>
+        <h1>{t('Pages')}</h1>
         <div className="admin-page-header__actions">
           <button className="btn btn--primary" onClick={() => setCreating(true)}>
             <Plus size={16} weight="bold" style={{ verticalAlign: '-2px', marginRight: 4 }} />
-            New Page
+            {t('New Page')}
           </button>
         </div>
       </div>
 
       <p style={{ color: 'var(--color-text-muted)', marginBottom: 'var(--space-lg)', maxWidth: 620 }}>
-        Every page here is built from blocks — drag to reorder, edit content, and publish, just like the
-        homepage. Create a new page and it becomes reachable on the storefront at its slug once published.
+        {t('Every page here is built from blocks — drag to reorder, edit content, and publish, just like the homepage. Create a new page and it becomes reachable on the storefront at its slug once published.')}
       </p>
 
       <div className="admin-table-wrap">
         <table className="admin-table">
           <thead>
-            <tr><th>Title</th><th>Slug</th><th>Status</th><th>Last updated</th><th></th></tr>
+            <tr><th>{t('Title')}</th><th>{t('Slug')}</th><th>{t('Status')}</th><th>{t('Last updated')}</th><th></th></tr>
           </thead>
           <tbody>
             {pages.map((page) => (
@@ -156,7 +158,7 @@ function PagesListPage() {
                 <td><code>{page.slug}</code></td>
                 <td>
                   <span className={`badge ${page.status === 'published' ? 'badge--success' : 'badge--neutral'}`}>
-                    {page.status}
+                    {t(page.status)}
                   </span>
                 </td>
                 <td style={{ color: 'var(--color-text-muted)', fontSize: '0.82rem' }}>
@@ -164,7 +166,7 @@ function PagesListPage() {
                 </td>
                 <td>
                   <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                    <Link to={`/admin/pages/${page.slug}`} className="icon-btn" title="Edit in page builder">
+                    <Link to={`/admin/pages/${page.slug}`} className="icon-btn" title={t('Edit in page builder')}>
                       <PencilSimple size={18} />
                     </Link>
                     {page.status === 'published' && (
@@ -173,7 +175,7 @@ function PagesListPage() {
                         target="_blank"
                         rel="noreferrer"
                         className="icon-btn"
-                        title="View live page"
+                        title={t('View live page')}
                       >
                         <ArrowSquareOut size={18} />
                       </a>
@@ -181,7 +183,7 @@ function PagesListPage() {
                     <button
                       onClick={() => handleDelete(page)}
                       className="icon-btn icon-btn--danger"
-                      title={page.slug === 'home' ? 'The home page cannot be deleted' : 'Delete page'}
+                      title={page.slug === 'home' ? t('The home page cannot be deleted') : t('Delete page')}
                       disabled={page.slug === 'home'}
                       style={page.slug === 'home' ? { opacity: 0.35, cursor: 'not-allowed' } : undefined}
                     >
@@ -195,7 +197,7 @@ function PagesListPage() {
         </table>
         {!loading && pages.length === 0 && (
           <div className="admin-empty-state">
-            <p>No pages yet. Create your first one.</p>
+            <p>{t('No pages yet. Create your first one.')}</p>
           </div>
         )}
       </div>

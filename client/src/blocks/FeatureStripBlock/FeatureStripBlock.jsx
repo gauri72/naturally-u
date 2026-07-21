@@ -1,4 +1,5 @@
 import { ShieldCheck, Gift, Recycle, Butterfly } from '@phosphor-icons/react';
+import { useLang } from '../../i18n/LanguageContext.jsx';
 import './FeatureStripBlock.css';
 
 const iconProps = { size: 40, weight: 'regular' };
@@ -13,6 +14,7 @@ const icons = [
 // Icons are fixed brand creative (matching HeroBlock's badge icons),
 // mapped by position rather than sourced from CMS data.
 function FeatureStripBlock({ items = [] }) {
+  const { t } = useLang();
   return (
     <section className="feature-strip">
       <div className="feature-strip__inner">
@@ -24,8 +26,8 @@ function FeatureStripBlock({ items = [] }) {
                 <Icon />
               </span>
               <div className="feature-strip__text">
-                <h4>{item.title}</h4>
-                <p>{item.subtitle}</p>
+                <h4>{t(item.title)}</h4>
+                <p>{t(item.subtitle)}</p>
               </div>
             </div>
           );

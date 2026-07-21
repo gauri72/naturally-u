@@ -4,6 +4,7 @@ import {
   FacebookLogo, InstagramLogo, PinterestLogo, EnvelopeSimple, Phone, MapPin, CaretDown,
 } from '@phosphor-icons/react';
 import { getSettings } from '../../api/settings.api';
+import { useLang } from '../../i18n/LanguageContext.jsx';
 import footerStamp from '../../assets/images/home/footer-stamp.png';
 import './FooterBlock.css';
 
@@ -43,6 +44,7 @@ function FooterSection({ title, sectionKey, openSection, onToggle, children }) {
 // "Made with love / Handcrafted" stamp is fixed brand creative (same
 // approach as Hero/GiftBanner/Testimonial) and only shows on desktop.
 function FooterBlock() {
+  const { t } = useLang();
   const [settings, setSettings] = useState(null);
   const [openSection, setOpenSection] = useState(null);
 
@@ -61,7 +63,7 @@ function FooterBlock() {
         <div className="footer-block__col footer-block__col--brand">
           <div className="footer-block__brand-text">
             <h4>{settings.siteName}</h4>
-            <p>Handmade soaps &amp; skin care crafted with nature&rsquo;s goodness.</p>
+            <p>{t('Handmade soaps & skin care crafted with nature’s goodness.')}</p>
             {social.length > 0 && (
               <div className="footer-block__social">
                 {social.map((s) => {
@@ -83,30 +85,30 @@ function FooterBlock() {
           />
         </div>
 
-        <FooterSection title="Shop" sectionKey="shop" openSection={openSection} onToggle={toggleSection}>
+        <FooterSection title={t('Shop')} sectionKey="shop" openSection={openSection} onToggle={toggleSection}>
           <ul>
             {settings.footer?.shopLinks?.map((link) => (
-              <li key={link.path}><Link to={link.path}>{link.label}</Link></li>
+              <li key={link.path}><Link to={link.path}>{t(link.label)}</Link></li>
             ))}
           </ul>
         </FooterSection>
 
-        <FooterSection title="Customer Care" sectionKey="care" openSection={openSection} onToggle={toggleSection}>
+        <FooterSection title={t('Customer Care')} sectionKey="care" openSection={openSection} onToggle={toggleSection}>
           <ul>
             {settings.footer?.customerCareLinks?.map((link) => (
-              <li key={link.path}><Link to={link.path}>{link.label}</Link></li>
+              <li key={link.path}><Link to={link.path}>{t(link.label)}</Link></li>
             ))}
           </ul>
         </FooterSection>
 
-        <FooterSection title="Connect" sectionKey="connect" openSection={openSection} onToggle={toggleSection}>
+        <FooterSection title={t('Connect')} sectionKey="connect" openSection={openSection} onToggle={toggleSection}>
           {settings.footer?.connect?.email && (
             <p className="footer-block__connect-line"><EnvelopeSimple size={16} /> {settings.footer.connect.email}</p>
           )}
           {settings.footer?.connect?.phone && (
             <p className="footer-block__connect-line"><Phone size={16} /> {settings.footer.connect.phone}</p>
           )}
-          <p className="footer-block__connect-line"><MapPin size={16} /> We ship worldwide</p>
+          <p className="footer-block__connect-line"><MapPin size={16} /> {t('We ship worldwide')}</p>
         </FooterSection>
 
         <div className="footer-block__col footer-block__col--stamp">
@@ -115,7 +117,7 @@ function FooterBlock() {
       </div>
 
       <div className="footer-block__bottom">
-        <p className="footer-block__copyright">{settings.footer?.copyrightText}</p>
+        <p className="footer-block__copyright">{t(settings.footer?.copyrightText)}</p>
       </div>
     </footer>
   );

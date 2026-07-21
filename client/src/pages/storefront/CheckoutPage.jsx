@@ -5,6 +5,7 @@ import { validateCart } from '../../api/cart.api';
 import { createOrder } from '../../api/orders.api';
 import { getPageBySlug } from '../../api/pages.api';
 import toast from 'react-hot-toast';
+import { useLang } from '../../i18n/LanguageContext.jsx';
 import './CheckoutPage.css';
 
 const CONTACT_FIELDS = [
@@ -27,6 +28,7 @@ const ADDRESS_FIELDS = [
 // so the flow (validate -> create order -> payment) is clear without
 // pulling in Stripe-specific setup into the scaffold.
 function CheckoutPage() {
+  const { t } = useLang();
   const { items, clearCart, subtotal } = useCart();
   const [form, setForm] = useState({ name: '', email: '', phone: '', line1: '', city: '', state: '', postalCode: '', country: '' });
   const [submitting, setSubmitting] = useState(false);
@@ -52,29 +54,29 @@ function CheckoutPage() {
       });
       // TODO: redirect to Stripe payment step using order.data._id
       clearCart();
-      toast.success('Order placed!');
+      toast.success(t('Order placed!'));
     } catch (err) {
-      toast.error('Checkout failed. Please try again.');
+      toast.error(t('Checkout failed. Please try again.'));
     } finally {
       setSubmitting(false);
     }
   };
 
-  if (!page) return <p className="page-loading">Loading…</p>;
+  if (!page) return <p className="page-loading">{t('Loading…')}</p>;
 
   const hero = page.blocks.find((b) => b.blockType === 'pageHero')?.props || {};
   const content = page.blocks.find((b) => b.blockType === 'checkoutPageContent')?.props || {};
 
   return (
     <section className="checkout-page">
-      <h1>{hero.heading}</h1>
+      <h1>{t(hero.heading)}</h1>
       <div className="checkout-page__layout">
         <form className="checkout-page__form" onSubmit={handleSubmit}>
-          <h3>Contact</h3>
+          <h3>{t('Contact')}</h3>
           <div className="checkout-page__field-grid">
             {CONTACT_FIELDS.map((field) => (
               <label key={field.name} className="checkout-field">
-                {field.label}
+                {t(field.label)}
                 <input
                   type={field.type || 'text'}
                   name={field.name}
@@ -86,11 +88,11 @@ function CheckoutPage() {
             ))}
           </div>
 
-          <h3>Shipping Address</h3>
+          <h3>{t('Shipping Address')}</h3>
           <div className="checkout-page__field-grid">
             {ADDRESS_FIELDS.map((field) => (
               <label key={field.name} className="checkout-field">
-                {field.label}
+                {t(field.label)}
                 <input
                   name={field.name}
                   value={form[field.name]}
@@ -102,31 +104,31 @@ function CheckoutPage() {
           </div>
 
           <button type="submit" className="btn btn--primary checkout-page__submit" disabled={submitting}>
-            {submitting ? 'Placing order…' : 'Place Order'}
+            {submitting ? t('Placing order…') : t('Place Order')}
           </button>
         </form>
 
         <aside className="checkout-page__summary">
-          <h3><Truck size={18} weight="regular" /> Order Summary</h3>
+          <h3><Truck size={18} weight="regular" /> {t('Order Summary')}</h3>
           <div className="checkout-page__summary-items">
             {items.map((item) => (
               <div className="checkout-page__summary-item" key={item.productId}>
-                <span>{item.name} × {item.quantity}</span>
+                <span>{t(item.name)} × {item.quantity}</span>
                 <span>€{(item.price * item.quantity).toFixed(2)}</span>
               </div>
             ))}
           </div>
           <div className="checkout-page__summary-row">
-            <span>Subtotal</span>
+            <span>{t('Subtotal')}</span>
             <span>€{subtotal.toFixed(2)}</span>
           </div>
-          <p className="checkout-page__shipping-note">{content.shippingNoteText}</p>
+          <p className="checkout-page__shipping-note">{t(content.shippingNoteText)}</p>
           <div className="checkout-page__summary-row checkout-page__summary-row--total">
-            <span>Total</span>
+            <span>{t('Total')}</span>
             <span>€{subtotal.toFixed(2)}</span>
           </div>
           <p className="checkout-page__payment-note">
-            <CreditCard size={16} weight="regular" /> {content.paymentNoteText}
+            <CreditCard size={16} weight="regular" /> {t(content.paymentNoteText)}
           </p>
         </aside>
       </div>

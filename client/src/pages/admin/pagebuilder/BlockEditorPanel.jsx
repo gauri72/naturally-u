@@ -7,6 +7,7 @@ import { updateBlock } from '../../../api/pages.api';
 import VisualBlockEditor from './VisualBlockEditor.jsx';
 import { blockIcon, blockLabel, blockSummary } from './blockDisplay';
 import './BlockEditorPanel.css';
+import { useLang } from '../../../i18n/LanguageContext.jsx';
 
 // Plain-textarea JSON editor with a synced line-number gutter and Tab
 // support - enough structure for hand-editing block props without pulling
@@ -57,6 +58,7 @@ function JsonEditor({ value, onChange }) {
  * re-serializes/re-parses between the object and its JSON text.
  */
 function BlockEditorPanel({ block, slug, onClose, onSaved }) {
+  const { t } = useLang();
   const [mode, setMode] = useState('visual');
   const [props, setProps] = useState(block.props);
   const [json, setJson] = useState(JSON.stringify(block.props, null, 2));
@@ -77,7 +79,7 @@ function BlockEditorPanel({ block, slug, onClose, onSaved }) {
   }, [json]);
 
   const requestClose = () => {
-    if (dirty && !window.confirm('Discard unsaved changes to this block?')) return;
+    if (dirty && !window.confirm(t('Discard unsaved changes to this block?'))) return;
     onClose();
   };
 
@@ -95,7 +97,7 @@ function BlockEditorPanel({ block, slug, onClose, onSaved }) {
       setError(null);
       setMode('visual');
     } catch {
-      setError('Invalid JSON - please fix syntax before switching to Visual mode.');
+      setError(t('Invalid JSON - please fix syntax before switching to Visual mode.'));
     }
   };
 
@@ -110,7 +112,7 @@ function BlockEditorPanel({ block, slug, onClose, onSaved }) {
       setJson(JSON.stringify(JSON.parse(json), null, 2));
       setError(null);
     } catch {
-      setError('Cannot format: the JSON has a syntax error.');
+      setError(t('Cannot format: the JSON has a syntax error.'));
     }
   };
 
@@ -120,17 +122,17 @@ function BlockEditorPanel({ block, slug, onClose, onSaved }) {
       try {
         finalProps = JSON.parse(json);
       } catch {
-        setError('Invalid JSON - please fix syntax before saving.');
+        setError(t('Invalid JSON - please fix syntax before saving.'));
         return;
       }
     }
     setSaving(true);
     try {
       await updateBlock(slug, block._id, { props: finalProps });
-      toast.success('Block updated');
+      toast.success(t('Block updated'));
       onSaved();
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to save block');
+      setError(err.response?.data?.message || t('Failed to save block'));
       setSaving(false);
     }
   };
@@ -143,7 +145,7 @@ function BlockEditorPanel({ block, slug, onClose, onSaved }) {
       <div
         className="block-drawer"
         role="dialog"
-        aria-label={`Edit ${blockLabel(block.blockType)}`}
+        aria-label={`${t('Edit')} ${t(blockLabel(block.blockType))}`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="block-drawer__header">
@@ -151,10 +153,10 @@ function BlockEditorPanel({ block, slug, onClose, onSaved }) {
             <Icon size={22} weight="regular" />
           </span>
           <div className="block-drawer__header-text">
-            <h3>{blockLabel(block.blockType)}</h3>
+            <h3>{t(blockLabel(block.blockType))}</h3>
             {summary && <p className="block-drawer__header-summary">{summary}</p>}
           </div>
-          <button type="button" className="icon-btn" onClick={requestClose} aria-label="Close editor">
+          <button type="button" className="icon-btn" onClick={requestClose} aria-label={t('Close editor')}>
             <X size={20} />
           </button>
         </div>
@@ -168,7 +170,7 @@ function BlockEditorPanel({ block, slug, onClose, onSaved }) {
               className={`block-drawer__tab ${mode === 'visual' ? 'is-active' : ''}`}
               onClick={switchToVisual}
             >
-              <Sliders size={15} weight="bold" /> Visual
+              <Sliders size={15} weight="bold" /> {t('Visual')}
             </button>
             <button
               type="button"
@@ -177,7 +179,7 @@ function BlockEditorPanel({ block, slug, onClose, onSaved }) {
               className={`block-drawer__tab ${mode === 'code' ? 'is-active' : ''}`}
               onClick={switchToCode}
             >
-              <Code size={15} weight="bold" /> Code
+              <Code size={15} weight="bold" /> {t('Code')}
             </button>
           </div>
 
@@ -185,11 +187,11 @@ function BlockEditorPanel({ block, slug, onClose, onSaved }) {
             <div className="block-drawer__code-tools">
               <span className={`json-status ${jsonError ? 'json-status--invalid' : 'json-status--valid'}`}>
                 {jsonError
-                  ? <><WarningCircle size={14} weight="fill" /> Invalid JSON</>
-                  : <><CheckCircle size={14} weight="fill" /> Valid JSON</>}
+                  ? <><WarningCircle size={14} weight="fill" /> {t('Invalid JSON')}</>
+                  : <><CheckCircle size={14} weight="fill" /> {t('Valid JSON')}</>}
               </span>
               <button type="button" className="btn btn--sm btn--secondary block-drawer__format-btn" onClick={handleFormat}>
-                <MagicWand size={14} weight="bold" /> Format
+                <MagicWand size={14} weight="bold" /> {t('Format')}
               </button>
             </div>
           )}
@@ -213,7 +215,7 @@ function BlockEditorPanel({ block, slug, onClose, onSaved }) {
             disabled={saving || (mode === 'code' && !!jsonError)}
           >
             <FloppyDisk size={16} weight="bold" />
-            {saving ? 'Saving…' : 'Save Changes'}
+            {saving ? t('Saving…') : t('Save Changes')}
           </button>
         </div>
       </div>

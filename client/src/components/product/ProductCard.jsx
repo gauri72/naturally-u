@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ShoppingBag, Star } from '@phosphor-icons/react';
 import { useCart } from '../../context/CartContext.jsx';
+import { useLang } from '../../i18n/LanguageContext.jsx';
 import './ProductCard.css';
 
 function Stars({ rating }) {
@@ -16,6 +17,7 @@ function Stars({ rating }) {
 
 function ProductCard({ product }) {
   const { addItem } = useCart();
+  const { t } = useLang();
 
   return (
     <div className="product-card">
@@ -23,7 +25,7 @@ function ProductCard({ product }) {
         <img src={product.images?.[0]?.url} alt={product.images?.[0]?.alt || product.name} />
       </Link>
       <div className="product-card__body">
-        <h4>{product.name}</h4>
+        <h4>{t(product.name)}</h4>
         <div className="product-card__row">
           <div className="product-card__meta">
             <p className="product-card__price">€{product.price.toFixed(2)}</p>
@@ -36,7 +38,7 @@ function ProductCard({ product }) {
           <button
             type="button"
             className="product-card__cart-btn"
-            aria-label={`Add ${product.name} to cart`}
+            aria-label={`${t('Add to cart')} — ${t(product.name)}`}
             onClick={() => addItem(product)}
           >
             <ShoppingBag size={17} weight="bold" />

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { MagnifyingGlass, ShoppingBag, X } from '@phosphor-icons/react';
 import { useCart } from '../../context/CartContext.jsx';
+import { useLang } from '../../i18n/LanguageContext.jsx';
 import desktopLogo from '../../assets/images/home/desktop-header-logo.png';
 import mobileLogo from '../../assets/images/home/mobile-header-logo.png';
 import './Header.css';
@@ -16,6 +17,7 @@ const navLinks = [
 
 function Header() {
   const { itemCount } = useCart();
+  const { t } = useLang();
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -54,7 +56,7 @@ function Header() {
         <button
           className={`site-header__menu-toggle ${menuOpen ? 'site-header__menu-toggle--open' : ''}`}
           onClick={() => setMenuOpen((open) => !open)}
-          aria-label="Toggle menu"
+          aria-label={t('Toggle menu')}
           aria-expanded={menuOpen}
         >
           <span />
@@ -78,7 +80,7 @@ function Header() {
         <nav className={`site-header__nav ${menuOpen ? 'site-header__nav--open' : ''}`}>
           {navLinks.map((link) => (
             <NavLink key={link.path} to={link.path} onClick={() => setMenuOpen(false)}>
-              {link.label}
+              {t(link.label)}
             </NavLink>
           ))}
         </nav>
@@ -89,20 +91,20 @@ function Header() {
               <input
                 ref={searchInputRef}
                 type="search"
-                placeholder="Search the site…"
+                placeholder={t('Search the site…')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
-              <button type="button" className="site-header__icon-btn" onClick={() => setSearchOpen(false)} aria-label="Close search">
+              <button type="button" className="site-header__icon-btn" onClick={() => setSearchOpen(false)} aria-label={t('Close search')}>
                 <X size={18} weight="bold" />
               </button>
             </form>
           ) : (
-            <button className="site-header__icon-btn" onClick={() => setSearchOpen(true)} aria-label="Search">
+            <button className="site-header__icon-btn" onClick={() => setSearchOpen(true)} aria-label={t('Search')}>
               <MagnifyingGlass size={20} weight="regular" />
             </button>
           )}
-          <Link to="/cart" className="site-header__icon-btn site-header__cart" aria-label="Cart">
+          <Link to="/cart" className="site-header__icon-btn site-header__cart" aria-label={t('Cart')}>
             <ShoppingBag size={20} weight="regular" />
             {itemCount > 0 && <span className="badge">{itemCount}</span>}
           </Link>

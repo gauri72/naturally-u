@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import '../../pages/storefront/AboutMakerPage.css';
 import '../../pages/storefront/WorkshopsPage.css';
+import { useLang } from '../../i18n/LanguageContext.jsx';
 
 const WRAP_CLASS = { 'about-maker': 'about-maker__cta', workshops: 'workshops-page__cta' };
 
@@ -9,13 +10,14 @@ const WRAP_CLASS = { 'about-maker': 'about-maker__cta', workshops: 'workshops-pa
 // CTA (2 buttons, no heading) and the Workshops page's booking CTA
 // (heading+body+1 button).
 function CtaRowBlock({ variant = 'about-maker', heading, body, buttons = [] }) {
+  const { t } = useLang();
   return (
     <div className={WRAP_CLASS[variant] || WRAP_CLASS['about-maker']}>
-      {heading && <h2>{heading}</h2>}
-      {body && <p>{body}</p>}
+      {heading && <h2>{t(heading)}</h2>}
+      {body && <p>{t(body)}</p>}
       {buttons.map((btn, i) => (
         <Link key={btn.link || i} to={btn.link} className={`btn btn--${btn.style || 'primary'}`}>
-          {btn.label}
+          {t(btn.label)}
         </Link>
       ))}
     </div>

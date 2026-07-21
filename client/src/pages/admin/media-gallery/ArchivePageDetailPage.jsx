@@ -7,17 +7,19 @@ import {
 import toast from 'react-hot-toast';
 import { getArchivePage, updateArchivePage, addSection, deleteSection } from '../../../api/archive.api';
 import './ArchivePageDetailPage.css';
+import { useLang } from '../../../i18n/LanguageContext.jsx';
 
 // Small badges surfacing a section's structured meta (price/stock for the
 // old product grid, language for non-English testimonials, etc.)
 function MetaBadges({ meta }) {
+  const { t } = useLang();
   if (!meta) return null;
   return (
     <>
       {meta.price && <span className="badge badge--neutral">{meta.price}</span>}
       {typeof meta.inStock === 'boolean' && (
         <span className={`badge ${meta.inStock ? 'badge--success' : 'badge--neutral'}`}>
-          {meta.inStock ? 'In stock' : 'Out of stock'}
+          {meta.inStock ? t('In stock') : t('Out of stock')}
         </span>
       )}
       {meta.language && <span className="badge badge--neutral">{meta.language}</span>}
@@ -28,16 +30,17 @@ function MetaBadges({ meta }) {
 // Full-screen, document-style reader: the archived page's sections in
 // order, with their photos - the closest thing to re-reading the old page.
 function ArchivePagePreview({ page, sections, onClose }) {
+  const { t } = useLang();
   return (
     <div className="archive-preview">
       <div className="archive-preview__bar">
         <span className="archive-preview__bar-label">
-          <BookOpen size={18} weight="regular" /> Archived page — {page.title}
+          <BookOpen size={18} weight="regular" /> {t('Archived page')} — {page.title}
         </span>
         <a href={page.sourceUrl} target="_blank" rel="noreferrer" className="archive-preview__bar-source">
           <ArrowSquareOut size={14} /> {page.sourceUrl}
         </a>
-        <button type="button" className="icon-btn" onClick={onClose} aria-label="Close preview">
+        <button type="button" className="icon-btn" onClick={onClose} aria-label={t('Close preview')}>
           <X size={20} />
         </button>
       </div>
@@ -70,6 +73,7 @@ function ArchivePagePreview({ page, sections, onClose }) {
 }
 
 function ArchivePageDetailPage() {
+  const { t } = useLang();
   const { pageSlug } = useParams();
   const [page, setPage] = useState(null);
   const [newSectionName, setNewSectionName] = useState('');
@@ -84,7 +88,7 @@ function ArchivePageDetailPage() {
   const handleFieldBlur = async (field, value) => {
     if (!page || page[field] === value) return;
     await updateArchivePage(pageSlug, { [field]: value });
-    toast.success('Saved');
+    toast.success(t('Saved'));
   };
 
   const handleAddSection = async (e) => {
@@ -92,18 +96,18 @@ function ArchivePageDetailPage() {
     if (!newSectionName.trim()) return;
     await addSection(pageSlug, { name: newSectionName.trim() });
     setNewSectionName('');
-    toast.success('Section added');
+    toast.success(t('Section added'));
     load();
   };
 
   const handleDeleteSection = async (sectionId) => {
-    if (!window.confirm('Delete this section and its images?')) return;
+    if (!window.confirm(t('Delete this section and its images?'))) return;
     await deleteSection(pageSlug, sectionId);
-    toast.success('Section deleted');
+    toast.success(t('Section deleted'));
     load();
   };
 
-  if (!page) return <p>Loading...</p>;
+  if (!page) return <p>{t('Loading...')}</p>;
 
   const sections = [...page.sections].sort((a, b) => a.order - b.order);
   const query = search.trim().toLowerCase();
@@ -114,7 +118,7 @@ function ArchivePageDetailPage() {
   return (
     <div>
       <Link to="/admin/media-gallery/archive" className="admin-page-header__back">
-        <ArrowLeft size={14} weight="bold" /> Archive
+        <ArrowLeft size={14} weight="bold" /> {t('Archive')}
       </Link>
       <div className="admin-page-header">
         <input
@@ -125,12 +129,12 @@ function ArchivePageDetailPage() {
         <div className="admin-page-header__actions">
           <button type="button" className="btn btn--secondary" onClick={() => setPreviewOpen(true)}>
             <BookOpen size={16} style={{ verticalAlign: '-3px', marginRight: 6 }} />
-            Read Page
+            {t('Read Page')}
           </button>
         </div>
       </div>
       <div className="admin-field" style={{ maxWidth: 480, marginBottom: 'var(--space-xl)' }}>
-        <label>Source URL</label>
+        <label>{t('Source URL')}</label>
         <input
           defaultValue={page.sourceUrl}
           onBlur={(e) => handleFieldBlur('sourceUrl', e.target.value)}
@@ -138,14 +142,14 @@ function ArchivePageDetailPage() {
       </div>
 
       <div className="admin-page-header" style={{ marginBottom: 'var(--space-md)' }}>
-        <h3>Sections <span className="archive-detail__count">({visibleSections.length}{query ? ` of ${sections.length}` : ''})</span></h3>
+        <h3>{t('Sections')} <span className="archive-detail__count">({visibleSections.length}{query ? ` of ${sections.length}` : ''})</span></h3>
         <div className="archive-detail__tools">
           <div className="archive-detail__search">
             <MagnifyingGlass size={16} />
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search sections…"
+              placeholder={t('Search sections…')}
             />
           </div>
           <div className="archive-detail__view-toggle">
@@ -153,7 +157,7 @@ function ArchivePageDetailPage() {
               type="button"
               className={`icon-btn ${view === 'gallery' ? 'is-active' : ''}`}
               onClick={() => setView('gallery')}
-              title="Gallery view"
+              title={t('Gallery view')}
             >
               <SquaresFour size={18} />
             </button>
@@ -161,7 +165,7 @@ function ArchivePageDetailPage() {
               type="button"
               className={`icon-btn ${view === 'table' ? 'is-active' : ''}`}
               onClick={() => setView('table')}
-              title="Table view"
+              title={t('Table view')}
             >
               <Rows size={18} />
             </button>
@@ -172,7 +176,7 @@ function ArchivePageDetailPage() {
       {visibleSections.length === 0 ? (
         <div className="admin-empty-state">
           <MagnifyingGlass size={32} />
-          <p>No sections match “{search}”.</p>
+          <p>{t('No sections match')} “{search}”.</p>
         </div>
       ) : view === 'gallery' ? (
         <div className="admin-grid">
@@ -189,12 +193,12 @@ function ArchivePageDetailPage() {
               <div className="archive-detail__gallery-badges"><MetaBadges meta={s.meta} /></div>
               <p className="archive-detail__gallery-snippet">{s.content}</p>
               <div className="archive-detail__gallery-actions">
-                <span className="badge badge--neutral">{s.images.length} image{s.images.length === 1 ? '' : 's'}</span>
+                <span className="badge badge--neutral">{s.images.length} {s.images.length === 1 ? t('image') : t('images')}</span>
                 <div>
-                  <Link to={`/admin/media-gallery/archive/${pageSlug}/sections/${s._id}`} className="icon-btn" title="Edit">
+                  <Link to={`/admin/media-gallery/archive/${pageSlug}/sections/${s._id}`} className="icon-btn" title={t('Edit')}>
                     <PencilSimple size={18} />
                   </Link>
-                  <button onClick={() => handleDeleteSection(s._id)} className="icon-btn icon-btn--danger" title="Delete">
+                  <button onClick={() => handleDeleteSection(s._id)} className="icon-btn icon-btn--danger" title={t('Delete')}>
                     <Trash size={18} />
                   </button>
                 </div>
@@ -207,10 +211,10 @@ function ArchivePageDetailPage() {
           <table className="admin-table">
             <thead>
               <tr>
-                <th>Name</th>
-                <th>Content preview</th>
-                <th>Meta</th>
-                <th>Images</th>
+                <th>{t('Name')}</th>
+                <th>{t('Content preview')}</th>
+                <th>{t('Meta')}</th>
+                <th>{t('Images')}</th>
                 <th></th>
               </tr>
             </thead>
@@ -222,10 +226,10 @@ function ArchivePageDetailPage() {
                   <td><MetaBadges meta={s.meta} /></td>
                   <td>{s.images.length}</td>
                   <td>
-                    <Link to={`/admin/media-gallery/archive/${pageSlug}/sections/${s._id}`} className="icon-btn" title="Edit">
+                    <Link to={`/admin/media-gallery/archive/${pageSlug}/sections/${s._id}`} className="icon-btn" title={t('Edit')}>
                       <PencilSimple size={18} />
                     </Link>
-                    <button onClick={() => handleDeleteSection(s._id)} className="icon-btn icon-btn--danger" title="Delete">
+                    <button onClick={() => handleDeleteSection(s._id)} className="icon-btn icon-btn--danger" title={t('Delete')}>
                       <Trash size={18} />
                     </button>
                   </td>
@@ -240,11 +244,11 @@ function ArchivePageDetailPage() {
         <input
           value={newSectionName}
           onChange={(e) => setNewSectionName(e.target.value)}
-          placeholder="New section name"
+          placeholder={t('New section name')}
         />
         <button type="submit" className="btn btn--primary btn--sm">
           <Plus size={14} weight="bold" style={{ verticalAlign: '-2px', marginRight: 4 }} />
-          Add Section
+          {t('Add Section')}
         </button>
       </form>
 

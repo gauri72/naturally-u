@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { Image } from '@phosphor-icons/react';
 import { uploadImage } from '../../../api/media.api';
 import toast from 'react-hot-toast';
+import { useLang } from '../../../i18n/LanguageContext.jsx';
 
 // Minimal upload-and-list UI. For a full library, persist uploaded
 // media metadata to a Media collection so past uploads are browsable
 // (current scope: upload returns a URL to copy/paste into a block).
 function MediaLibraryPage() {
+  const { t } = useLang();
   const [uploaded, setUploaded] = useState([]);
 
   const handleUpload = async (e) => {
@@ -15,16 +17,16 @@ function MediaLibraryPage() {
     try {
       const res = await uploadImage(file);
       setUploaded((prev) => [res.data, ...prev]);
-      toast.success('Uploaded');
+      toast.success(t('Uploaded'));
     } catch {
-      toast.error('Upload failed');
+      toast.error(t('Upload failed'));
     }
   };
 
   return (
     <div>
       <div className="admin-page-header">
-        <h1>Media Library</h1>
+        <h1>{t('Media Library')}</h1>
         <div className="admin-page-header__actions">
           <input type="file" accept="image/*" onChange={handleUpload} />
         </div>
@@ -32,7 +34,7 @@ function MediaLibraryPage() {
       {uploaded.length === 0 ? (
         <div className="admin-empty-state">
           <Image size={40} />
-          <p>No uploads this session yet.</p>
+          <p>{t('No uploads this session yet.')}</p>
         </div>
       ) : (
         <div className="admin-grid">

@@ -5,11 +5,13 @@ import { getProducts } from '../../api/products.api';
 import { getPageBySlug } from '../../api/pages.api';
 import ProductCard from '../../components/product/ProductCard.jsx';
 import PageHeroBlock from '../../blocks/PageHeroBlock/PageHeroBlock.jsx';
+import { useLang } from '../../i18n/LanguageContext.jsx';
 import './GiftSetsPage.css';
 
 // Hero copy + empty-state text come from the 'gift-sets' CMS page
 // (/admin/pages/gift-sets); the product grid stays fully data-driven.
 function GiftSetsPage() {
+  const { t } = useLang();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(null);
@@ -31,8 +33,8 @@ function GiftSetsPage() {
       });
   }, []);
 
-  if (error) return <p className="page-error">{error}</p>;
-  if (!page) return <p className="page-loading">Loading…</p>;
+  if (error) return <p className="page-error">{t(error)}</p>;
+  if (!page) return <p className="page-loading">{t('Loading…')}</p>;
 
   const hero = page.blocks.find((b) => b.blockType === 'pageHero')?.props || {};
   const content = page.blocks.find((b) => b.blockType === 'giftSetsPageContent')?.props || {};
@@ -42,12 +44,12 @@ function GiftSetsPage() {
       <PageHeroBlock variant="gift-sets" heading={hero.heading} subtext={hero.subtext} />
 
       {loading ? (
-        <p className="page-loading">Loading…</p>
+        <p className="page-loading">{t('Loading…')}</p>
       ) : products.length === 0 ? (
         <div className="gift-sets-page__empty">
           <Gift size={40} weight="regular" />
-          <p>{content.emptyText}</p>
-          <Link to="/shop" className="btn btn--primary">Shop All Products</Link>
+          <p>{t(content.emptyText)}</p>
+          <Link to="/shop" className="btn btn--primary">{t('Shop All Products')}</Link>
         </div>
       ) : (
         <div className="shop-page__grid">

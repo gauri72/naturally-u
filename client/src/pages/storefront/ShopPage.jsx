@@ -4,6 +4,7 @@ import { MagnifyingGlass } from '@phosphor-icons/react';
 import { getProducts } from '../../api/products.api';
 import { getPageBySlug } from '../../api/pages.api';
 import ProductCard from '../../components/product/ProductCard.jsx';
+import { useLang } from '../../i18n/LanguageContext.jsx';
 import './ShopPage.css';
 
 const TITLES_BY_TAG = {
@@ -14,6 +15,7 @@ const TITLES_BY_TAG = {
 // code-driven; the static tax note comes from the 'shop' CMS page
 // (/admin/pages/shop).
 function ShopPage() {
+  const { t } = useLang();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [pageContent, setPageContent] = useState(null);
@@ -50,17 +52,16 @@ function ShopPage() {
     return products;
   }, [products, sort]);
 
-  const title = search
-    ? `Results for "${search}"`
-    : (TITLES_BY_TAG[tag] || (sort === 'new' ? 'New Arrivals' : '')
-      || (category ? category.charAt(0).toUpperCase() + category.slice(1) : 'Shop All Products'));
+  const staticTitle = TITLES_BY_TAG[tag] || (sort === 'new' ? 'New Arrivals' : '')
+    || (category ? category.charAt(0).toUpperCase() + category.slice(1) : 'Shop All Products');
+  const title = search ? `${t('Results for')} "${search}"` : t(staticTitle);
 
   return (
     <section className="shop-page">
       <div className="shop-page__header">
         <div>
           <h1>{title}</h1>
-          <p className="shop-page__tax-note">{pageContent?.taxNote}</p>
+          <p className="shop-page__tax-note">{t(pageContent?.taxNote)}</p>
         </div>
         <select
           className="shop-page__sort"
@@ -72,19 +73,19 @@ function ShopPage() {
             setSearchParams(next);
           }}
         >
-          <option value="">Sort: Featured</option>
-          <option value="new">Newest</option>
-          <option value="price-asc">Price: Low to High</option>
-          <option value="price-desc">Price: High to Low</option>
+          <option value="">{t('Sort: Featured')}</option>
+          <option value="new">{t('Newest')}</option>
+          <option value="price-asc">{t('Price: Low to High')}</option>
+          <option value="price-desc">{t('Price: High to Low')}</option>
         </select>
       </div>
 
       {loading ? (
-        <p className="page-loading">Loading…</p>
+        <p className="page-loading">{t('Loading…')}</p>
       ) : sortedProducts.length === 0 ? (
         <div className="shop-page__empty">
           <MagnifyingGlass size={40} weight="regular" />
-          <p>No products found{search ? ` for "${search}"` : ''}.</p>
+          <p>{t('No products found')}{search ? ` — "${search}"` : ''}.</p>
         </div>
       ) : (
         <div className="shop-page__grid">

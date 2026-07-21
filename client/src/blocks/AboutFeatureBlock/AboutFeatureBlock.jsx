@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { SealCheck, HandHeart, Leaf } from '@phosphor-icons/react';
 import '../../pages/storefront/AboutMakerPage.css';
+import { useLang } from '../../i18n/LanguageContext.jsx';
 
 const EYEBROW_ICONS = { sealcheck: SealCheck, handheart: HandHeart };
 
@@ -8,10 +9,11 @@ const EYEBROW_ICONS = { sealcheck: SealCheck, handheart: HandHeart };
 // Image+text feature section, reused 3x on the About the Maker page
 // (Meet Deepti / Rooted in yoga / Soap-Making Workshops).
 function AboutFeatureBlock({ eyebrowIcon, eyebrowText, heading, body, image, imageAlt, reverse, ctaLabel, ctaLink }) {
+  const { t } = useLang();
   const EyebrowIcon = EYEBROW_ICONS[eyebrowIcon] || SealCheck;
-  const paragraphs = body ? body.split(/\n{2,}/) : [];
+  const paragraphs = body ? t(body).split(/\n{2,}/) : [];
   const cta = ctaLabel && ctaLink
-    ? <Link to={ctaLink} className="btn btn--secondary">{ctaLabel}</Link>
+    ? <Link to={ctaLink} className="btn btn--secondary">{t(ctaLabel)}</Link>
     : null;
 
   return (
@@ -19,10 +21,10 @@ function AboutFeatureBlock({ eyebrowIcon, eyebrowText, heading, body, image, ima
       <div className="about-maker__feature-text">
         {eyebrowText && (
           <span className="about-maker__eyebrow">
-            <EyebrowIcon size={16} weight="fill" /> {eyebrowText}
+            <EyebrowIcon size={16} weight="fill" /> {t(eyebrowText)}
           </span>
         )}
-        {heading && <h2>{heading}</h2>}
+        {heading && <h2>{t(heading)}</h2>}
         {paragraphs.map((p, i) => <p key={i}>{p}</p>)}
         {cta}
       </div>

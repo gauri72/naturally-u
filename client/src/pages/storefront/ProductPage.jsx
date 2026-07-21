@@ -11,6 +11,7 @@ import {
 import { getProductBySlug } from '../../api/products.api';
 import { getPageBySlug } from '../../api/pages.api';
 import { useCart } from '../../context/CartContext.jsx';
+import { useLang } from '../../i18n/LanguageContext.jsx';
 import './ProductPage.css';
 
 // The product's own name/price/description/images are data-driven; the
@@ -43,6 +44,7 @@ function AccordionSection({ id, icon, title, defaultOpen = false, children }) {
 }
 
 function ProductPage() {
+  const { t } = useLang();
   const { slug } = useParams();
   const [product, setProduct] = useState(null);
   const [content, setContent] = useState(null);
@@ -60,7 +62,7 @@ function ProductPage() {
       .catch(console.error);
   }, []);
 
-  if (!product || !content) return <p className="page-loading">Loading…</p>;
+  if (!product || !content) return <p className="page-loading">{t('Loading…')}</p>;
 
   const images = product.images || [];
   const usageByTag = content.usageByTag || [];
@@ -97,59 +99,59 @@ function ProductPage() {
 
       <div className="product-page__details">
         <span className="product-page__eyebrow">
-          <Sparkle size={14} weight="fill" /> {content.eyebrow}
+          <Sparkle size={14} weight="fill" /> {t(content.eyebrow)}
         </span>
-        <h1>{product.name}</h1>
-        {product.shortDescription && <p className="product-page__tagline">{product.shortDescription}</p>}
+        <h1>{t(product.name)}</h1>
+        {product.shortDescription && <p className="product-page__tagline">{t(product.shortDescription)}</p>}
 
         <div className="product-page__buy-box">
           <div className="product-page__price-row">
             <p className="product-page__price">€{product.price.toFixed(2)}</p>
             <span className={`product-page__stock ${inStock ? 'is-in-stock' : 'is-out-of-stock'}`}>
-              {inStock ? 'In stock' : 'Out of stock'}
+              {inStock ? t('In stock') : t('Out of stock')}
             </span>
           </div>
-          <p className="product-page__tax-note">Sales tax included.</p>
+          <p className="product-page__tax-note">{t('Sales tax included.')}</p>
           <button
             className="btn btn--primary product-page__add-btn"
             onClick={() => addItem(product)}
             disabled={!inStock}
           >
-            {inStock ? 'Add to Cart' : 'Out of Stock'}
+            {inStock ? t('Add to Cart') : t('Out of Stock')}
           </button>
         </div>
 
-        <p className="product-page__description">{product.description}</p>
+        <p className="product-page__description">{t(product.description)}</p>
 
         <div className="product-page__accordions">
           <AccordionSection
             id="product-info"
             icon={<Sparkle size={18} weight="regular" />}
-            title="Product Info"
+            title={t('Product Info')}
             defaultOpen
           >
             <dl className="product-page__info-list">
               <div>
-                <dt>Made</dt>
-                <dd>{content.madeText}</dd>
+                <dt>{t('Made')}</dt>
+                <dd>{t(content.madeText)}</dd>
               </div>
               <div>
-                <dt>Ingredients</dt>
+                <dt>{t('Ingredients')}</dt>
                 <dd>
                   {product.ingredients?.length > 0 ? (
                     <ul className="product-page__ingredients">
                       {product.ingredients.map((ingredient) => (
-                        <li key={ingredient}>{ingredient}</li>
+                        <li key={ingredient}>{t(ingredient)}</li>
                       ))}
                     </ul>
                   ) : (
-                    'See product description above'
+                    t('See product description above')
                   )}
                 </dd>
               </div>
               <div>
-                <dt>Free from</dt>
-                <dd>{content.freeFromText}</dd>
+                <dt>{t('Free from')}</dt>
+                <dd>{t(content.freeFromText)}</dd>
               </div>
             </dl>
           </AccordionSection>
@@ -157,37 +159,37 @@ function ProductPage() {
           <AccordionSection
             id="how-to-use"
             icon={<Leaf size={18} weight="regular" />}
-            title="How to Use"
+            title={t('How to Use')}
           >
-            <p>{usage}</p>
+            <p>{t(usage)}</p>
           </AccordionSection>
 
           <AccordionSection
             id="shipping-info"
             icon={<Truck size={18} weight="regular" />}
-            title="Shipping Info"
+            title={t('Shipping Info')}
           >
-            <p>{content.shippingBlurb}</p>
+            <p>{t(content.shippingBlurb)}</p>
             <Link to="/shipping-returns" className="product-page__accordion-link">
-              Full shipping details →
+              {t('Full shipping details →')}
             </Link>
           </AccordionSection>
 
           <AccordionSection
             id="returns-policy"
             icon={<ArrowUUpLeft size={18} weight="regular" />}
-            title="Return & Refund Policy"
+            title={t('Return & Refund Policy')}
           >
-            <p>{content.returnsBlurb}</p>
+            <p>{t(content.returnsBlurb)}</p>
             <Link to="/contact" className="product-page__accordion-link">
-              Contact us →
+              {t('Contact us →')}
             </Link>
           </AccordionSection>
         </div>
 
         <div className="product-page__disclaimer">
           <ShieldCheck size={20} weight="regular" className="product-page__disclaimer-icon" aria-hidden="true" />
-          <p>{content.disclaimerText}</p>
+          <p>{t(content.disclaimerText)}</p>
         </div>
       </div>
     </section>

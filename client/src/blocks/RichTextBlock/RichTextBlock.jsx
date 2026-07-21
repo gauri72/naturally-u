@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Leaf, Sparkle, SealCheck, Info } from '@phosphor-icons/react';
+import { useLang } from '../../i18n/LanguageContext.jsx';
 import './RichTextBlock.css';
 
 // Props: { heading, body, image, imageAlt, ctaLabel, ctaLink, variant }
@@ -16,10 +17,11 @@ import './RichTextBlock.css';
 //   pledge        - YES/NO promise card with a tone badge + leaf accent
 //   disclaimer    - subtle bordered fine-print note with an info icon
 function RichTextBlock({ heading, body, image, imageAlt, ctaLabel, ctaLink, variant = 'default' }) {
+  const { t } = useLang();
   if (!heading && !body) return null;
-  const paragraphs = body ? body.split(/\n{2,}/) : [];
+  const paragraphs = body ? t(body).split(/\n{2,}/) : [];
   const cta = ctaLabel && ctaLink ? (
-    <Link to={ctaLink} className="btn btn--primary rich-text-block__cta">{ctaLabel}</Link>
+    <Link to={ctaLink} className="btn btn--primary rich-text-block__cta">{t(ctaLabel)}</Link>
   ) : null;
 
   if (variant === 'pledge') {
@@ -27,9 +29,9 @@ function RichTextBlock({ heading, body, image, imageAlt, ctaLabel, ctaLink, vari
     return (
       <section className={`rich-text-block rich-text-block--pledge rich-text-block--pledge-${tone || 'neutral'}`}>
         <div className="rich-text-block__pledge-card">
-          {tone && <span className={`rich-text-block__pledge-badge rich-text-block__pledge-badge--${tone}`}>{tone.toUpperCase()}</span>}
+          {tone && <span className={`rich-text-block__pledge-badge rich-text-block__pledge-badge--${tone}`}>{t(tone.toUpperCase())}</span>}
           <div className="rich-text-block__pledge-body">
-            {heading && <h3>{heading}</h3>}
+            {heading && <h3>{t(heading)}</h3>}
             {paragraphs.map((p, i) => <p key={i}>{p}</p>)}
           </div>
           <Leaf size={26} weight="regular" className="rich-text-block__pledge-leaf" aria-hidden="true" />
@@ -44,7 +46,7 @@ function RichTextBlock({ heading, body, image, imageAlt, ctaLabel, ctaLink, vari
         <span className="rich-text-block__rule" aria-hidden="true" />
         <div className="rich-text-block__section-title-text">
           <Leaf size={22} weight="regular" aria-hidden="true" />
-          {heading && <h2>{heading}</h2>}
+          {heading && <h2>{t(heading)}</h2>}
         </div>
         <span className="rich-text-block__rule" aria-hidden="true" />
       </section>
@@ -57,7 +59,7 @@ function RichTextBlock({ heading, body, image, imageAlt, ctaLabel, ctaLink, vari
         <div className="rich-text-block__disclaimer-card">
           <Info size={22} weight="regular" className="rich-text-block__disclaimer-icon" aria-hidden="true" />
           <div>
-            {heading && <h4>{heading}</h4>}
+            {heading && <h4>{t(heading)}</h4>}
             {paragraphs.map((p, i) => <p key={i}>{p}</p>)}
           </div>
         </div>
@@ -69,9 +71,9 @@ function RichTextBlock({ heading, body, image, imageAlt, ctaLabel, ctaLink, vari
     return (
       <section className="rich-text-block rich-text-block--story">
         <span className="rich-text-block__eyebrow" aria-hidden="true">
-          <Sparkle size={16} weight="fill" /> Our roots
+          <Sparkle size={16} weight="fill" /> {t('Our roots')}
         </span>
-        {heading && <h2>{heading}</h2>}
+        {heading && <h2>{t(heading)}</h2>}
         <Leaf size={26} weight="regular" className="rich-text-block__story-divider" aria-hidden="true" />
         <div className="rich-text-block__story-body">
           {paragraphs.map((p, i) => <p key={i}>{p}</p>)}
@@ -86,9 +88,9 @@ function RichTextBlock({ heading, body, image, imageAlt, ctaLabel, ctaLink, vari
       <section className={`rich-text-block rich-text-block--feature ${image ? 'rich-text-block--feature-with-image' : ''}`}>
         <div className="rich-text-block__feature-text">
           <span className="rich-text-block__eyebrow" aria-hidden="true">
-            <SealCheck size={16} weight="fill" /> Pure &amp; natural
+            <SealCheck size={16} weight="fill" /> {t('Pure & natural')}
           </span>
-          {heading && <h2>{heading}</h2>}
+          {heading && <h2>{t(heading)}</h2>}
           {paragraphs.map((p, i) => <p key={i}>{p}</p>)}
           {cta}
         </div>
@@ -106,7 +108,7 @@ function RichTextBlock({ heading, body, image, imageAlt, ctaLabel, ctaLink, vari
   return (
     <section className={`rich-text-block ${image ? 'rich-text-block--with-image' : ''}`}>
       <div className="rich-text-block__text">
-        {heading && <h2>{heading}</h2>}
+        {heading && <h2>{t(heading)}</h2>}
         {paragraphs.map((p, i) => <p key={i}>{p}</p>)}
         {cta}
       </div>

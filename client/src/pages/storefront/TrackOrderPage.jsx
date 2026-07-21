@@ -3,6 +3,7 @@ import { CheckCircle } from '@phosphor-icons/react';
 import { getOrderById } from '../../api/orders.api';
 import { getPageBySlug } from '../../api/pages.api';
 import PageHeroBlock from '../../blocks/PageHeroBlock/PageHeroBlock.jsx';
+import { useLang } from '../../i18n/LanguageContext.jsx';
 import './TrackOrderPage.css';
 
 const STATUS_LABEL = {
@@ -15,6 +16,7 @@ const STATUS_LABEL = {
 // Heading/intro copy comes from the 'track-order' CMS page
 // (/admin/pages/track-order); the order lookup itself stays fully functional.
 function TrackOrderPage() {
+  const { t } = useLang();
   const [orderId, setOrderId] = useState('');
   const [order, setOrder] = useState(null);
   const [error, setError] = useState(null);
@@ -40,7 +42,7 @@ function TrackOrderPage() {
     }
   };
 
-  if (!page) return <p className="page-loading">Loading…</p>;
+  if (!page) return <p className="page-loading">{t('Loading…')}</p>;
 
   const hero = page.blocks.find((b) => b.blockType === 'pageHero')?.props || {};
 
@@ -51,24 +53,24 @@ function TrackOrderPage() {
         <form onSubmit={handleSubmit} className="track-order-page__form">
           <input
             type="text"
-            placeholder="Order ID"
+            placeholder={t('Order ID')}
             value={orderId}
             onChange={(e) => setOrderId(e.target.value)}
             required
           />
           <button type="submit" className="btn btn--primary" disabled={loading}>
-            {loading ? 'Searching…' : 'Track'}
+            {loading ? t('Searching…') : t('Track')}
           </button>
         </form>
 
-        {error && <p className="track-order-page__error">{error}</p>}
+        {error && <p className="track-order-page__error">{t(error)}</p>}
 
         {order && (
           <div className="track-order-page__result">
             <CheckCircle size={22} weight="fill" />
             <div>
-              <p className="track-order-page__status">{STATUS_LABEL[order.orderStatus] || order.orderStatus}</p>
-              <p className="track-order-page__meta">Placed {new Date(order.createdAt).toLocaleDateString()}</p>
+              <p className="track-order-page__status">{t(STATUS_LABEL[order.orderStatus] || order.orderStatus)}</p>
+              <p className="track-order-page__meta">{t('Placed')} {new Date(order.createdAt).toLocaleDateString()}</p>
             </div>
           </div>
         )}

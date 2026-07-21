@@ -1,6 +1,7 @@
 import { Plus, Trash, UploadSimple, CaretUp, CaretDown } from '@phosphor-icons/react';
 import toast from 'react-hot-toast';
 import { uploadImage } from '../../../api/media.api';
+import { useLang } from '../../../i18n/LanguageContext.jsx';
 import './VisualBlockEditor.css';
 
 // Field keys that hold prose and should render as a textarea. Suffix match,
@@ -86,32 +87,33 @@ function FieldRow({ label, hint, children }) {
 }
 
 function ImageField({ label, value, onChange, inert }) {
+  const { t } = useLang();
   const handleUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
     try {
       const res = await uploadImage(file);
       onChange(res.data.url);
-      toast.success('Image uploaded');
+      toast.success(t('Image uploaded'));
     } catch {
-      toast.error('Upload failed');
+      toast.error(t('Upload failed'));
     } finally {
       e.target.value = '';
     }
   };
 
   return (
-    <FieldRow label={label} hint={inert ? "This block's current design doesn't display this image." : undefined}>
+    <FieldRow label={label} hint={inert ? t("This block's current design doesn't display this image.") : undefined}>
       <div className="vbe-image-row">
         {value ? (
           <img src={value} alt="" className="vbe-image-preview" />
         ) : (
           <span className="vbe-image-preview vbe-image-preview--empty">—</span>
         )}
-        <input value={value || ''} onChange={(e) => onChange(e.target.value)} placeholder="Image URL" />
+        <input value={value || ''} onChange={(e) => onChange(e.target.value)} placeholder={t('Image URL')} />
         <label className="btn btn--sm btn--secondary vbe-upload-btn">
           <UploadSimple size={14} weight="bold" />
-          Upload
+          {t('Upload')}
           <input type="file" accept="image/*" onChange={handleUpload} style={{ display: 'none' }} />
         </label>
       </div>
@@ -120,10 +122,11 @@ function ImageField({ label, value, onChange, inert }) {
 }
 
 function EnumField({ label, value, options, onChange, hint }) {
+  const { t } = useLang();
   return (
     <FieldRow label={label} hint={hint}>
       <select value={value ?? options[0]} onChange={(e) => onChange(e.target.value)}>
-        {options.map((opt) => <option key={opt} value={opt}>{opt === '' ? '(none)' : opt}</option>)}
+        {options.map((opt) => <option key={opt} value={opt}>{opt === '' ? t('(none)') : opt}</option>)}
       </select>
     </FieldRow>
   );
@@ -147,6 +150,7 @@ function BooleanField({ label, value, onChange, hint }) {
 }
 
 function ArrayOfStringsField({ label, items = [], onChange }) {
+  const { t } = useLang();
   const update = (i, v) => { const next = [...items]; next[i] = v; onChange(next); };
   const remove = (i) => onChange(items.filter((_, idx) => idx !== i));
   const add = () => onChange([...items, '']);
@@ -158,14 +162,14 @@ function ArrayOfStringsField({ label, items = [], onChange }) {
           // eslint-disable-next-line react/no-array-index-key
           <div key={i} className="vbe-string-list__row">
             <input value={item} onChange={(e) => update(i, e.target.value)} />
-            <button type="button" className="icon-btn icon-btn--danger" onClick={() => remove(i)} title="Remove">
+            <button type="button" className="icon-btn icon-btn--danger" onClick={() => remove(i)} title={t('Remove')}>
               <Trash size={16} />
             </button>
           </div>
         ))}
       </div>
       <button type="button" className="btn btn--sm btn--secondary vbe-add-btn" onClick={add}>
-        <Plus size={14} weight="bold" /> Add
+        <Plus size={14} weight="bold" /> {t('Add')}
       </button>
     </FieldRow>
   );
@@ -180,6 +184,7 @@ const itemPreview = (item) => {
 };
 
 function ArrayOfObjectsField({ blockType, fieldKey, label, items = [], onChange }) {
+  const { t } = useLang();
   const template = ARRAY_ITEM_TEMPLATES[`${blockType}.${fieldKey}`] || ARRAY_ITEM_TEMPLATES[fieldKey] || {};
   const update = (i, next) => { const copy = [...items]; copy[i] = next; onChange(copy); };
   const remove = (i) => onChange(items.filter((_, idx) => idx !== i));
@@ -201,13 +206,13 @@ function ArrayOfObjectsField({ blockType, fieldKey, label, items = [], onChange 
             <div className="vbe-item__head">
               <span className="vbe-item__index">{i + 1}</span>
               <span className="vbe-item__title">{itemPreview(item)}</span>
-              <button type="button" className="icon-btn" onClick={() => move(i, -1)} disabled={i === 0} title="Move up">
+              <button type="button" className="icon-btn" onClick={() => move(i, -1)} disabled={i === 0} title={t('Move up')}>
                 <CaretUp size={14} weight="bold" />
               </button>
-              <button type="button" className="icon-btn" onClick={() => move(i, 1)} disabled={i === items.length - 1} title="Move down">
+              <button type="button" className="icon-btn" onClick={() => move(i, 1)} disabled={i === items.length - 1} title={t('Move down')}>
                 <CaretDown size={14} weight="bold" />
               </button>
-              <button type="button" className="icon-btn icon-btn--danger" onClick={() => remove(i)} title="Remove item">
+              <button type="button" className="icon-btn icon-btn--danger" onClick={() => remove(i)} title={t('Remove item')}>
                 <Trash size={16} />
               </button>
             </div>
@@ -227,7 +232,7 @@ function ArrayOfObjectsField({ blockType, fieldKey, label, items = [], onChange 
         ))}
       </div>
       <button type="button" className="btn btn--sm btn--secondary vbe-add-btn" onClick={add}>
-        <Plus size={14} weight="bold" /> Add item
+        <Plus size={14} weight="bold" /> {t('Add item')}
       </button>
     </FieldRow>
   );
@@ -236,8 +241,9 @@ function ArrayOfObjectsField({ blockType, fieldKey, label, items = [], onChange 
 // Renders a single field, dispatching to the right input type based on the
 // field's key name and current value's JS type.
 function FieldGenerator({ blockType, parentKey = '', fieldKey, value, onChange }) {
-  const label = humanizeKey(fieldKey);
-  const hint = FIELD_HINTS[fieldKey];
+  const { t } = useLang();
+  const label = t(humanizeKey(fieldKey));
+  const hint = t(FIELD_HINTS[fieldKey]);
 
   if (isImageKey(fieldKey)) {
     const inert = INERT_IMAGE_FIELDS.has(`${blockType}.${fieldKey}`) || INERT_IMAGE_FIELDS.has(`${parentKey}.${fieldKey}`);
@@ -289,6 +295,7 @@ function FieldGenerator({ blockType, parentKey = '', fieldKey, value, onChange }
 const PRODUCT_GRID_SOURCE_FIELD = { manual: 'productIds', tag: 'tag', category: 'category' };
 
 function ProductGridFields({ value, onChange }) {
+  const { t } = useLang();
   const source = value.source || 'manual';
   const conditionalKey = PRODUCT_GRID_SOURCE_FIELD[source];
   const conditionalValue = value[conditionalKey] ?? (conditionalKey === 'productIds' ? [] : '');
@@ -297,11 +304,11 @@ function ProductGridFields({ value, onChange }) {
     <>
       <FieldGenerator blockType="productGrid" fieldKey="title" value={value.title || ''} onChange={(v) => onChange({ ...value, title: v })} />
       <EnumField
-        label="Source"
+        label={t('Source')}
         value={source}
         options={ENUM_OPTIONS.source}
         onChange={(v) => onChange({ ...value, source: v })}
-        hint="How this grid picks its products."
+        hint={t('How this grid picks its products.')}
       />
       <FieldGenerator blockType="productGrid" fieldKey={conditionalKey} value={conditionalValue} onChange={(v) => onChange({ ...value, [conditionalKey]: v })} />
       <FieldGenerator blockType="productGrid" fieldKey="limit" value={value.limit ?? 4} onChange={(v) => onChange({ ...value, limit: v })} />
@@ -310,6 +317,7 @@ function ProductGridFields({ value, onChange }) {
 }
 
 function VisualBlockEditor({ blockType, value, onChange }) {
+  const { t } = useLang();
   const setField = (key, v) => onChange({ ...value, [key]: v });
 
   if (blockType === 'productGrid') {
@@ -321,7 +329,7 @@ function VisualBlockEditor({ blockType, value, onChange }) {
   // full value. They remain inspectable in the Code tab.
   const keys = Object.keys(value).filter((k) => !k.startsWith('_'));
   if (keys.length === 0) {
-    return <p className="vbe-empty">This block has no editable fields.</p>;
+    return <p className="vbe-empty">{t('This block has no editable fields.')}</p>;
   }
 
   return (

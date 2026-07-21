@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Sparkle, Leaf, Package, ShoppingBag } from '@phosphor-icons/react';
+import { useLang } from '../../i18n/LanguageContext.jsx';
 import '../../pages/storefront/WorkshopsPage.css';
 import '../../pages/storefront/AboutMakerPage.css';
 import '../../pages/storefront/ContactPage.css';
@@ -15,18 +16,19 @@ const ICONS = { package: Package, 'shopping-bag': ShoppingBag };
 // pages whose hero is a bare <h1> (FAQ, Shipping & Returns, Checkout, Cart)
 // fall through to the default case.
 function PageHeroBlock({ variant = 'plain', icon, eyebrow, heading, subtext, ctaLabel, ctaLink }) {
+  const { t } = useLang();
   const Icon = icon && ICONS[icon];
   const cta = ctaLabel && ctaLink
-    ? <Link to={ctaLink} className="btn btn--primary">{ctaLabel}</Link>
+    ? <Link to={ctaLink} className="btn btn--primary">{t(ctaLabel)}</Link>
     : null;
 
   if (variant === 'about-maker') {
     return (
       <div className="about-maker__hero">
         <span className="about-maker__eyebrow">
-          <Sparkle size={16} weight="fill" /> {eyebrow}
+          <Sparkle size={16} weight="fill" /> {t(eyebrow)}
         </span>
-        <h1>{heading}</h1>
+        <h1>{t(heading)}</h1>
         <Leaf size={26} weight="regular" className="about-maker__hero-divider" aria-hidden="true" />
       </div>
     );
@@ -35,8 +37,8 @@ function PageHeroBlock({ variant = 'plain', icon, eyebrow, heading, subtext, cta
   if (variant === 'workshops') {
     return (
       <div className="workshops-page__hero">
-        <h1>{heading}</h1>
-        {subtext && <p>{subtext}</p>}
+        <h1>{t(heading)}</h1>
+        {subtext && <p>{t(subtext)}</p>}
       </div>
     );
   }
@@ -44,8 +46,8 @@ function PageHeroBlock({ variant = 'plain', icon, eyebrow, heading, subtext, cta
   if (variant === 'contact') {
     return (
       <div className="contact-page__hero">
-        <h1>{heading}</h1>
-        {subtext && <p>{subtext}</p>}
+        <h1>{t(heading)}</h1>
+        {subtext && <p>{t(subtext)}</p>}
       </div>
     );
   }
@@ -53,8 +55,8 @@ function PageHeroBlock({ variant = 'plain', icon, eyebrow, heading, subtext, cta
   if (variant === 'gift-sets') {
     return (
       <div className="gift-sets-page__hero">
-        <h1>{heading}</h1>
-        {subtext && <p>{subtext}</p>}
+        <h1>{t(heading)}</h1>
+        {subtext && <p>{t(subtext)}</p>}
       </div>
     );
   }
@@ -62,8 +64,8 @@ function PageHeroBlock({ variant = 'plain', icon, eyebrow, heading, subtext, cta
   if (variant === 'legal') {
     return (
       <>
-        <h1>{heading}</h1>
-        {subtext && <p className="legal-page__updated">{subtext}</p>}
+        <h1>{t(heading)}</h1>
+        {subtext && <p className="legal-page__updated">{t(subtext)}</p>}
       </>
     );
   }
@@ -72,8 +74,8 @@ function PageHeroBlock({ variant = 'plain', icon, eyebrow, heading, subtext, cta
     return (
       <>
         {Icon && <Icon size={36} weight="regular" className="track-order-page__icon" />}
-        <h1>{heading}</h1>
-        {subtext && <p>{subtext}</p>}
+        <h1>{t(heading)}</h1>
+        {subtext && <p>{t(subtext)}</p>}
       </>
     );
   }
@@ -82,15 +84,15 @@ function PageHeroBlock({ variant = 'plain', icon, eyebrow, heading, subtext, cta
     return (
       <>
         {Icon && <Icon size={48} weight="regular" />}
-        <h1>{heading}</h1>
-        {subtext && <p>{subtext}</p>}
+        <h1>{t(heading)}</h1>
+        {subtext && <p>{t(subtext)}</p>}
         {cta}
       </>
     );
   }
 
   // 'faq' | 'shipping-returns' | 'checkout' | 'cart' | plain - bare heading
-  return <h1>{heading}</h1>;
+  return <h1>{t(heading)}</h1>;
 }
 
 export default PageHeroBlock;

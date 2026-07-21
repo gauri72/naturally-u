@@ -3,8 +3,10 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { createProduct, updateProduct, getProductBySlug } from '../../../api/products.api';
 import { uploadImage } from '../../../api/media.api';
 import toast from 'react-hot-toast';
+import { useLang } from '../../../i18n/LanguageContext.jsx';
 
 function ProductFormPage() {
+  const { t } = useLang();
   const { id } = useParams();
   const navigate = useNavigate();
   const isEdit = Boolean(id);
@@ -27,44 +29,44 @@ function ProductFormPage() {
       const payload = { ...form, price: Number(form.price), stock: Number(form.stock) };
       if (isEdit) await updateProduct(id, payload);
       else await createProduct(payload);
-      toast.success('Product saved');
+      toast.success(t('Product saved'));
       navigate('/admin/products');
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to save product');
+      toast.error(err.response?.data?.message || t('Failed to save product'));
     }
   };
 
   return (
     <div>
       <div className="admin-page-header">
-        <h1>{isEdit ? 'Edit' : 'New'} Product</h1>
+        <h1>{isEdit ? t('Edit Product') : t('New Product')}</h1>
       </div>
       <form onSubmit={handleSubmit} className="admin-form">
         <div className="admin-field">
-          <label>Name</label>
+          <label>{t('Name')}</label>
           <input name="name" value={form.name} onChange={handleChange} required />
         </div>
         <div className="admin-field">
-          <label>Slug</label>
+          <label>{t('Slug')}</label>
           <input name="slug" value={form.slug} onChange={handleChange} required />
         </div>
         <div className="admin-field">
-          <label>Description</label>
+          <label>{t('Description')}</label>
           <textarea name="description" rows={4} value={form.description} onChange={handleChange} required />
         </div>
         <div className="admin-field">
-          <label>Price</label>
+          <label>{t('Price')}</label>
           <input name="price" type="number" value={form.price} onChange={handleChange} required />
         </div>
         <div className="admin-field">
-          <label>Stock</label>
+          <label>{t('Stock')}</label>
           <input name="stock" type="number" value={form.stock} onChange={handleChange} required />
         </div>
         <div className="admin-field">
-          <label>Image</label>
+          <label>{t('Image')}</label>
           <input type="file" accept="image/*" onChange={handleImageUpload} />
         </div>
-        <button type="submit" className="btn btn--primary" style={{ alignSelf: 'flex-start' }}>Save Product</button>
+        <button type="submit" className="btn btn--primary" style={{ alignSelf: 'flex-start' }}>{t('Save Product')}</button>
       </form>
     </div>
   );

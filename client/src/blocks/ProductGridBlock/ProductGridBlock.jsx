@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Leaf, ArrowRight } from '@phosphor-icons/react';
 import { getProducts } from '../../api/products.api';
 import ProductCard from '../../components/product/ProductCard.jsx';
+import { useLang } from '../../i18n/LanguageContext.jsx';
 import bestSellerOne from '../../assets/images/home/best-seller-one.png';
 import bestSellerTwo from '../../assets/images/home/best-seller-two.png';
 import bestSellerThree from '../../assets/images/home/best-seller-three.png';
@@ -20,6 +21,7 @@ const localImageBySlug = {
 
 // Props: { title, source: 'manual'|'tag'|'category', tag?, category?, productIds?, limit? }
 function ProductGridBlock({ title, source, tag, category, productIds = [], limit = 4 }) {
+  const { t } = useLang();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -38,17 +40,17 @@ function ProductGridBlock({ title, source, tag, category, productIds = [], limit
     <section className="product-grid-block">
       <div className="product-grid-block__header">
         <h2>
-          {title}
+          {t(title)}
           <Leaf size={34} weight="fill" color="var(--color-primary)" />
         </h2>
         <a href="/shop" className="product-grid-block__view-all">
-          <span className="product-grid-block__view-all-full">View All Products</span>
-          <span className="product-grid-block__view-all-short">View all</span>
+          <span className="product-grid-block__view-all-full">{t('View All Products')}</span>
+          <span className="product-grid-block__view-all-short">{t('View all')}</span>
           <ArrowRight size={16} weight="bold" />
         </a>
       </div>
       {loading ? (
-        <p>Loading products…</p>
+        <p>{t('Loading products…')}</p>
       ) : (
         <div className="product-grid-block__grid">
           {products.map((product) => {

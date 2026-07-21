@@ -1,32 +1,34 @@
 import { Image, Trash } from '@phosphor-icons/react';
 import toast from 'react-hot-toast';
 import './ImageUploadGrid.css';
+import { useLang } from '../../i18n/LanguageContext.jsx';
 
 // Reusable per-section image manager: upload, caption, delete. Each action
 // hits its own endpoint directly (upload-and-persist in one request) rather
 // than uploading to S3 and hoping a parent "Save" gets clicked later, which
 // avoids orphaned S3 objects if the user navigates away mid-edit.
 function ImageUploadGrid({ images, onUpload, onCaptionChange, onDelete }) {
+  const { t } = useLang();
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
     try {
       await onUpload(file);
-      toast.success('Image uploaded');
+      toast.success(t('Image uploaded'));
     } catch {
-      toast.error('Upload failed');
+      toast.error(t('Upload failed'));
     } finally {
       e.target.value = '';
     }
   };
 
   const handleDelete = async (imageId) => {
-    if (!window.confirm('Delete this image?')) return;
+    if (!window.confirm(t('Delete this image?'))) return;
     try {
       await onDelete(imageId);
-      toast.success('Image deleted');
+      toast.success(t('Image deleted'));
     } catch {
-      toast.error('Delete failed');
+      toast.error(t('Delete failed'));
     }
   };
 
@@ -36,7 +38,7 @@ function ImageUploadGrid({ images, onUpload, onCaptionChange, onDelete }) {
       {images.length === 0 ? (
         <div className="admin-empty-state">
           <Image size={36} />
-          <p>No images yet.</p>
+          <p>{t('No images yet.')}</p>
         </div>
       ) : (
         <div className="admin-grid image-upload-grid">
@@ -46,7 +48,7 @@ function ImageUploadGrid({ images, onUpload, onCaptionChange, onDelete }) {
               <input
                 type="text"
                 value={img.caption}
-                placeholder="Caption"
+                placeholder={t('Caption')}
                 onChange={(e) => onCaptionChange(img._id, e.target.value)}
               />
               <button
@@ -55,7 +57,7 @@ function ImageUploadGrid({ images, onUpload, onCaptionChange, onDelete }) {
                 onClick={() => handleDelete(img._id)}
               >
                 <Trash size={14} weight="bold" style={{ verticalAlign: '-2px', marginRight: 4 }} />
-                Delete
+                {t('Delete')}
               </button>
             </div>
           ))}

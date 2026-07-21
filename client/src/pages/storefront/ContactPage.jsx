@@ -4,11 +4,13 @@ import toast from 'react-hot-toast';
 import { submitContactMessage } from '../../api/contact.api';
 import { getPageBySlug } from '../../api/pages.api';
 import PageHeroBlock from '../../blocks/PageHeroBlock/PageHeroBlock.jsx';
+import { useLang } from '../../i18n/LanguageContext.jsx';
 import './ContactPage.css';
 
 // Hero copy + contact info come from the 'contact' CMS page
 // (/admin/pages/contact); the form itself stays fully functional/code-driven.
 function ContactPage() {
+  const { t } = useLang();
   const [form, setForm] = useState({ name: '', email: '', message: '' });
   const [submitting, setSubmitting] = useState(false);
   const [page, setPage] = useState(null);
@@ -30,17 +32,17 @@ function ContactPage() {
     setSubmitting(true);
     try {
       await submitContactMessage(form);
-      toast.success("Message sent! We'll get back to you soon.");
+      toast.success(t("Message sent! We'll get back to you soon."));
       setForm({ name: '', email: '', message: '' });
     } catch {
-      toast.error('Something went wrong. Please try again.');
+      toast.error(t('Something went wrong. Please try again.'));
     } finally {
       setSubmitting(false);
     }
   };
 
-  if (error) return <p className="page-error">{error}</p>;
-  if (!page) return <p className="page-loading">Loading…</p>;
+  if (error) return <p className="page-error">{t(error)}</p>;
+  if (!page) return <p className="page-loading">{t('Loading…')}</p>;
 
   const hero = page.blocks.find((b) => b.blockType === 'pageHero')?.props || {};
   const content = page.blocks.find((b) => b.blockType === 'contactPageContent')?.props || {};
@@ -55,41 +57,41 @@ function ContactPage() {
           <div className="contact-page__info-card">
             <EnvelopeSimple size={24} weight="regular" />
             <div>
-              <h3>Email</h3>
+              <h3>{t('Email')}</h3>
               <a href={`mailto:${content.email}`}>{content.email}</a>
             </div>
           </div>
           <div className="contact-page__info-card">
             <Phone size={24} weight="regular" />
             <div>
-              <h3>Phone</h3>
+              <h3>{t('Phone')}</h3>
               <a href={telHref}>{content.phone}</a>
             </div>
           </div>
           <div className="contact-page__info-card">
             <MapPin size={24} weight="regular" />
             <div>
-              <h3>Location</h3>
-              <p>{content.location}</p>
+              <h3>{t('Location')}</h3>
+              <p>{t(content.location)}</p>
             </div>
           </div>
         </div>
 
         <form className="contact-page__form" onSubmit={handleSubmit}>
           <label>
-            Name
+            {t('Name')}
             <input name="name" value={form.name} onChange={handleChange} required />
           </label>
           <label>
-            Email
+            {t('Email')}
             <input type="email" name="email" value={form.email} onChange={handleChange} required />
           </label>
           <label>
-            Message
+            {t('Message')}
             <textarea name="message" rows={5} value={form.message} onChange={handleChange} required />
           </label>
           <button type="submit" className="btn btn--primary" disabled={submitting}>
-            {submitting ? 'Sending…' : 'Send Message'}
+            {submitting ? t('Sending…') : t('Send Message')}
           </button>
         </form>
       </div>

@@ -5,6 +5,7 @@ import FooterBlock from '../../blocks/FooterBlock/FooterBlock.jsx';
 import AnnouncementBarBlock from '../../blocks/AnnouncementBarBlock/AnnouncementBarBlock.jsx';
 import ScrollToTop from '../common/ScrollToTop.jsx';
 import ErrorBoundary from '../common/ErrorBoundary.jsx';
+import LanguageSwitcher from '../common/LanguageSwitcher.jsx';
 import { getSettings } from '../../api/settings.api';
 
 // Wraps every public storefront page. The announcement bar sits above
@@ -33,6 +34,7 @@ function StorefrontLayout() {
         </ErrorBoundary>
       </main>
       <FooterBlock />
+      <LanguageSwitcher />
     </>
   );
 }

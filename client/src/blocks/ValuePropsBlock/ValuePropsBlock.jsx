@@ -1,4 +1,5 @@
 import { Plant, HandHeart, SealCheck, Globe } from '@phosphor-icons/react';
+import { useLang } from '../../i18n/LanguageContext.jsx';
 import './ValuePropsBlock.css';
 
 const iconProps = { size: 56, weight: 'regular' };
@@ -13,6 +14,7 @@ const icons = [
 // Icons are fixed brand creative (matching FeatureStripBlock's approach),
 // mapped by position rather than sourced from CMS data.
 function ValuePropsBlock({ items = [] }) {
+  const { t } = useLang();
   return (
     <section className="value-props-block">
       {items.map((item, i) => {
@@ -23,8 +25,8 @@ function ValuePropsBlock({ items = [] }) {
               <Icon />
             </span>
             <div className="value-props-block__text">
-              <h4>{item.title}</h4>
-              <p>{item.subtitle}</p>
+              <h4>{t(item.title)}</h4>
+              <p>{t(item.subtitle)}</p>
             </div>
           </div>
         );

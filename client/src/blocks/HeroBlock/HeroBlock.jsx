@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Plant, HandHeart, Rabbit, Leaf } from '@phosphor-icons/react';
+import { useLang } from '../../i18n/LanguageContext.jsx';
 import desktopHeroImg from '../../assets/images/home/desktop-hero-background.png';
 import mobileHeroImg from '../../assets/images/home/mobile-hero-background.png';
 import './HeroBlock.css';
@@ -37,6 +38,7 @@ const trustBadges = [
  * from the `image` prop.
  */
 function HeroBlock({ heading, subtext, ctaButtons = [] }) {
+  const { t } = useLang();
   return (
     <section className="hero-block">
       <BadgeGradientDefs />
@@ -53,11 +55,11 @@ function HeroBlock({ heading, subtext, ctaButtons = [] }) {
             className="hero-block__photo"
             style={{ '--hero-mobile-bg': `url(${mobileHeroImg})` }}
           >
-            <h1>{heading}</h1>
+            <h1>{t(heading)}</h1>
 
             {subtext && (
               <p className="hero-block__subtext">
-                {subtext.split('\n').map((line, i) => (
+                {t(subtext).split('\n').map((line, i) => (
                   <span className="hero-block__subtext-line" key={i}>
                     {line}
                   </span>
@@ -72,7 +74,7 @@ function HeroBlock({ heading, subtext, ctaButtons = [] }) {
                   to={btn.link}
                   className={`btn btn--${btn.style || 'primary'}`}
                 >
-                  {btn.label}
+                  {t(btn.label)}
                 </Link>
               ))}
             </div>
@@ -85,7 +87,7 @@ function HeroBlock({ heading, subtext, ctaButtons = [] }) {
                   <Icon />
                 </span>
                 <span className="hero-block__badge-label">
-                  {label.split('\n').map((line, i) => (
+                  {t(label).split('\n').map((line, i) => (
                     <span className="hero-block__badge-label-line" key={i}>
                       {line}
                     </span>
