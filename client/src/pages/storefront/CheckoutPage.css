@@ -53,6 +53,22 @@
 .checkout-page__submit { margin-top: var(--space-sm); }
 .checkout-page__submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
 
+.checkout-page__form--payment { gap: var(--space-lg); }
+
+.checkout-page__back-link {
+  align-self: flex-start;
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--color-text-muted);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+.checkout-page__back-link:hover { color: var(--color-primary); }
+
 .checkout-page__summary {
   flex: 1 1 280px;
   background: color-mix(in srgb, var(--color-background) 94%, var(--color-brown) 6%);

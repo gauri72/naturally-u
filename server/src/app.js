@@ -15,6 +15,8 @@ const productRoutes = require('./routes/product.routes');
 const categoryRoutes = require('./routes/category.routes');
 const cartRoutes = require('./routes/cart.routes');
 const orderRoutes = require('./routes/order.routes');
+const paymentRoutes = require('./routes/payment.routes');
+const { handleStripeWebhook } = require('./controllers/webhook.controller');
 const reviewRoutes = require('./routes/review.routes');
 const mediaRoutes = require('./routes/media.routes');
 const settingsRoutes = require('./routes/settings.routes');
@@ -30,6 +32,11 @@ app.use(cors({
   origin: process.env.CLIENT_URL?.split(',') || '*',
   credentials: true,
 }));
+// Stripe webhook signature verification needs the raw, unparsed request
+// body - this route must be registered before express.json() so the body
+// reaches the handler untouched. Everything else uses the JSON parser below.
+app.post('/api/payments/webhook', express.raw({ type: 'application/json' }), handleStripeWebhook);
+
 app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -47,6 +54,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/payments', paymentRoutes); // Stripe/mock payment intents, webhook, status polling
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/media', mediaRoutes);       // S3 uploads for admin media library
 app.use('/api/settings', settingsRoutes); // global site settings (theme, nav, footer)

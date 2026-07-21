@@ -65,6 +65,7 @@ function CartPage() {
                   type="button"
                   className="icon-btn"
                   onClick={() => updateQuantity(item.productId, item.quantity + 1)}
+                  disabled={item.stock != null && item.quantity >= item.stock}
                   aria-label="Increase quantity"
                 >
                   <Plus size={14} weight="bold" />

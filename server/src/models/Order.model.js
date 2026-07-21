@@ -29,7 +29,18 @@ const orderSchema = new mongoose.Schema(
     shippingCost: { type: Number, default: 0 },
     total: { type: Number, required: true },
     paymentStatus: { type: String, enum: ['pending', 'paid', 'failed', 'refunded'], default: 'pending' },
-    paymentIntentId: { type: String }, // Stripe payment intent reference
+    paymentIntentId: { type: String, index: true }, // Stripe payment intent reference; also mock intent ids
+    paymentMode: { type: String, enum: ['live', 'test', 'mock'], default: 'mock' },
+    paymentError: { type: String }, // last known failure reason, if any
+    // Guards the webhook/mock-confirm path against duplicate delivery (Stripe
+    // retries webhooks; a mock confirm could double-fire) so stock is only
+    // ever decremented once and only one confirmation email is ever sent.
+    stockDecremented: { type: Boolean, default: false },
+    confirmationEmailSentAt: { type: Date },
+    // true when SMTP isn't configured and the confirmation email was only
+    // written to server/tmp/emails/ instead of actually sent - lets the API
+    // response and admin UI surface this instead of it being a silent log line.
+    confirmationEmailSimulated: { type: Boolean, default: false },
     orderStatus: { type: String, enum: ['processing', 'shipped', 'delivered', 'cancelled'], default: 'processing' },
   },
   { timestamps: true }

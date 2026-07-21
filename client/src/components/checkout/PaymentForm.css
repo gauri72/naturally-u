@@ -1,0 +1,96 @@
+.payment-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.payment-form h3 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: 1rem;
+}
+
+.payment-form__mock-note {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-xs);
+  background: color-mix(in srgb, var(--color-accent) 20%, var(--color-white));
+  border: 1px solid var(--color-accent-dark);
+  border-radius: var(--radius-sm);
+  padding: var(--space-sm) var(--space-md);
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+.payment-form__mock-note svg { flex-shrink: 0; margin-top: 2px; color: var(--color-accent-dark); }
+/* The text is a flex item alongside the icon; without an explicit min-width
+   it won't shrink below its content size, which on narrow viewports pushes
+   the paragraph wider than the card and makes it wrap in a lopsided,
+   column-like way instead of flowing normally under the icon. */
+.payment-form__mock-note-text { flex: 1; min-width: 0; }
+.payment-form__mock-note code {
+  background: var(--color-background);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+}
+
+.payment-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+.payment-form__field input {
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--color-text);
+  background: var(--color-white);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.payment-form__field input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(63, 163, 77, 0.12);
+  outline: none;
+}
+
+.payment-form__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+}
+
+.payment-form__element-wrap {
+  padding: var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-white);
+}
+
+.payment-form__submit {
+  width: 100%;
+  margin-top: var(--space-xs);
+}
+.payment-form__submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+
+.payment-form__error {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  background: rgba(181, 67, 58, 0.08);
+  border: 1px solid rgba(181, 67, 58, 0.3);
+  color: #B5433A;
+  border-radius: var(--radius-sm);
+  padding: var(--space-sm) var(--space-md);
+  font-size: 0.85rem;
+}
+
+@media (max-width: 480px) {
+  .payment-form__row { grid-template-columns: 1fr; }
+}

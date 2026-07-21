@@ -8,6 +8,7 @@ import ShopPage from '../pages/storefront/ShopPage.jsx';
 import ProductPage from '../pages/storefront/ProductPage.jsx';
 import CartPage from '../pages/storefront/CartPage.jsx';
 import CheckoutPage from '../pages/storefront/CheckoutPage.jsx';
+import OrderSuccessPage from '../pages/storefront/OrderSuccessPage.jsx';
 import GiftSetsPage from '../pages/storefront/GiftSetsPage.jsx';
 import FaqPage from '../pages/storefront/FaqPage.jsx';
 import ShippingReturnsPage from '../pages/storefront/ShippingReturnsPage.jsx';
@@ -46,6 +47,7 @@ function AppRoutes() {
         <Route path="/gift-sets" element={<GiftSetsPage />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/checkout" element={<CheckoutPage />} />
+        <Route path="/order-success/:orderId" element={<OrderSuccessPage />} />
         <Route path="/faq" element={<FaqPage />} />
         <Route path="/shipping-returns" element={<ShippingReturnsPage />} />
         <Route path="/track-order" element={<TrackOrderPage />} />
