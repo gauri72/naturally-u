@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Sparkle, Leaf, Package, ShoppingBag } from '@phosphor-icons/react';
+import { Sparkle, Leaf, Package, ShoppingCart } from '@phosphor-icons/react';
 import { useLang } from '../../i18n/LanguageContext.jsx';
 import '../../pages/storefront/WorkshopsPage.css';
 import '../../pages/storefront/AboutMakerPage.css';
@@ -8,7 +8,7 @@ import '../../pages/storefront/GiftSetsPage.css';
 import '../../pages/storefront/LegalPage.css';
 import '../../pages/storefront/TrackOrderPage.css';
 
-const ICONS = { package: Package, 'shopping-bag': ShoppingBag };
+const ICONS = { package: Package, 'shopping-bag': ShoppingCart };
 
 // Props: { variant, icon?, eyebrow?, heading, subtext?, ctaLabel?, ctaLink? }
 // Simple heading(+subtext) hero, reused across several interior pages.

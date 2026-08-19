@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { MagnifyingGlass, ShoppingBag, X } from '@phosphor-icons/react';
+import { MagnifyingGlass, ShoppingCart, X } from '@phosphor-icons/react';
 import { useCart } from '../../context/CartContext.jsx';
 import { useLang } from '../../i18n/LanguageContext.jsx';
 import desktopLogo from '../../assets/images/home/desktop-header-logo.png';
@@ -8,6 +8,7 @@ import mobileLogo from '../../assets/images/home/mobile-header-logo.png';
 import './Header.css';
 
 const navLinks = [
+  { label: 'Home', path: '/' },
   { label: 'Shop', path: '/shop' },
   { label: 'Gift Sets', path: '/gift-sets' },
   { label: 'About', path: '/about-the-maker' },
@@ -79,7 +80,7 @@ function Header() {
 
         <nav className={`site-header__nav ${menuOpen ? 'site-header__nav--open' : ''}`}>
           {navLinks.map((link) => (
-            <NavLink key={link.path} to={link.path} onClick={() => setMenuOpen(false)}>
+            <NavLink key={link.path} to={link.path} end={link.path === '/'} onClick={() => setMenuOpen(false)}>
               {t(link.label)}
             </NavLink>
           ))}
@@ -105,7 +106,7 @@ function Header() {
             </button>
           )}
           <Link to="/cart" className="site-header__icon-btn site-header__cart" aria-label={t('Cart')}>
-            <ShoppingBag size={20} weight="regular" />
+            <ShoppingCart size={20} weight="regular" />
             {itemCount > 0 && <span className="badge">{itemCount}</span>}
           </Link>
         </div>

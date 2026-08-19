@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ShoppingBag, Star } from '@phosphor-icons/react';
+import { ShoppingCart, Star } from '@phosphor-icons/react';
 import { useCart } from '../../context/CartContext.jsx';
 import { useLang } from '../../i18n/LanguageContext.jsx';
 import './ProductCard.css';
@@ -41,7 +41,7 @@ function ProductCard({ product }) {
             aria-label={`${t('Add to cart')} — ${t(product.name)}`}
             onClick={() => addItem(product)}
           >
-            <ShoppingBag size={17} weight="bold" />
+            <ShoppingCart size={17} weight="bold" />
           </button>
         </div>
       </div>

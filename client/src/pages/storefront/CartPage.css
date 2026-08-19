@@ -38,7 +38,7 @@
 .cart-page__item:last-child { border-bottom: none; }
 .cart-page__item:hover { background-color: color-mix(in srgb, var(--color-background) 96%, var(--color-brown) 4%); }
 
-.cart-page__item img { width: 80px; height: 80px; object-fit: cover; border-radius: var(--radius-sm); flex-shrink: 0; }
+.cart-page__item img { width: 80px; height: 80px; object-fit: contain; background: var(--color-accent-dark); border-radius: var(--radius-sm); flex-shrink: 0; }
 .cart-page__item-info { flex: 1; min-width: 0; }
 .cart-page__item-info h4 { font-family: var(--font-body); }
 .cart-page__item-price { color: var(--color-text-muted); font-size: 0.85rem; }

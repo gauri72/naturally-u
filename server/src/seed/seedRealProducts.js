@@ -237,6 +237,71 @@ const manifest = [
     ],
   },
   {
+    slug: 'goat-milk-face-cream',
+    name: 'Goat Milk Face Cream',
+    shortDescription: 'A goat milk moisturizer for soft, nourished skin.',
+    description:
+      'A daily face cream built on goat milk, chosen for its gentle exfoliating and moisturizing qualities. Made '
+      + 'without synthetic fragrance or chemical additives. A patch test is recommended before first use.',
+    price: 10.0,
+    ingredients: [],
+    tags: ['skincare'],
+    stock: 0,
+    images: ['https://static.wixstatic.com/media/d4dc1f_4a54ebc07aad4a1fa8c71de12fd92814~mv2.jpeg'],
+  },
+  {
+    slug: 'hair-bath-liquid',
+    name: 'Hair Bath Liquid',
+    shortDescription: 'A natural liquid shampoo for everyday hair cleansing.',
+    description:
+      'A gentle liquid shampoo formulated without synthetic fragrance or chemical additives, for everyday hair '
+      + 'and scalp cleansing. A patch test is recommended before first use.',
+    price: 10.0,
+    ingredients: [],
+    tags: ['haircare'],
+    stock: 30,
+    images: ['https://static.wixstatic.com/media/d4dc1f_f0175a370a3b4edb89e6f812ede1993d~mv2.jpeg'],
+  },
+  {
+    slug: 'rosy-soft-lotion-bar',
+    name: 'Rosy Soft Lotion Bar',
+    shortDescription: 'A rose-scented solid lotion bar for soft, hydrated skin.',
+    description:
+      'A solid, melt-on-contact lotion bar finished with a soft rose scent, formulated without synthetic '
+      + 'fragrance or chemical additives. A patch test is recommended before first use.',
+    price: 10.0,
+    ingredients: [],
+    tags: ['skincare'],
+    stock: 0,
+    images: ['https://static.wixstatic.com/media/d4dc1f_f17a319f38834e37888fbe947019b38b~mv2.jpeg'],
+  },
+  {
+    slug: 'fruity-lip-balm',
+    name: 'Fruity Lip Balm',
+    shortDescription: 'A fruity lip balm for soft, moisturized lips.',
+    description:
+      'A moisturizing lip balm with a light fruity scent, built without synthetic fragrance or chemical '
+      + 'additives. Comes in a small recyclable tin. A patch test is recommended before first use.',
+    price: 5.0,
+    ingredients: [],
+    tags: ['skincare'],
+    stock: 0,
+    images: ['https://static.wixstatic.com/media/d4dc1f_e9e18e201b0b4d2f91acd536fb3231e2~mv2.jpeg'],
+  },
+  {
+    slug: 'coconut-and-oatmeal-soap',
+    name: 'Coconut and Oatmeal Soap',
+    shortDescription: 'A coconut milk and oatmeal soap with spearmint, bergamot, and mandarin.',
+    description:
+      'Coconut milk and oatmeal come together with the goodness of spearmint, bergamot, and mandarin essential '
+      + 'oils in this bar, naturally coloured with white clay and a hint of turmeric.',
+    price: 15.0,
+    ingredients: [],
+    tags: ['soap'],
+    stock: 0,
+    images: ['https://static.wixstatic.com/media/d4dc1f_3e199e4f3af847199b665c67e03eec80~mv2.jpeg'],
+  },
+  {
     slug: 'uptan',
     name: 'Uptan Soap',
     shortDescription: 'A gram flour and turmeric soap based on the traditional Indian uptan ritual.',

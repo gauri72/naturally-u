@@ -11,7 +11,7 @@
 .product-card__image {
   display: block;
   overflow: hidden;
-  background: var(--color-background);
+  background: var(--color-accent-dark);
   border-radius: var(--radius-md) var(--radius-md) 0 0;
 }
 
@@ -24,7 +24,7 @@
   display: block;
   width: 100%;
   aspect-ratio: 1;
-  object-fit: cover;
+  object-fit: contain;
   transition: transform 0.35s ease;
 }
 
