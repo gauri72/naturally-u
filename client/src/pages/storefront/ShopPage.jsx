@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { MagnifyingGlass } from '@phosphor-icons/react';
 import { getProducts } from '../../api/products.api';
 import { getPageBySlug } from '../../api/pages.api';
-import ProductCard from '../../components/product/ProductCard.jsx';
+import ProductCarousel from '../../components/product/ProductCarousel.jsx';
 import { useLang } from '../../i18n/LanguageContext.jsx';
 import './ShopPage.css';
 
@@ -88,9 +88,7 @@ function ShopPage() {
           <p>{t('No products found')}{search ? ` — "${search}"` : ''}.</p>
         </div>
       ) : (
-        <div className="shop-page__grid">
-          {sortedProducts.map((p) => <ProductCard key={p._id} product={p} />)}
-        </div>
+        <ProductCarousel products={sortedProducts} />
       )}
     </section>
   );

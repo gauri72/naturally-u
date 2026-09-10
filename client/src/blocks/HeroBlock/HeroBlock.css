@@ -10,10 +10,24 @@
   background-size: cover;
   background-position: center top;
   z-index: 0;
+  /* Fade the artwork out at the very top so it dissolves into the
+     cream header instead of meeting it on a hard tonal seam. */
+  -webkit-mask-image: linear-gradient(
+    180deg,
+    transparent 0,
+    #000 90px
+  );
+  mask-image: linear-gradient(
+    180deg,
+    transparent 0,
+    #000 90px
+  );
 }
 
 .hero-block__photo {
-  /* desktop: plain wrapper, no special treatment */
+  /* Nudge heading / subtext / CTAs right so they clear the decorative
+     leaf artwork in the left background. */
+  padding-left: 56px;
 }
 
 .hero-block__inner {
@@ -65,7 +79,15 @@
 .hero-block__badges {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 16px;
+  gap: 10px;
+  /* Align the badge row to the same horizontal span as the heading /
+     subtext / CTAs above it (which carry the 56px left nudge), and
+     centre the four badges within that width. */
+  padding-left: 0;
+  margin-left: -24px;
+  max-width: 540px;
+  justify-items: center;
+  text-align: center;
 }
 
 .hero-block__badge {

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Leaf, ArrowRight } from '@phosphor-icons/react';
 import { getProducts } from '../../api/products.api';
-import ProductCard from '../../components/product/ProductCard.jsx';
+import ProductCarousel from '../../components/product/ProductCarousel.jsx';
 import { useLang } from '../../i18n/LanguageContext.jsx';
 import bestSellerOne from '../../assets/images/home/best-seller-one.png';
 import bestSellerTwo from '../../assets/images/home/best-seller-two.png';
@@ -20,21 +20,20 @@ const localImageBySlug = {
 };
 
 // Props: { title, source: 'manual'|'tag'|'category', tag?, category?, productIds?, limit? }
+// Renders every catalog product in a portrait carousel on the homepage;
+// `source`/`tag`/`category`/`limit` are retained for CMS compatibility but
+// the carousel shows the full catalog.
 function ProductGridBlock({ title, source, tag, category, productIds = [], limit = 4 }) {
   const { t } = useLang();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const params = { limit };
-    if (source === 'tag') params.tag = tag;
-    if (source === 'category') params.category = category;
-
-    getProducts(params)
+    getProducts({ limit: 50 }) // comfortably covers the full catalog
       .then((res) => setProducts(res.data.products))
       .catch((err) => console.error('[ProductGridBlock] fetch failed:', err))
       .finally(() => setLoading(false));
-  }, [source, tag, category, limit]);
+  }, []);
 
   return (
     <section className="product-grid-block">
@@ -52,15 +51,14 @@ function ProductGridBlock({ title, source, tag, category, productIds = [], limit
       {loading ? (
         <p>{t('Loading products…')}</p>
       ) : (
-        <div className="product-grid-block__grid">
-          {products.map((product) => {
+        <ProductCarousel
+          products={products.map((product) => {
             const localImage = localImageBySlug[product.slug];
-            const displayProduct = localImage
+            return localImage
               ? { ...product, images: [{ url: localImage, alt: product.name }] }
               : product;
-            return <ProductCard key={product._id} product={displayProduct} />;
           })}
-        </div>
+        />
       )}
     </section>
   );
