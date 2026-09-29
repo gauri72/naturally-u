@@ -11,7 +11,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 100;
+  /* Above the floating language switcher (z-index: 900) - see
+     .block-drawer__overlay's comment for why. */
+  z-index: 950;
 }
 
 .block-editor-panel {
@@ -66,7 +68,9 @@
   background: rgba(43, 43, 40, 0.45);
   display: flex;
   justify-content: flex-end;
-  z-index: 100;
+  /* Above the floating language switcher (z-index: 900, bottom-right of
+     every admin page) so its "Save Changes" button isn't covered by it. */
+  z-index: 950;
   animation: block-drawer-fade 0.2s ease;
 }
 
@@ -309,7 +313,10 @@
   color: var(--color-text);
 }
 
-.block-drawer__save {
+/* Compound selector (not just .block-drawer__save) so this reliably beats
+   the shared .btn rule's `display: inline-block`, regardless of CSS load
+   order - otherwise the FloppyDisk icon and label don't align on one line. */
+button.block-drawer__save {
   display: inline-flex;
   align-items: center;
   gap: 6px;

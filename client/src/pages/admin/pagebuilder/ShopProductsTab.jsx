@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import {
-  Plus, PencilSimple, Trash, ArrowCounterClockwise, MagnifyingGlass, ArrowLeft,
+  Plus, PencilSimple, Trash, ArrowCounterClockwise, ArrowLeft,
 } from '@phosphor-icons/react';
 import toast from 'react-hot-toast';
 import {
@@ -10,7 +10,16 @@ import { uploadImage } from '../../../api/media.api';
 import { useLang } from '../../../i18n/LanguageContext.jsx';
 import './ShopProductsTab.css';
 
-const EMPTY_FORM = { name: '', description: '', price: '', stock: '', image: '' };
+// Matches the real, working category filters on the storefront (product
+// `tags`, used by /shop?tag=... and the Footer's category links) - the
+// Product model also has a `category` ref field, but nothing on the site
+// populates or reads it today, so it isn't a usable source for this list.
+const CATEGORY_OPTIONS = ['soap', 'skincare', 'haircare', 'accessory'];
+const CATEGORY_LABELS = {
+  soap: 'Soap', skincare: 'Skincare', haircare: 'Haircare', accessory: 'Accessory',
+};
+
+const EMPTY_FORM = { name: '', description: '', price: '', stock: '', category: '', image: '' };
 
 const slugify = (str) => str
   .toLowerCase()
@@ -43,12 +52,17 @@ function ProductForm({ initial, onCancel, onSaved }) {
     e.preventDefault();
     setSaving(true);
     try {
+      // Category is stored as one of the product's tags (see
+      // CATEGORY_OPTIONS) - keep every other tag (e.g. "bestseller")
+      // untouched and only replace the category-shaped one.
+      const otherTags = (form.tags || []).filter((tag) => !CATEGORY_OPTIONS.includes(tag));
       const payload = {
         name: form.name,
         slug: isEdit ? initial.slug : slugify(form.name),
         description: form.description,
         price: Number(form.price),
         stock: Number(form.stock) || 0,
+        tags: form.category ? [...otherTags, form.category] : otherTags,
         images: form.image ? [{ url: form.image, alt: form.name }] : [],
       };
       if (isEdit) await updateProduct(initial._id, payload);
@@ -81,6 +95,13 @@ function ProductForm({ initial, onCancel, onSaved }) {
           <label>{t('Stock')}</label>
           <input type="number" min="0" value={form.stock} onChange={(e) => setField('stock', e.target.value)} required />
         </div>
+        <div className="admin-field">
+          <label>{t('Category')}</label>
+          <select value={form.category} onChange={(e) => setField('category', e.target.value)}>
+            <option value="">{t('(none)')}</option>
+            {CATEGORY_OPTIONS.map((c) => <option key={c} value={c}>{t(CATEGORY_LABELS[c])}</option>)}
+          </select>
+        </div>
       </div>
       <div className="admin-field">
         <label>{t('Image')}</label>
@@ -102,25 +123,27 @@ function ProductForm({ initial, onCancel, onSaved }) {
 // tab for the shopProductGrid block. Each action here saves itself
 // immediately via its own API call; independent of the drawer's own Save
 // Changes button, which only ever saves the block's cosmetic props (see
-// the Section Settings tab).
-function ShopProductsTab() {
+// the Section Settings tab). Reports its list/add/edit mode up via
+// onModeChange so the parent drawer can hide the Section Settings fields
+// while a product form is open, keeping those to the initial list view.
+function ShopProductsTab({ onModeChange }) {
   const { t } = useLang();
   const [tab, setTab] = useState('active'); // 'active' | 'archived'
   const [products, setProducts] = useState([]);
-  const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
   const [mode, setMode] = useState('list'); // 'list' | 'add' | 'edit'
   const [editing, setEditing] = useState(null);
 
   const load = () => {
     setLoading(true);
-    getProducts({ status: tab, search: search || undefined, limit: 100 })
+    getProducts({ status: tab, limit: 100 })
       .then((res) => setProducts(res.data.products))
       .catch(() => toast.error(t('Failed to load products')))
       .finally(() => setLoading(false));
   };
 
-  useEffect(load, [tab, search]);
+  useEffect(load, [tab]);
+  useEffect(() => { onModeChange?.(mode); }, [mode, onModeChange]);
 
   const startAdd = () => { setEditing(null); setMode('add'); };
 
@@ -128,6 +151,7 @@ function ShopProductsTab() {
     try {
       const res = await getProductById(product._id);
       const p = res.data;
+      const tags = p.tags || [];
       setEditing({
         _id: p._id,
         slug: p.slug,
@@ -135,6 +159,8 @@ function ShopProductsTab() {
         description: p.description || '',
         price: p.price ?? '',
         stock: p.stock ?? '',
+        category: tags.find((tag) => CATEGORY_OPTIONS.includes(tag)) || '',
+        tags,
         image: p.images?.[0]?.url || '',
       });
       setMode('edit');
@@ -193,7 +219,6 @@ function ShopProductsTab() {
 
   return (
     <div className="products-tab">
-      <h4 className="products-tab__heading">{t('Products')}</h4>
       <div className="products-tab__toolbar">
         <div className="products-tab__tabs" role="tablist">
           <button
@@ -214,14 +239,6 @@ function ShopProductsTab() {
           >
             {t('Archived')}
           </button>
-        </div>
-        <div className="products-tab__search">
-          <MagnifyingGlass size={16} />
-          <input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder={t('Search products…')}
-          />
         </div>
         <button type="button" className="btn btn--primary btn--sm" onClick={startAdd}>
           <Plus size={14} weight="bold" /> {t('New Product')}

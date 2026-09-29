@@ -99,6 +99,9 @@ const admin = {
   'Failed to delete product': 'Verwijderen van product mislukt',
   'Failed to restore product': 'Herstellen van product mislukt',
   'Product restored': 'Product hersteld',
+  'Soap': 'Zeep',
+  'Haircare': 'Haarverzorging',
+  'Accessory': 'Accessoire',
 
   // ── Media library / image grid ─────────────────────────────────────
   'Uploaded': 'Geüpload',

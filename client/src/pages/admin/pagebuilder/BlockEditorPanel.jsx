@@ -65,6 +65,10 @@ function BlockEditorPanel({ block, slug, onClose, onSaved }) {
   // Visual-only - no Code mode, no Settings/Products tab switch. Every
   // other block keeps the normal Visual/Code props editor.
   const isShopProducts = block.blockType === 'shopProductGrid';
+  // While the Products tab's own add/edit form is open, hide the
+  // Heading/Subheading (Section Settings) fields above it so they only
+  // ever show on the initial list view, not stacked above every screen.
+  const [productsTabMode, setProductsTabMode] = useState('list');
   const [mode, setMode] = useState('visual');
   const [props, setProps] = useState(block.props);
   const [json, setJson] = useState(JSON.stringify(block.props, null, 2));
@@ -144,7 +148,10 @@ function BlockEditorPanel({ block, slug, onClose, onSaved }) {
   };
 
   const Icon = blockIcon(block.blockType);
-  const summary = blockSummary(block);
+  // The Products block's own heading (e.g. "Shop All Products") already
+  // shows on the storefront and in the Section Settings field below -
+  // repeating it as a subtitle right under "Products" here is redundant.
+  const summary = isShopProducts ? null : blockSummary(block);
 
   return (
     <div className="block-drawer__overlay" onClick={requestClose}>
@@ -208,8 +215,10 @@ function BlockEditorPanel({ block, slug, onClose, onSaved }) {
         <div className={`block-drawer__body ${mode === 'code' && !isShopProducts ? 'block-drawer__body--code' : ''}`}>
           {isShopProducts ? (
             <>
-              <VisualBlockEditor blockType={block.blockType} value={props} onChange={setProps} />
-              <ShopProductsTab />
+              {productsTabMode === 'list' && (
+                <VisualBlockEditor blockType={block.blockType} value={props} onChange={setProps} />
+              )}
+              <ShopProductsTab onModeChange={setProductsTabMode} />
             </>
           ) : mode === 'visual' ? (
             <VisualBlockEditor blockType={block.blockType} value={props} onChange={setProps} />
