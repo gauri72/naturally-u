@@ -106,6 +106,9 @@ function PageBuilderPage() {
 
   if (!page) return <p>{t('Loading…')}</p>;
 
+  const isSystemOnlyPage = page.blocks.length > 0
+    && page.blocks.every((b) => blockMeta[b.blockType]?.system);
+
   return (
     <div className="page-builder">
       <Link to="/admin/pages" className="admin-page-header__back">
@@ -131,6 +134,12 @@ function PageBuilderPage() {
           </button>
         </div>
       </div>
+
+      {isSystemOnlyPage && (
+        <p className="page-builder__system-note">
+          {t('This page’s layout and functionality are custom-built. The field(s) below control its editable text content only.')}
+        </p>
+      )}
 
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={page.blocks.map((b) => b._id)} strategy={verticalListSortingStrategy}>

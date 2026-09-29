@@ -368,7 +368,7 @@ const pages = [
     slug: 'shop',
     title: 'Shop',
     blocks: [
-      { blockType: 'shopPageContent', props: { taxNote: 'Sales tax included on all products.' } },
+      { blockType: 'shopProductGrid', props: { subheading: 'Sales tax included on all products.' } },
     ],
   },
 

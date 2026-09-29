@@ -17,6 +17,7 @@ import IconCardsBlock from '../IconCardsBlock/IconCardsBlock.jsx';
 import AboutContactBlock from '../AboutContactBlock/AboutContactBlock.jsx';
 import CtaRowBlock from '../CtaRowBlock/CtaRowBlock.jsx';
 import FaqAccordionBlock from '../FaqAccordionBlock/FaqAccordionBlock.jsx';
+import ProductsBlock from '../ProductsBlock/ProductsBlock.jsx';
 
 /**
  * BLOCK REGISTRY
@@ -53,13 +54,14 @@ export const blockRegistry = {
   aboutContact: AboutContactBlock,
   ctaRow: CtaRowBlock,
   faqAccordion: FaqAccordionBlock,
-  // Note: shopPageContent/productPageContent/searchPageContent/
-  // cartPageContent/checkoutPageContent/contactPageContent/
-  // giftSetsPageContent are intentionally NOT registered here - they hold
-  // static strings read directly by their page component (Contact, Gift
-  // Sets, Shop, Product, Cart, Checkout, Search), not rendered as a visual
-  // section. PageRenderer already tolerates unknown blockTypes by design
-  // (see its own comment), so they render nothing in admin Preview.
+  shopProductGrid: ProductsBlock,
+  // Note: productPageContent/searchPageContent/cartPageContent/
+  // checkoutPageContent/contactPageContent/giftSetsPageContent are
+  // intentionally NOT registered here - they hold static strings read
+  // directly by their page component (Contact, Gift Sets, Product, Cart,
+  // Checkout, Search), not rendered as a visual section. PageRenderer
+  // already tolerates unknown blockTypes by design (see its own comment),
+  // so they render nothing in admin Preview.
 };
 
 // Metadata used by the admin page builder: `label` names the block in the
@@ -68,6 +70,11 @@ export const blockRegistry = {
 // (read directly by their page component, not rendered by PageRenderer) -
 // they still get a friendly label in the block list, but are excluded from
 // the "Add Block" menu since adding them to other pages does nothing.
+// `system: true` (always paired with `hidden: true`) marks these as the
+// editable text fields of an otherwise hardcoded, non-block-driven page
+// (Shop, Product, Cart, Checkout, Search, Contact, Gift Sets) - the admin
+// UI uses it to badge these rows and explain why the page has so few of
+// them, instead of leaving it looking like an unfinished block list.
 export const blockMeta = {
   announcementBar: { label: 'Announcement Bar', defaultProps: { messages: ['New announcement'] } },
   hero: { label: 'Hero Section', defaultProps: { heading: 'New Hero Heading', subtext: '', image: '/assets/hero-placeholder.jpg', ctaButtons: [] } },
@@ -88,11 +95,14 @@ export const blockMeta = {
   aboutContact: { label: 'About: Contact Section', defaultProps: { heading: 'Want to know more? Write to us!', address: '', email: '', phone: '' } },
   ctaRow: { label: 'CTA Row', defaultProps: { variant: 'about-maker', buttons: [] } },
   faqAccordion: { label: 'FAQ Accordion', defaultProps: { items: [] } },
-  shopPageContent: { label: 'Shop Page Text', hidden: true, defaultProps: {} },
-  productPageContent: { label: 'Product Page Text', hidden: true, defaultProps: {} },
-  searchPageContent: { label: 'Search Page Text', hidden: true, defaultProps: {} },
-  cartPageContent: { label: 'Cart Page Text', hidden: true, defaultProps: {} },
-  checkoutPageContent: { label: 'Checkout Page Text', hidden: true, defaultProps: {} },
-  contactPageContent: { label: 'Contact Details', hidden: true, defaultProps: {} },
-  giftSetsPageContent: { label: 'Gift Sets Page Text', hidden: true, defaultProps: {} },
+  shopProductGrid: {
+    label: 'Products',
+    defaultProps: { heading: '', subheading: '' },
+  },
+  productPageContent: { label: 'Product Page Text', hidden: true, system: true, defaultProps: {} },
+  searchPageContent: { label: 'Search Page Text', hidden: true, system: true, defaultProps: {} },
+  cartPageContent: { label: 'Cart Page Text', hidden: true, system: true, defaultProps: {} },
+  checkoutPageContent: { label: 'Checkout Page Text', hidden: true, system: true, defaultProps: {} },
+  contactPageContent: { label: 'Contact Details', hidden: true, system: true, defaultProps: {} },
+  giftSetsPageContent: { label: 'Gift Sets Page Text', hidden: true, system: true, defaultProps: {} },
 };

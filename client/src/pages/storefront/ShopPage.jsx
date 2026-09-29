@@ -1,95 +1,50 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { MagnifyingGlass } from '@phosphor-icons/react';
-import { getProducts } from '../../api/products.api';
 import { getPageBySlug } from '../../api/pages.api';
-import ProductCarousel from '../../components/product/ProductCarousel.jsx';
+import PageRenderer from '../../blocks/registry/PageRenderer.jsx';
 import { useLang } from '../../i18n/LanguageContext.jsx';
 import './ShopPage.css';
 
-const TITLES_BY_TAG = {
-  bestseller: 'Best Sellers',
-};
-
-// The page title is computed from the active filter/sort/search, so it stays
-// code-driven; the static tax note comes from the 'shop' CMS page
-// (/admin/pages/shop).
+// The Sort dropdown is code-driven (writes to the URL). It's passed down
+// as extra props to the Products block (sortValue/onSortChange) so that
+// block can render it inline, next to its own Heading/Subheading - this
+// keeps the page to a single heading, properly aligned with Sort on one
+// row, instead of a second coded title living here too.
 function ShopPage() {
   const { t } = useLang();
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [pageContent, setPageContent] = useState(null);
+  const [page, setPage] = useState(null);
+  const [error, setError] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
-  const tag = searchParams.get('tag') || '';
-  const category = searchParams.get('category') || '';
   const sort = searchParams.get('sort') || '';
-  const search = searchParams.get('search') || '';
-
-  useEffect(() => {
-    setLoading(true);
-    const params = { limit: 50 }; // comfortably covers the full catalog so nothing is hidden behind pagination
-    if (tag) params.tag = tag;
-    if (category) params.category = category;
-    if (search) params.search = search;
-    getProducts(params)
-      .then((res) => setProducts(res.data.products))
-      .catch(console.error)
-      .finally(() => setLoading(false));
-  }, [tag, category, search]);
 
   useEffect(() => {
     getPageBySlug('shop')
-      .then((res) => setPageContent(res.data.blocks.find((b) => b.blockType === 'shopPageContent')?.props || {}))
-      .catch(console.error);
+      .then((res) => setPage(res.data))
+      .catch((err) => {
+        console.error('[ShopPage] failed to load page:', err);
+        setError('Unable to load page content.');
+      });
   }, []);
 
-  const sortedProducts = useMemo(() => {
-    if (sort === 'new') {
-      return [...products].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-    }
-    if (sort === 'price-asc') return [...products].sort((a, b) => a.price - b.price);
-    if (sort === 'price-desc') return [...products].sort((a, b) => b.price - a.price);
-    return products;
-  }, [products, sort]);
+  const handleSortChange = (value) => {
+    const next = new URLSearchParams(searchParams);
+    if (value) next.set('sort', value);
+    else next.delete('sort');
+    setSearchParams(next);
+  };
 
-  const staticTitle = TITLES_BY_TAG[tag] || (sort === 'new' ? 'New Arrivals' : '')
-    || (category ? category.charAt(0).toUpperCase() + category.slice(1) : 'Shop All Products');
-  const title = search ? `${t('Results for')} "${search}"` : t(staticTitle);
+  if (error) return <p className="page-error">{t(error)}</p>;
+  if (!page) return <p className="page-loading">{t('Loading…')}</p>;
+
+  const blocksWithSort = page.blocks.map((b) => (
+    b.blockType === 'shopProductGrid'
+      ? { ...b, props: { ...b.props, sortValue: sort, onSortChange: handleSortChange } }
+      : b
+  ));
 
   return (
     <section className="shop-page">
-      <div className="shop-page__header">
-        <div>
-          <h1>{title}</h1>
-          <p className="shop-page__tax-note">{t(pageContent?.taxNote)}</p>
-        </div>
-        <select
-          className="shop-page__sort"
-          value={sort}
-          onChange={(e) => {
-            const next = new URLSearchParams(searchParams);
-            if (e.target.value) next.set('sort', e.target.value);
-            else next.delete('sort');
-            setSearchParams(next);
-          }}
-        >
-          <option value="">{t('Sort: Featured')}</option>
-          <option value="new">{t('Newest')}</option>
-          <option value="price-asc">{t('Price: Low to High')}</option>
-          <option value="price-desc">{t('Price: High to Low')}</option>
-        </select>
-      </div>
-
-      {loading ? (
-        <p className="page-loading">{t('Loading…')}</p>
-      ) : sortedProducts.length === 0 ? (
-        <div className="shop-page__empty">
-          <MagnifyingGlass size={40} weight="regular" />
-          <p>{t('No products found')}{search ? ` — "${search}"` : ''}.</p>
-        </div>
-      ) : (
-        <ProductCarousel products={sortedProducts} />
-      )}
+      <PageRenderer blocks={blocksWithSort} />
     </section>
   );
 }

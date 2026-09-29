@@ -63,6 +63,18 @@
   background: color-mix(in srgb, var(--color-primary) 7%, var(--color-white));
 }
 
+.block-row__system-chip {
+  font-size: 0.66rem;
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 12%, var(--color-white));
+  border-radius: var(--radius-full);
+  padding: 3px 8px;
+}
+
 .block-row__hidden-chip {
   font-size: 0.66rem;
   font-weight: 700;

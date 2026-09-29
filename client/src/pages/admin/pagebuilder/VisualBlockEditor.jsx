@@ -6,7 +6,7 @@ import './VisualBlockEditor.css';
 
 // Field keys that hold prose and should render as a textarea. Suffix match,
 // so it also catches taxNote, shippingNoteText, emptyPromptText, etc.
-const MULTILINE_RE = /(body|quote|description|answer|subtext|blurb|note|text|usage|heading)$/i;
+const MULTILINE_RE = /(body|quote|description|answer|subtext|subheading|blurb|note|text|usage|heading)$/i;
 
 // Acronyms the camelCase -> label humanizer should keep uppercased
 const ACRONYMS = { cta: 'CTA', url: 'URL', id: 'ID', faq: 'FAQ' };
@@ -316,6 +316,27 @@ function ProductGridFields({ value, onChange }) {
   );
 }
 
+// Shop "Products" block: just the section heading + subheading shown
+// above the grid. Everything else (empty-state message, carousel
+// behavior/timing, accessibility label overrides) is intentionally not
+// exposed here (industry-standard product admins don't surface that
+// level of control); the props/schema still accept them if ever set
+// directly, this just keeps the everyday editor short.
+function ShopProductGridFields({ value, onChange }) {
+  const { t } = useLang();
+  const setField = (key, v) => onChange({ ...value, [key]: v });
+  const field = (key, fallback) => (
+    <FieldGenerator blockType="shopProductGrid" fieldKey={key} value={value[key] ?? fallback} onChange={(v) => setField(key, v)} />
+  );
+
+  return (
+    <>
+      {field('heading', '')}
+      {field('subheading', '')}
+    </>
+  );
+}
+
 function VisualBlockEditor({ blockType, value, onChange }) {
   const { t } = useLang();
   const setField = (key, v) => onChange({ ...value, [key]: v });
@@ -324,10 +345,16 @@ function VisualBlockEditor({ blockType, value, onChange }) {
     return <ProductGridFields value={value} onChange={onChange} />;
   }
 
+  if (blockType === 'shopProductGrid') {
+    return <ShopProductGridFields value={value || {}} onChange={onChange} />;
+  }
+
   // Underscore-prefixed keys (e.g. _migrationId) are internal bookkeeping:
   // hidden from the form but preserved on save since setField spreads the
-  // full value. They remain inspectable in the Code tab.
-  const keys = Object.keys(value).filter((k) => !k.startsWith('_'));
+  // full value. They remain inspectable in the Code tab. `value` can be
+  // undefined for a block with no props (Mongoose omits an empty Mixed
+  // field on save rather than persisting `{}`).
+  const keys = Object.keys(value || {}).filter((k) => !k.startsWith('_'));
   if (keys.length === 0) {
     return <p className="vbe-empty">{t('This block has no editable fields.')}</p>;
   }

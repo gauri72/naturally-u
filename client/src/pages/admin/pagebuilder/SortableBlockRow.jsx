@@ -2,12 +2,14 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { DotsSixVertical, Eye, EyeSlash, PencilSimple, Trash } from '@phosphor-icons/react';
 import { blockIcon, blockLabel, blockSummary } from './blockDisplay';
+import { blockMeta } from '../../../blocks/registry/blockRegistry';
 import './SortableBlockRow.css';
 import { useLang } from '../../../i18n/LanguageContext.jsx';
 
 function SortableBlockRow({ block, onToggleVisibility, onEdit, onDelete }) {
   const { t } = useLang();
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: block._id });
+  const isSystem = !!blockMeta[block.blockType]?.system;
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -33,6 +35,7 @@ function SortableBlockRow({ block, onToggleVisibility, onEdit, onDelete }) {
           {block.props?.variant && block.props.variant !== 'default' && block.props.variant !== 'plain' && (
             <code className="block-row__chip block-row__chip--variant">{block.props.variant}</code>
           )}
+          {isSystem && <span className="block-row__system-chip">{t('Page Settings')}</span>}
           {!block.visible && <span className="block-row__hidden-chip">{t('Hidden')}</span>}
         </div>
         {summary && <p className="block-row__summary">{summary}</p>}

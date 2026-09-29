@@ -3,28 +3,29 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { MagnifyingGlass, ShoppingCart, X } from '@phosphor-icons/react';
 import { useCart } from '../../context/CartContext.jsx';
 import { useLang } from '../../i18n/LanguageContext.jsx';
+import { getSettings } from '../../api/settings.api';
 import desktopLogo from '../../assets/images/home/desktop-header-logo.png';
 import mobileLogo from '../../assets/images/home/mobile-header-logo.png';
 import './Header.css';
 
-const navLinks = [
-  { label: 'Home', path: '/' },
-  { label: 'Shop', path: '/shop' },
-  { label: 'Gift Sets', path: '/gift-sets' },
-  { label: 'About', path: '/about-the-maker' },
-  { label: 'Workshops', path: '/workshops' },
-  { label: 'Contact', path: '/contact' },
-];
-
+// Nav links are admin-editable (Site Settings -> Header Navigation),
+// same as Footer's link lists - see client/src/blocks/FooterBlock. Starts
+// empty rather than blocking the header on load; the logo/search/cart
+// stay usable immediately and the nav fills in once Settings arrives.
 function Header() {
   const { itemCount } = useCart();
   const { t } = useLang();
+  const [navLinks, setNavLinks] = useState([]);
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const headerRef = useRef(null);
   const searchInputRef = useRef(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    getSettings().then((res) => setNavLinks(res.data.navLinks || [])).catch(() => {});
+  }, []);
 
   useEffect(() => {
     if (!menuOpen && !searchOpen) return;

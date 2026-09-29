@@ -65,6 +65,9 @@ const admin = {
   'Settings saved': 'Instellingen opgeslagen',
   'Failed to save settings': 'Opslaan van instellingen mislukt',
   'Site Name': 'Sitenaam',
+  'Header Navigation': 'Headernavigatie',
+  'Path, e.g. /shop': 'Pad, bijv. /shop',
+  'Add Link': 'Link toevoegen',
   'Footer Copyright Text': 'Footer copyrighttekst',
   'Save Settings': 'Instellingen opslaan',
 
@@ -80,6 +83,22 @@ const admin = {
   'Description': 'Beschrijving',
   'Image': 'Afbeelding',
   'Save Product': 'Product opslaan',
+
+  // ── Shop Products tab (block editor drawer > Products block > Products) ──
+  'Section Settings': 'Sectie-instellingen',
+  'Back to Products': 'Terug naar producten',
+  'Active': 'Actief',
+  'Archived': 'Gearchiveerd',
+  'Search products…': 'Producten zoeken…',
+  'Out of Stock': 'Niet op voorraad',
+  'Restore': 'Herstellen',
+  'Delete this product?': 'Dit product verwijderen?',
+  'No archived products.': 'Geen gearchiveerde producten.',
+  'Failed to load products': 'Laden van producten mislukt',
+  'Failed to load product': 'Laden van product mislukt',
+  'Failed to delete product': 'Verwijderen van product mislukt',
+  'Failed to restore product': 'Herstellen van product mislukt',
+  'Product restored': 'Product hersteld',
 
   // ── Media library / image grid ─────────────────────────────────────
   'Uploaded': 'Geüpload',
@@ -159,6 +178,9 @@ const admin = {
   'Failed to add block': 'Toevoegen van blok mislukt',
   'Failed to update status': 'Bijwerken van status mislukt',
   'Hidden': 'Verborgen',
+  'Page Settings': 'Pagina-instellingen',
+  'This page’s layout and functionality are custom-built. The field(s) below control its editable text content only.':
+    'De indeling en functionaliteit van deze pagina zijn op maat gebouwd. Het onderstaande veld/de onderstaande velden bepalen alleen de bewerkbare tekstinhoud.',
   'Drag to reorder': 'Sleep om te herordenen',
   'Hide section': 'Sectie verbergen',
   'Show section': 'Sectie tonen',
@@ -225,6 +247,7 @@ const admin = {
 
   // ── Visual block editor: humanized field labels ────────────────────
   'Heading': 'Kop',
+  'Subheading': 'Subkop',
   'Subtext': 'Subtekst',
   'Subtitle': 'Ondertitel',
   'Body': 'Tekst',

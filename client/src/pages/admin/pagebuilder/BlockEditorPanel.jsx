@@ -5,6 +5,7 @@ import {
 import toast from 'react-hot-toast';
 import { updateBlock } from '../../../api/pages.api';
 import VisualBlockEditor from './VisualBlockEditor.jsx';
+import ShopProductsTab from './ShopProductsTab.jsx';
 import { blockIcon, blockLabel, blockSummary } from './blockDisplay';
 import './BlockEditorPanel.css';
 import { useLang } from '../../../i18n/LanguageContext.jsx';
@@ -59,6 +60,11 @@ function JsonEditor({ value, onChange }) {
  */
 function BlockEditorPanel({ block, slug, onClose, onSaved }) {
   const { t } = useLang();
+  // The Shop "Products" block gets a simplified, single-view editor:
+  // its (trimmed) content settings and the product list/form together,
+  // Visual-only - no Code mode, no Settings/Products tab switch. Every
+  // other block keeps the normal Visual/Code props editor.
+  const isShopProducts = block.blockType === 'shopProductGrid';
   const [mode, setMode] = useState('visual');
   const [props, setProps] = useState(block.props);
   const [json, setJson] = useState(JSON.stringify(block.props, null, 2));
@@ -143,7 +149,7 @@ function BlockEditorPanel({ block, slug, onClose, onSaved }) {
   return (
     <div className="block-drawer__overlay" onClick={requestClose}>
       <div
-        className="block-drawer"
+        className={`block-drawer ${isShopProducts ? 'block-drawer--wide' : ''}`}
         role="dialog"
         aria-label={`${t('Edit')} ${t(blockLabel(block.blockType))}`}
         onClick={(e) => e.stopPropagation()}
@@ -161,44 +167,51 @@ function BlockEditorPanel({ block, slug, onClose, onSaved }) {
           </button>
         </div>
 
-        <div className="block-drawer__toolbar">
-          <div className="block-drawer__tabs" role="tablist">
-            <button
-              type="button"
-              role="tab"
-              aria-selected={mode === 'visual'}
-              className={`block-drawer__tab ${mode === 'visual' ? 'is-active' : ''}`}
-              onClick={switchToVisual}
-            >
-              <Sliders size={15} weight="bold" /> {t('Visual')}
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={mode === 'code'}
-              className={`block-drawer__tab ${mode === 'code' ? 'is-active' : ''}`}
-              onClick={switchToCode}
-            >
-              <Code size={15} weight="bold" /> {t('Code')}
-            </button>
-          </div>
-
-          {mode === 'code' && (
-            <div className="block-drawer__code-tools">
-              <span className={`json-status ${jsonError ? 'json-status--invalid' : 'json-status--valid'}`}>
-                {jsonError
-                  ? <><WarningCircle size={14} weight="fill" /> {t('Invalid JSON')}</>
-                  : <><CheckCircle size={14} weight="fill" /> {t('Valid JSON')}</>}
-              </span>
-              <button type="button" className="btn btn--sm btn--secondary block-drawer__format-btn" onClick={handleFormat}>
-                <MagicWand size={14} weight="bold" /> {t('Format')}
+        {!isShopProducts && (
+          <div className="block-drawer__toolbar">
+            <div className="block-drawer__tabs" role="tablist">
+              <button
+                type="button"
+                role="tab"
+                aria-selected={mode === 'visual'}
+                className={`block-drawer__tab ${mode === 'visual' ? 'is-active' : ''}`}
+                onClick={switchToVisual}
+              >
+                <Sliders size={15} weight="bold" /> {t('Visual')}
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={mode === 'code'}
+                className={`block-drawer__tab ${mode === 'code' ? 'is-active' : ''}`}
+                onClick={switchToCode}
+              >
+                <Code size={15} weight="bold" /> {t('Code')}
               </button>
             </div>
-          )}
-        </div>
 
-        <div className={`block-drawer__body ${mode === 'code' ? 'block-drawer__body--code' : ''}`}>
-          {mode === 'visual' ? (
+            {mode === 'code' && (
+              <div className="block-drawer__code-tools">
+                <span className={`json-status ${jsonError ? 'json-status--invalid' : 'json-status--valid'}`}>
+                  {jsonError
+                    ? <><WarningCircle size={14} weight="fill" /> {t('Invalid JSON')}</>
+                    : <><CheckCircle size={14} weight="fill" /> {t('Valid JSON')}</>}
+                </span>
+                <button type="button" className="btn btn--sm btn--secondary block-drawer__format-btn" onClick={handleFormat}>
+                  <MagicWand size={14} weight="bold" /> {t('Format')}
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
+        <div className={`block-drawer__body ${mode === 'code' && !isShopProducts ? 'block-drawer__body--code' : ''}`}>
+          {isShopProducts ? (
+            <>
+              <VisualBlockEditor blockType={block.blockType} value={props} onChange={setProps} />
+              <ShopProductsTab />
+            </>
+          ) : mode === 'visual' ? (
             <VisualBlockEditor blockType={block.blockType} value={props} onChange={setProps} />
           ) : (
             <JsonEditor value={json} onChange={setJson} />
@@ -207,7 +220,7 @@ function BlockEditorPanel({ block, slug, onClose, onSaved }) {
 
         <div className="block-drawer__footer">
           <p className="block-drawer__error">{error || (mode === 'code' && jsonError ? jsonError : '')}</p>
-          <button type="button" className="block-drawer__cancel" onClick={requestClose}>Cancel</button>
+          <button type="button" className="block-drawer__cancel" onClick={requestClose}>{t('Cancel')}</button>
           <button
             type="button"
             className="btn btn--primary block-drawer__save"

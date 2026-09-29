@@ -2,10 +2,18 @@ const asyncHandler = require('express-async-handler');
 const Product = require('../models/Product.model');
 const Category = require('../models/Category.model');
 
-// @route GET /api/products?tag=bestseller&category=soaps&page=1&limit=12
+// @route GET /api/products?tag=bestseller&category=soaps&page=1&limit=12&status=active|archived|all
+// `status` defaults to 'active' (the public storefront's implicit
+// behavior); 'archived'/'all' are for admin screens that need to see
+// soft-deleted products (e.g. an Archived/Restore tab) - unauthenticated
+// callers can technically pass status=archived too since this route has
+// no `protect` middleware, but that only exposes the same fields the
+// public product list already exposes, just for inactive items.
 const getProducts = asyncHandler(async (req, res) => {
-  const { tag, category, search, page = 1, limit = 12 } = req.query;
-  const filter = { isActive: true };
+  const { tag, category, search, page = 1, limit = 12, status = 'active' } = req.query;
+  const filter = {};
+  if (status === 'active') filter.isActive = true;
+  else if (status === 'archived') filter.isActive = false;
   if (tag) filter.tags = tag;
   if (category) {
     // `category` here is a slug, not the ObjectId the field actually stores -
@@ -38,6 +46,20 @@ const getProductBySlug = asyncHandler(async (req, res) => {
   res.json(product);
 });
 
+// @route GET /api/products/id/:id
+// Admin lookup by _id (not slug), regardless of active/archived status -
+// used to load a product into an edit form from the admin list, where
+// the row's _id is already on hand and a slug-based public lookup would
+// also 404 for archived products.
+const getProductById = asyncHandler(async (req, res) => {
+  const product = await Product.findById(req.params.id).populate('category');
+  if (!product) {
+    res.status(404);
+    throw new Error('Product not found');
+  }
+  res.json(product);
+});
+
 const createProduct = asyncHandler(async (req, res) => {
   const product = await Product.create(req.body);
   res.status(201).json(product);
@@ -62,4 +84,15 @@ const deleteProduct = asyncHandler(async (req, res) => {
   res.json({ message: 'Product deactivated' });
 });
 
-module.exports = { getProducts, getProductBySlug, createProduct, updateProduct, deleteProduct };
+const restoreProduct = asyncHandler(async (req, res) => {
+  const product = await Product.findByIdAndUpdate(req.params.id, { isActive: true }, { new: true });
+  if (!product) {
+    res.status(404);
+    throw new Error('Product not found');
+  }
+  res.json(product);
+});
+
+module.exports = {
+  getProducts, getProductBySlug, getProductById, createProduct, updateProduct, deleteProduct, restoreProduct,
+};

@@ -16,6 +16,7 @@ const iconCards = require('./iconCards.schema');
 const aboutContact = require('./aboutContact.schema');
 const ctaRow = require('./ctaRow.schema');
 const faqAccordion = require('./faqAccordion.schema');
+const shopProductGrid = require('./shopProductGrid.schema');
 const genericContent = require('./genericContent.schema');
 
 // Central lookup: blockType string -> validator function
@@ -38,10 +39,12 @@ module.exports = {
   aboutContact,
   ctaRow,
   faqAccordion,
+  shopProductGrid,
   // genericContent is shared by several page-specific "content" blocktypes
   // that hold static copy read directly by their page component (not
   // rendered via PageRenderer) - see MIGRATION_REPORT.md / plan notes.
-  shopPageContent: genericContent,
+  // (shopPageContent was merged into shopProductGrid's own props - the Shop
+  // page no longer has a separate content-only block.)
   productPageContent: genericContent,
   searchPageContent: genericContent,
   cartPageContent: genericContent,

@@ -184,7 +184,12 @@ const run = async () => {
   // every environment (including ones seeded before this content existed)
   // ends up showing the same thing.
   const footerContent = {
-    navLinks: [],
+    navLinks: [
+      { label: 'Home', path: '/' },
+      { label: 'Shop', path: '/shop' },
+      { label: 'About', path: '/about-the-maker' },
+      { label: 'Contact', path: '/contact' },
+    ],
     shopLinks: [
       { label: 'All Products', path: '/shop' },
       { label: 'Soaps', path: '/shop?category=soaps' },

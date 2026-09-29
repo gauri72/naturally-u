@@ -17,7 +17,15 @@ const settingsSchema = new mongoose.Schema(
         ],
       },
     },
-    navLinks: [{ label: String, path: String }],
+    navLinks: {
+      type: [{ label: String, path: String }],
+      default: [
+        { label: 'Home', path: '/' },
+        { label: 'Shop', path: '/shop' },
+        { label: 'About', path: '/about-the-maker' },
+        { label: 'Contact', path: '/contact' },
+      ],
+    },
     footer: {
       shopLinks: {
         type: [{ label: String, path: String }],

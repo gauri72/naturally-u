@@ -55,7 +55,7 @@ export const blockIcons = {
   aboutContact: AddressBook,
   ctaRow: CursorClick,
   faqAccordion: Question,
-  shopPageContent: Storefront,
+  shopProductGrid: Storefront,
   productPageContent: Package,
   searchPageContent: MagnifyingGlass,
   cartPageContent: ShoppingCart,
@@ -110,6 +110,8 @@ export function blockSummary(block) {
       return truncate([p.address, p.email, p.phone].filter(Boolean).join(' · '));
     case 'footer':
       return 'Site-wide footer';
+    case 'shopProductGrid':
+      return truncate(p.heading || 'Live product carousel — filters by the page’s Sort menu and any tag/category/search links pointing here');
     default:
       break;
   }

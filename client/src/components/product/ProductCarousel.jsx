@@ -12,15 +12,32 @@ import { useCart } from '../../context/CartContext.jsx';
 import { useLang } from '../../i18n/LanguageContext.jsx';
 import './ProductCarousel.css';
 
-const AUTOPLAY_MS = 7000;
-const SWIPE_THRESHOLD = 45; // px of horizontal travel before a drag counts as a swipe
-
 // Portrait filmstrip carousel for the shop page — several 9:16 product
 // cards visible at once, each with a category badge on the image and the
 // name / description / price / cart / info below it. Advances one card
-// every 7s; pauses on hover, on keyboard focus inside it, and while the
-// tab is hidden. Supports arrow buttons, dot navigation, and touch swipe.
-function ProductCarousel({ products = [] }) {
+// every `autoplaySpeed`; pauses on hover, on keyboard focus inside
+// it, and while the tab is hidden. Supports arrow buttons, dot
+// navigation, and touch swipe. All content/behavior beyond the raw
+// `products` data is prop-driven so it can be admin-edited from the Shop
+// page's "Products" block (client/src/blocks/ProductsBlock) —
+// every prop defaults to this component's original hardcoded value, so
+// any other caller (e.g. Home's ProductGridBlock) is unaffected.
+function ProductCarousel({
+  products = [],
+  addToCartLabel = 'Add to cart',
+  showCategoryBadge = true,
+  currencySymbol = '€',
+  priceDecimals = 2,
+  autoplayEnabled = true,
+  autoplaySpeed = 7000,
+  showArrows = true,
+  showDots = true,
+  swipeSensitivity = 45,
+  carouselLabel = 'Products',
+  previousButtonLabel = 'Previous products',
+  nextButtonLabel = 'Next products',
+  slidePickerLabel = 'Choose slide to display',
+}) {
   const { addItem } = useCart();
   const { t } = useLang();
   const count = products.length;
@@ -112,10 +129,10 @@ function ProductCarousel({ products = [] }) {
 
   // --- Autoplay ----------------------------------------------------------
   useEffect(() => {
-    if (!hasControls || paused || dragging) return undefined;
-    const id = setTimeout(next, AUTOPLAY_MS);
+    if (!autoplayEnabled || !hasControls || paused || dragging) return undefined;
+    const id = setTimeout(next, autoplaySpeed);
     return () => clearTimeout(id);
-  }, [hasControls, paused, dragging, index, next]);
+  }, [autoplayEnabled, autoplaySpeed, hasControls, paused, dragging, index, next]);
 
   useEffect(() => {
     const onVisibility = () => setPaused(document.hidden);
@@ -155,8 +172,8 @@ function ProductCarousel({ products = [] }) {
     dragStart.current = null;
     setDragPx(0);
     setDragging(false);
-    if (dx <= -SWIPE_THRESHOLD) next();
-    else if (dx >= SWIPE_THRESHOLD) prev();
+    if (dx <= -swipeSensitivity) next();
+    else if (dx >= swipeSensitivity) prev();
   };
 
   // --- Render ----------------------------------------------------------
@@ -186,7 +203,7 @@ function ProductCarousel({ products = [] }) {
       ref={rootRef}
       role="region"
       aria-roledescription={t('carousel')}
-      aria-label={t('Products')}
+      aria-label={t(carouselLabel)}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onFocusCapture={() => setPaused(true)}
@@ -229,7 +246,7 @@ function ProductCarousel({ products = [] }) {
                     loading="lazy"
                     draggable="false"
                   />
-                  {badge && (
+                  {showCategoryBadge && badge && (
                     <span className="product-carousel__badge">{t(badge)}</span>
                   )}
                 </div>
@@ -241,17 +258,17 @@ function ProductCarousel({ products = [] }) {
                   <p className="product-carousel__desc">{blurb}</p>
                   <div className="product-carousel__footer">
                     <span className="product-carousel__price">
-                      €{product.price.toFixed(2)}
+                      {currencySymbol}{product.price.toFixed(priceDecimals)}
                     </span>
                     <div className="product-carousel__actions">
                       <button
                         type="button"
                         className="product-carousel__cart"
-                        aria-label={`${t('Add to cart')} — ${t(product.name)}`}
+                        aria-label={`${t(addToCartLabel)} — ${t(product.name)}`}
                         onClick={() => addItem(product)}
                       >
                         <ShoppingCart size={16} weight="bold" />
-                        <span>{t('Add to cart')}</span>
+                        <span>{t(addToCartLabel)}</span>
                       </button>
                       <Link
                         to={`/shop/${product.slug}`}
@@ -269,13 +286,13 @@ function ProductCarousel({ products = [] }) {
         </div>
       </div>
 
-      {hasControls && (
+      {hasControls && showArrows && (
         <>
           <button
             type="button"
             className="product-carousel__arrow product-carousel__arrow--prev"
             onClick={prev}
-            aria-label={t('Previous products')}
+            aria-label={t(previousButtonLabel)}
           >
             <CaretLeft size={20} weight="bold" />
           </button>
@@ -283,33 +300,35 @@ function ProductCarousel({ products = [] }) {
             type="button"
             className="product-carousel__arrow product-carousel__arrow--next"
             onClick={next}
-            aria-label={t('Next products')}
+            aria-label={t(nextButtonLabel)}
           >
             <CaretRight size={20} weight="bold" />
           </button>
-
-          <div className="product-carousel__dots" role="group" aria-label={t('Choose slide to display')}>
-            {Array.from({ length: pageCount }, (_, i) => (
-              <button
-                key={i}
-                type="button"
-                className={`product-carousel__dot${i === index ? ' is-active' : ''}`}
-                aria-label={`${t('Go to slide')} ${i + 1}`}
-                aria-current={i === index ? 'true' : undefined}
-                onClick={() => goTo(i)}
-              >
-                <span
-                  className="product-carousel__dot-fill"
-                  style={{
-                    animationDuration: `${AUTOPLAY_MS}ms`,
-                    animationPlayState:
-                      i === index && !paused && !dragging ? 'running' : 'paused',
-                  }}
-                />
-              </button>
-            ))}
-          </div>
         </>
+      )}
+
+      {hasControls && showDots && (
+        <div className="product-carousel__dots" role="group" aria-label={t(slidePickerLabel)}>
+          {Array.from({ length: pageCount }, (_, i) => (
+            <button
+              key={i}
+              type="button"
+              className={`product-carousel__dot${i === index ? ' is-active' : ''}`}
+              aria-label={`${t('Go to slide')} ${i + 1}`}
+              aria-current={i === index ? 'true' : undefined}
+              onClick={() => goTo(i)}
+            >
+              <span
+                className="product-carousel__dot-fill"
+                style={{
+                  animationDuration: `${autoplaySpeed}ms`,
+                  animationPlayState:
+                    autoplayEnabled && i === index && !paused && !dragging ? 'running' : 'paused',
+                }}
+              />
+            </button>
+          ))}
+        </div>
       )}
     </div>
   );

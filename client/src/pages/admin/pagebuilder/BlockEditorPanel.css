@@ -81,6 +81,13 @@
   animation: block-drawer-slide 0.26s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+/* Slightly wider variant for the Shop "Products" block, whose Products
+   tab holds a simple table (name/price/stock) that reads better with a
+   little extra room than a typical props-editing drawer. */
+.block-drawer--wide {
+  width: 840px;
+}
+
 /* ---- header ---- */
 .block-drawer__header {
   display: flex;

@@ -14,6 +14,11 @@ const socialIcons = {
   pinterest: PinterestLogo,
 };
 
+// Gift Sets and Workshops are temporarily hidden site-wide (not deleted) -
+// this only filters what's rendered here; the link data in Settings is
+// untouched. Remove a path from this list to bring its footer link back.
+const HIDDEN_FOOTER_PATHS = new Set(['/gift-sets', '/workshops']);
+
 // Shop/Customer Care/Connect collapse into an accordion on mobile
 // (closed by default) but always render fully expanded, non-interactive
 // on desktop — see FooterBlock.css for how the breakpoint controls this
@@ -87,7 +92,7 @@ function FooterBlock() {
 
         <FooterSection title={t('Shop')} sectionKey="shop" openSection={openSection} onToggle={toggleSection}>
           <ul>
-            {settings.footer?.shopLinks?.map((link) => (
+            {settings.footer?.shopLinks?.filter((link) => !HIDDEN_FOOTER_PATHS.has(link.path)).map((link) => (
               <li key={link.path}><Link to={link.path}>{t(link.label)}</Link></li>
             ))}
           </ul>

@@ -6,3 +6,13 @@
 }
 .status-pill--published { background: var(--color-primary); color: white; }
 .status-pill--draft { background: var(--color-accent); color: var(--color-text); }
+
+.page-builder__system-note {
+  margin: 0 0 var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  background: color-mix(in srgb, var(--color-primary) 6%, var(--color-white));
+  border: 1px solid color-mix(in srgb, var(--color-primary) 20%, var(--color-border));
+  border-radius: var(--radius-md);
+}
