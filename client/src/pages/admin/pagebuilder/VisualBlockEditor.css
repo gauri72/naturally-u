@@ -54,8 +54,12 @@
   cursor: pointer;
 }
 
-.vbe-toggle {
+/* Scoped under .admin-field so it outranks the shared `.admin-field input`
+   rule (full width, padding, border, white background). */
+.admin-field .vbe-toggle {
   appearance: none;
+  padding: 0;
+  border: none;
   position: relative;
   width: 44px;
   height: 24px;
@@ -67,7 +71,7 @@
   margin: 0;
 }
 
-.vbe-toggle:checked { background: var(--color-primary); }
+.admin-field .vbe-toggle:checked { background: var(--color-primary); }
 
 .vbe-toggle::after {
   content: '';
@@ -82,7 +86,7 @@
   transition: transform 0.2s ease;
 }
 
-.vbe-toggle:checked::after { transform: translateX(20px); }
+.admin-field .vbe-toggle:checked::after { transform: translateX(20px); }
 
 /* ---- string list ---- */
 .vbe-string-list {

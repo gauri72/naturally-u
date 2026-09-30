@@ -38,11 +38,28 @@ const ENUM_OPTIONS = {
   'iconCards.items.icon': ['handheart', 'leaf', 'sparkle', 'usersthree', 'cake', 'truck', 'arrowuupleft'],
 };
 
-const enumOptionsFor = (blockType, parentKey, fieldKey) =>
-  ENUM_OPTIONS[`${blockType}.${parentKey}.${fieldKey}`]
-  || ENUM_OPTIONS[`${blockType}.${fieldKey}`]
-  || ENUM_OPTIONS[`${parentKey}.${fieldKey}`]
-  || ENUM_OPTIONS[fieldKey];
+const lookup = (map, blockType, parentKey, fieldKey) =>
+  map[`${blockType}.${parentKey}.${fieldKey}`]
+  || map[`${blockType}.${fieldKey}`]
+  || map[`${parentKey}.${fieldKey}`]
+  || map[fieldKey];
+
+const enumOptionsFor = (blockType, parentKey, fieldKey) => lookup(ENUM_OPTIONS, blockType, parentKey, fieldKey);
+
+// Friendly display names for enum values, same lookup as ENUM_OPTIONS.
+// Enums without an entry here show their raw value.
+const ICON_LABELS = {
+  handheart: 'Heart in hand', leaf: 'Leaf', sparkle: 'Sparkle', usersthree: 'People',
+  cake: 'Cake', truck: 'Truck', arrowuupleft: 'Return arrow', sealcheck: 'Seal check',
+};
+const OPTION_LABELS = {
+  style: { primary: 'Primary', secondary: 'Secondary' },
+  'aboutStory.variant': { plain: 'Standard', vision: 'Highlighted band', 'whats-next': 'Closing call to action' },
+  'aboutFeature.eyebrowIcon': ICON_LABELS,
+  'iconCards.items.icon': ICON_LABELS,
+};
+
+const optionLabelsFor = (blockType, parentKey, fieldKey) => lookup(OPTION_LABELS, blockType, parentKey, fieldKey);
 
 // Short helper text shown under fields whose purpose isn't obvious
 const FIELD_HINTS = {
@@ -121,12 +138,12 @@ function ImageField({ label, value, onChange, inert }) {
   );
 }
 
-function EnumField({ label, value, options, onChange, hint }) {
+function EnumField({ label, value, options, optionLabels = {}, onChange, hint }) {
   const { t } = useLang();
   return (
     <FieldRow label={label} hint={hint}>
       <select value={value ?? options[0]} onChange={(e) => onChange(e.target.value)}>
-        {options.map((opt) => <option key={opt} value={opt}>{opt === '' ? t('(none)') : opt}</option>)}
+        {options.map((opt) => <option key={opt} value={opt}>{opt === '' ? t('(none)') : t(optionLabels[opt] || opt)}</option>)}
       </select>
     </FieldRow>
   );
@@ -252,7 +269,16 @@ function FieldGenerator({ blockType, parentKey = '', fieldKey, value, onChange }
 
   const enumOptions = enumOptionsFor(blockType, parentKey, fieldKey);
   if (enumOptions) {
-    return <EnumField label={label} value={value} options={enumOptions} onChange={onChange} hint={hint} />;
+    return (
+      <EnumField
+        label={label}
+        value={value}
+        options={enumOptions}
+        optionLabels={optionLabelsFor(blockType, parentKey, fieldKey)}
+        onChange={onChange}
+        hint={hint}
+      />
+    );
   }
 
   if (Array.isArray(value)) {
@@ -337,9 +363,111 @@ function ShopProductGridFields({ value, onChange }) {
   );
 }
 
+// About page blocks: a fixed, ordered, plainly-labelled form per block -
+// the same short-editor idea as ShopProductGridFields, rather than the
+// generic editor's "one input per stored prop". Every field shows even
+// when the block hasn't stored it yet (so e.g. a button can be added to a
+// section that never had one), and fields a variant doesn't render are
+// left out. Layout-only props (variant on page-specific blocks) aren't
+// shown but are preserved on save; the Code tab still exposes everything.
+const PARAGRAPHS_HINT = 'Leave a blank line between paragraphs.';
+const BUTTON_FIELDS = [
+  { key: 'ctaLabel', label: 'Button text', hint: 'Leave empty to hide the button.' },
+  { key: 'ctaLink', label: 'Button link', hint: FIELD_HINTS.ctaLink },
+];
+
+const CURATED_FIELDS = {
+  // pageHero is shared by many pages; only the About variant is curated
+  pageHero: (p) => p.variant === 'about-maker' && [
+    { key: 'eyebrow', label: 'Small label', hint: 'Short text shown above the heading.' },
+    { key: 'heading', label: 'Heading', type: 'textarea' },
+  ],
+  aboutFeature: () => [
+    { key: 'eyebrowText', label: 'Small label', hint: 'Short text shown above the heading.' },
+    { key: 'eyebrowIcon', label: 'Label icon', type: 'select' },
+    { key: 'heading', label: 'Heading' },
+    { key: 'body', label: 'Text', type: 'textarea', hint: PARAGRAPHS_HINT },
+    { key: 'image', label: 'Image', type: 'image' },
+    { key: 'imageAlt', label: 'Image description', hint: FIELD_HINTS.imageAlt },
+    { key: 'reverse', label: 'Image on the left', type: 'toggle' },
+    ...BUTTON_FIELDS,
+  ],
+  aboutStory: (p) => [
+    { key: 'variant', label: 'Style', type: 'select', fallback: 'plain' },
+    ...(p.variant === 'vision' ? [{ key: 'eyebrow', label: 'Small label', hint: 'Short text shown above the heading.' }] : []),
+    { key: 'heading', label: 'Heading' },
+    { key: 'body', label: 'Text', type: 'textarea', hint: PARAGRAPHS_HINT },
+    ...(p.variant === 'vision' ? [] : BUTTON_FIELDS),
+  ],
+  iconCards: () => [
+    { key: 'items', label: 'Cards', type: 'list' },
+  ],
+  aboutContact: () => [
+    { key: 'heading', label: 'Heading' },
+    { key: 'address', label: 'Address' },
+    { key: 'email', label: 'Email' },
+    { key: 'phone', label: 'Phone' },
+  ],
+  ctaRow: () => [
+    { key: 'heading', label: 'Heading', hint: 'Optional.' },
+    { key: 'body', label: 'Text', type: 'textarea', hint: 'Optional.' },
+    { key: 'buttons', label: 'Buttons', type: 'list' },
+  ],
+};
+
+function CuratedFields({ blockType, fields, value, onChange }) {
+  const { t } = useLang();
+  const setField = (key, v) => onChange({ ...value, [key]: v });
+
+  return fields.map(({ key, label, hint, type = 'text', fallback }) => {
+    const fieldValue = value[key] ?? fallback;
+    const common = { label: t(label), hint: hint && t(hint) };
+    const onFieldChange = (v) => setField(key, v);
+
+    switch (type) {
+      case 'image':
+        return <ImageField key={key} {...common} value={fieldValue} onChange={onFieldChange} />;
+      case 'toggle':
+        return <BooleanField key={key} {...common} value={fieldValue} onChange={onFieldChange} />;
+      case 'select':
+        return (
+          <EnumField
+            key={key}
+            {...common}
+            value={fieldValue}
+            options={enumOptionsFor(blockType, '', key)}
+            optionLabels={optionLabelsFor(blockType, '', key)}
+            onChange={onFieldChange}
+          />
+        );
+      case 'list':
+        return <ArrayOfObjectsField key={key} blockType={blockType} fieldKey={key} label={common.label} items={fieldValue || []} onChange={onFieldChange} />;
+      case 'textarea': {
+        const rows = Math.max(3, Math.min(10, Math.ceil((fieldValue || '').length / 70)));
+        return (
+          <FieldRow key={key} {...common}>
+            <textarea rows={rows} value={fieldValue || ''} onChange={(e) => onFieldChange(e.target.value)} />
+          </FieldRow>
+        );
+      }
+      default:
+        return (
+          <FieldRow key={key} {...common}>
+            <input value={fieldValue ?? ''} onChange={(e) => onFieldChange(e.target.value)} />
+          </FieldRow>
+        );
+    }
+  });
+}
+
 function VisualBlockEditor({ blockType, value, onChange }) {
   const { t } = useLang();
   const setField = (key, v) => onChange({ ...value, [key]: v });
+
+  const curated = CURATED_FIELDS[blockType]?.(value || {});
+  if (curated) {
+    return <CuratedFields blockType={blockType} fields={curated} value={value || {}} onChange={onChange} />;
+  }
 
   if (blockType === 'productGrid') {
     return <ProductGridFields value={value} onChange={onChange} />;
