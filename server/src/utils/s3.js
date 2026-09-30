@@ -4,12 +4,23 @@ const path = require('path');
 
 const s3 = new S3Client({ region: process.env.AWS_REGION });
 
-// Uploads a buffer to S3 under `${prefix}/${uuid}${ext}` and returns the
-// public url + key. Shared by the media library and the archive gallery
+// The bucket is private (Block Public Access on) - the only readable path
+// is `public/*`, served through CloudFront (AWS_CLOUDFRONT_URL). Anything
+// uploaded outside `public/` 403s in the browser, so every key lives there.
+const PUBLIC_PREFIX = 'public';
+
+const publicUrlFor = (key) => {
+  const cdn = process.env.AWS_CLOUDFRONT_URL?.replace(/\/+$/, '');
+  if (cdn) return `${cdn}/${key}`;
+  return `https://${process.env.AWS_S3_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
+};
+
+// Uploads a buffer to S3 under `public/${prefix}/${uuid}${ext}` and returns
+// the public url + key. Shared by the media library and the archive gallery
 // so both keep identical upload behavior without duplicating S3 wiring.
 const uploadBuffer = async (buffer, { originalname, mimetype, prefix = 'uploads' }) => {
   const ext = path.extname(originalname);
-  const key = `${prefix}/${crypto.randomUUID()}${ext}`;
+  const key = `${PUBLIC_PREFIX}/${prefix}/${crypto.randomUUID()}${ext}`;
 
   await s3.send(new PutObjectCommand({
     Bucket: process.env.AWS_S3_BUCKET,
@@ -18,8 +29,7 @@ const uploadBuffer = async (buffer, { originalname, mimetype, prefix = 'uploads'
     ContentType: mimetype,
   }));
 
-  const url = `https://${process.env.AWS_S3_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
-  return { url, key };
+  return { url: publicUrlFor(key), key };
 };
 
 const deleteObject = async (key) => {

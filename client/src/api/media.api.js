@@ -1,5 +1,6 @@
 import axiosClient from './axiosClient';
 
+export const getMedia = () => axiosClient.get('/media');
 export const uploadImage = (file) => {
   const formData = new FormData();
   formData.append('image', file);
@@ -7,4 +8,4 @@ export const uploadImage = (file) => {
     headers: { 'Content-Type': 'multipart/form-data' },
   });
 };
-export const deleteImage = (key) => axiosClient.delete(`/media/${key}`);
+export const deleteImage = (id) => axiosClient.delete(`/media/${id}`);

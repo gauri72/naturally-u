@@ -1,25 +1,46 @@
-import { useState } from 'react';
-import { Image } from '@phosphor-icons/react';
-import { uploadImage } from '../../../api/media.api';
+import { useEffect, useState } from 'react';
+import { Image, Trash } from '@phosphor-icons/react';
+import { getMedia, uploadImage, deleteImage } from '../../../api/media.api';
 import toast from 'react-hot-toast';
 import { useLang } from '../../../i18n/LanguageContext.jsx';
 
-// Minimal upload-and-list UI. For a full library, persist uploaded
-// media metadata to a Media collection so past uploads are browsable
-// (current scope: upload returns a URL to copy/paste into a block).
+// Upload-and-list UI over every image uploaded through /api/media/upload
+// (including product/block image pickers) - copy an image's URL to paste
+// it into a block, or delete it.
 function MediaLibraryPage() {
   const { t } = useLang();
-  const [uploaded, setUploaded] = useState([]);
+  const [media, setMedia] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getMedia()
+      .then((res) => setMedia(res.data))
+      .catch(() => toast.error(t('Failed to load images')))
+      .finally(() => setLoading(false));
+  }, []);
 
   const handleUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
     try {
       const res = await uploadImage(file);
-      setUploaded((prev) => [res.data, ...prev]);
+      setMedia((prev) => [res.data, ...prev]);
       toast.success(t('Uploaded'));
     } catch {
       toast.error(t('Upload failed'));
+    } finally {
+      e.target.value = '';
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm(t('Delete this image?'))) return;
+    try {
+      await deleteImage(id);
+      setMedia((prev) => prev.filter((img) => img._id !== id));
+      toast.success(t('Image deleted'));
+    } catch {
+      toast.error(t('Delete failed'));
     }
   };
 
@@ -31,17 +52,24 @@ function MediaLibraryPage() {
           <input type="file" accept="image/*" onChange={handleUpload} />
         </div>
       </div>
-      {uploaded.length === 0 ? (
+      {loading ? (
+        <p>{t('Loading...')}</p>
+      ) : media.length === 0 ? (
         <div className="admin-empty-state">
           <Image size={40} />
-          <p>{t('No uploads this session yet.')}</p>
+          <p>{t('No images yet.')}</p>
         </div>
       ) : (
         <div className="admin-grid">
-          {uploaded.map((img) => (
-            <div key={img.key} className="admin-card">
+          {media.map((img) => (
+            <div key={img._id} className="admin-card">
               <img src={img.url} alt="" style={{ width: '100%', borderRadius: 'var(--radius-sm)', aspectRatio: '1', objectFit: 'cover' }} />
-              <input readOnly value={img.url} onFocus={(e) => e.target.select()} style={{ marginTop: 'var(--space-sm)', fontSize: '0.7rem', width: '100%' }} />
+              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-xs)', marginTop: 'var(--space-sm)' }}>
+                <input readOnly value={img.url} onFocus={(e) => e.target.select()} style={{ fontSize: '0.7rem', flex: 1, minWidth: 0 }} />
+                <button type="button" className="icon-btn icon-btn--danger" onClick={() => handleDelete(img._id)} title={t('Delete')}>
+                  <Trash size={18} />
+                </button>
+              </div>
             </div>
           ))}
         </div>

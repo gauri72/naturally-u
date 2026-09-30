@@ -106,7 +106,7 @@ const admin = {
   // ── Media library / image grid ─────────────────────────────────────
   'Uploaded': 'Geüpload',
   'Upload failed': 'Uploaden mislukt',
-  'No uploads this session yet.': 'Nog geen uploads in deze sessie.',
+  'Failed to load images': 'Afbeeldingen laden mislukt',
   'Image uploaded': 'Afbeelding geüpload',
   'Image deleted': 'Afbeelding verwijderd',
   'Delete failed': 'Verwijderen mislukt',

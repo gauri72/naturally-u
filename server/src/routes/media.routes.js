@@ -1,7 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const { protect } = require('../middleware/auth');
-const { uploadImage, deleteImage } = require('../controllers/media.controller');
+const { listMedia, uploadImage, deleteImage } = require('../controllers/media.controller');
 
 // Memory storage - buffer goes straight to S3, never touches disk
 // (important on Render's ephemeral filesystem)
@@ -18,7 +18,8 @@ const upload = multer({
 
 const router = express.Router();
 
+router.get('/', protect, listMedia);
 router.post('/upload', protect, upload.single('image'), uploadImage);
-router.delete('/:key', protect, deleteImage);
+router.delete('/:id', protect, deleteImage);
 
 module.exports = router;
