@@ -58,6 +58,38 @@ function ownOrdersFilter(customer) {
   return { ...owner, paymentStatus: { $in: ['paid', 'refunded'] } };
 }
 
+// Fills an account's EMPTY phone/address from the newest of its past orders
+// that has usable values. Only called once the email is verified (same
+// reason as ownOrdersFilter: otherwise signing up with someone else's email
+// would reveal their address). Never overwrites what the customer entered.
+const looksLikePhone = (p) => (String(p || '').match(/\d/g) || []).length >= 6;
+
+async function fillProfileFromPastOrders(customer) {
+  if (!customer.emailVerified) return;
+  const needPhone = !customer.phone;
+  const needAddress = !customer.address?.line1;
+  if (!needPhone && !needAddress) return;
+
+  const orders = await Order.find(ownOrdersFilter(customer))
+    .select('customer.phone shippingAddress')
+    .sort('-createdAt')
+    .limit(20);
+
+  let changed = false;
+  if (needPhone) {
+    const phone = orders.map((o) => o.customer?.phone).find(looksLikePhone);
+    if (phone) { customer.phone = clean(phone, 40); changed = true; }
+  }
+  if (needAddress) {
+    const addr = orders.map((o) => o.shippingAddress).find((a) => a?.line1 && a?.city);
+    if (addr) {
+      customer.address = Object.fromEntries(ADDRESS_FIELDS.map((f) => [f, clean(addr[f])]));
+      changed = true;
+    }
+  }
+  if (changed) await customer.save();
+}
+
 // @route GET /api/customers/config  (public)
 const getConfig = (req, res) => {
   res.json({ googleClientId: process.env.GOOGLE_CLIENT_ID || null });
@@ -135,6 +167,7 @@ const googleSignIn = asyncHandler(async (req, res) => {
       });
     }
   }
+  await fillProfileFromPastOrders(customer);
   res.json(authResponse(customer));
 });
 
@@ -188,6 +221,7 @@ const verifyEmail = asyncHandler(async (req, res) => {
   customer.verifyTokenHash = undefined;
   customer.verifyTokenExpires = undefined;
   await customer.save();
+  await fillProfileFromPastOrders(customer);
   res.json({ verified: true, email: customer.email });
 });
 
@@ -242,6 +276,7 @@ const resetPassword = asyncHandler(async (req, res) => {
   customer.emailVerified = true; // they just proved they can read this inbox
   customer.tokenVersion += 1;
   await customer.save();
+  await fillProfileFromPastOrders(customer);
   res.json(authResponse(customer));
 });
 
