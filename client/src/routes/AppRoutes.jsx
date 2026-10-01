@@ -22,6 +22,17 @@ import ContactPage from '../pages/storefront/ContactPage.jsx';
 import SearchPage from '../pages/storefront/SearchPage.jsx';
 import CmsPage from '../pages/storefront/CmsPage.jsx';
 
+import AuthPage from '../pages/account/AuthPage.jsx';
+import ForgotPasswordPage from '../pages/account/ForgotPasswordPage.jsx';
+import ResetPasswordPage from '../pages/account/ResetPasswordPage.jsx';
+import VerifyEmailPage from '../pages/account/VerifyEmailPage.jsx';
+import AccountLayout from '../pages/account/AccountLayout.jsx';
+import AccountOverviewPage from '../pages/account/AccountOverviewPage.jsx';
+import AccountOrdersPage from '../pages/account/AccountOrdersPage.jsx';
+import AccountOrderDetailPage from '../pages/account/AccountOrderDetailPage.jsx';
+import AccountProfilePage from '../pages/account/AccountProfilePage.jsx';
+import AccountSecurityPage from '../pages/account/AccountSecurityPage.jsx';
+
 import LoginPage from '../pages/admin/LoginPage.jsx';
 import DashboardPage from '../pages/admin/dashboard/DashboardPage.jsx';
 import PagesListPage from '../pages/admin/pagebuilder/PagesListPage.jsx';
@@ -57,6 +68,20 @@ function AppRoutes() {
         <Route path="/workshops" element={<WorkshopsPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/search" element={<SearchPage />} />
+
+        {/* Customer accounts */}
+        <Route path="/account/login" element={<AuthPage mode="login" />} />
+        <Route path="/account/register" element={<AuthPage mode="register" />} />
+        <Route path="/account/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/account/reset-password" element={<ResetPasswordPage />} />
+        <Route path="/account/verify-email" element={<VerifyEmailPage />} />
+        <Route path="/account" element={<AccountLayout />}>
+          <Route index element={<AccountOverviewPage />} />
+          <Route path="orders" element={<AccountOrdersPage />} />
+          <Route path="orders/:id" element={<AccountOrderDetailPage />} />
+          <Route path="profile" element={<AccountProfilePage />} />
+          <Route path="security" element={<AccountSecurityPage />} />
+        </Route>
         {/* Generic CMS pages by slug (e.g. /about-2); static routes above
             rank higher in react-router matching, and /admin is a separate
             top-level static route, so neither is shadowed. */}

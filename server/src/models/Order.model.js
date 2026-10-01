@@ -17,6 +17,9 @@ const orderSchema = new mongoose.Schema(
       email: { type: String, required: true },
       phone: String,
     },
+    // Set when the order was placed while signed in. Guest orders stay
+    // unset and are matched to an account by (verified) email instead.
+    customerAccount: { type: mongoose.Schema.Types.ObjectId, ref: 'Customer', index: true },
     shippingAddress: {
       line1: String,
       line2: String,

@@ -144,6 +144,11 @@
   position: relative;
 }
 
+/* Account: icon in the header row on desktop, a menu entry on phones */
+.site-header__nav .site-header__nav-account {
+  display: none;
+}
+
 .badge {
   background: var(--color-primary);
   color: var(--color-white);
@@ -234,6 +239,19 @@
 
   .site-header__actions {
     order: 3;
+  }
+
+  .site-header__account {
+    display: none;
+  }
+
+  .site-header__nav .site-header__nav-account {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-weight: 700;
+    color: var(--color-primary);
   }
 
   /* The logo is absolutely centred on mobile, so an inline search field

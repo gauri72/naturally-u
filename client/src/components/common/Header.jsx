@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { MagnifyingGlass, ShoppingCart, X } from '@phosphor-icons/react';
+import { MagnifyingGlass, ShoppingCart, User, X } from '@phosphor-icons/react';
 import { useCart } from '../../context/CartContext.jsx';
+import { useCustomer } from '../../context/CustomerContext.jsx';
 import { useLang } from '../../i18n/LanguageContext.jsx';
 import { getSettings } from '../../api/settings.api';
 import desktopLogo from '../../assets/images/home/desktop-header-logo.png';
@@ -14,6 +15,7 @@ import './Header.css';
 // stay usable immediately and the nav fills in once Settings arrives.
 function Header() {
   const { itemCount } = useCart();
+  const { customer } = useCustomer();
   const { t } = useLang();
   const [navLinks, setNavLinks] = useState([]);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -85,6 +87,10 @@ function Header() {
               {t(link.label)}
             </NavLink>
           ))}
+          {/* Phones: the account link lives in the menu, the header row is too tight */}
+          <NavLink to={customer ? '/account' : '/account/login'} className="site-header__nav-account" onClick={() => setMenuOpen(false)}>
+            <User size={18} /> {customer ? t('My account') : t('Sign in')}
+          </NavLink>
         </nav>
 
         <div className="site-header__actions">
@@ -106,6 +112,14 @@ function Header() {
               <MagnifyingGlass size={20} weight="regular" />
             </button>
           )}
+          <Link
+            to={customer ? '/account' : '/account/login'}
+            className="site-header__icon-btn site-header__account"
+            aria-label={customer ? t('My account') : t('Sign in')}
+            title={customer ? t('My account') : t('Sign in')}
+          >
+            <User size={20} weight={customer ? 'fill' : 'regular'} />
+          </Link>
           <Link to="/cart" className="site-header__icon-btn site-header__cart" aria-label={t('Cart')}>
             <ShoppingCart size={20} weight="regular" />
             {itemCount > 0 && <span className="badge">{itemCount}</span>}

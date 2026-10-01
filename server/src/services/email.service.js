@@ -158,4 +158,65 @@ async function sendOrderConfirmationEmail(order, pdfBuffer) {
   return { simulated: false, messageId: info.messageId };
 }
 
-module.exports = { sendOrderConfirmationEmail };
+// The name is customer-typed, so escape it before it goes into HTML.
+const escapeHtml = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+function renderAccountEmailHtml({ name, heading, body, ctaLabel, ctaUrl, footnote }) {
+  name = name ? escapeHtml(name) : name;
+  return `
+  <!DOCTYPE html>
+  <html>
+  <body style="margin:0;padding:0;background:${COLORS.background};font-family:Verdana,Geneva,sans-serif;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${COLORS.background};padding:32px 16px;">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="100%" style="max-width:520px;background:#ffffff;border-radius:12px;overflow:hidden;border:1px solid ${COLORS.border};">
+            <tr>
+              <td style="background:${COLORS.primary};padding:24px 32px;text-align:center;">
+                <div style="font-family:Georgia,'Times New Roman',serif;color:#ffffff;font-size:22px;font-weight:700;">NaturallyU</div>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:32px;">
+                <h1 style="font-family:Georgia,'Times New Roman',serif;color:${COLORS.text};font-size:20px;margin:0 0 12px;">${heading}</h1>
+                <p style="color:${COLORS.textMuted};font-size:14px;line-height:1.6;margin:0 0 24px;">Hi ${name || 'there'}, ${body}</p>
+                <p style="margin:0 0 24px;text-align:center;">
+                  <a href="${ctaUrl}" style="display:inline-block;background:${COLORS.primary};color:#ffffff;text-decoration:none;font-weight:700;font-size:14px;padding:12px 28px;border-radius:8px;">${ctaLabel}</a>
+                </p>
+                <p style="color:${COLORS.textMuted};font-size:12px;line-height:1.6;margin:0;">${footnote}<br/><br/>Button not working? Copy this link into your browser:<br/><span style="word-break:break-all;color:${COLORS.primary};">${ctaUrl}</span></p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+  </html>`;
+}
+
+/**
+ * Account emails (confirm address, reset password). Same dev fallback as
+ * the order email: without SMTP the HTML is saved to server/tmp/emails/.
+ */
+async function sendAccountEmail({ to, subject, ...content }) {
+  const html = renderAccountEmailHtml(content);
+  const client = getTransporter();
+  if (!client || devFallback) {
+    const dir = path.join(__dirname, '..', '..', 'tmp', 'emails');
+    fs.mkdirSync(dir, { recursive: true });
+    const file = path.join(dir, `${Date.now()}_account.html`);
+    fs.writeFileSync(file, html);
+    logger.info(`[email:dev] SMTP not configured - would have sent "${subject}" to ${to}. Saved preview to ${file}`);
+    return { simulated: true, previewPath: file };
+  }
+  const info = await client.sendMail({
+    from: process.env.EMAIL_FROM || '"NaturallyU" <orders@naturallyu.com>',
+    to,
+    subject,
+    html,
+  });
+  logger.info(`[email] "${subject}" sent to ${to} (messageId=${info.messageId})`);
+  return { simulated: false, messageId: info.messageId };
+}
+
+module.exports = { sendOrderConfirmationEmail, sendAccountEmail };

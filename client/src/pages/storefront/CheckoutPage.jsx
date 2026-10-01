@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { CreditCard, Truck, WarningCircle } from '@phosphor-icons/react';
+import { Link, useNavigate } from 'react-router-dom';
+import { CreditCard, Truck, WarningCircle, UserCircle } from '@phosphor-icons/react';
 import toast from 'react-hot-toast';
 import { useCart } from '../../context/CartContext.jsx';
+import { useCustomer } from '../../context/CustomerContext.jsx';
 import { createOrder } from '../../api/orders.api';
 import { getPageBySlug } from '../../api/pages.api';
 import { getPaymentConfig } from '../../api/payments.api';
@@ -54,6 +55,17 @@ function CheckoutPage() {
     getPaymentConfig().then((res) => setPaymentConfig(res.data)).catch(console.error);
   }, []);
 
+  // Signed-in shoppers: fill any empty fields from their profile and offer
+  // to save the address back. Guests see a "sign in for faster checkout"
+  // prompt but can carry on without an account.
+  const { customer, updateProfile } = useCustomer();
+  const [saveAddress, setSaveAddress] = useState(true);
+  useEffect(() => {
+    if (!customer) return;
+    const saved = { name: customer.name, email: customer.email, phone: customer.phone, ...customer.address };
+    setForm((prev) => Object.fromEntries(Object.entries(prev).map(([k, v]) => [k, v || saved[k] || ''])));
+  }, [customer]);
+
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleCreateOrder = async (e) => {
@@ -68,6 +80,12 @@ function CheckoutPage() {
       });
       setOrderData(res.data);
       setStep('payment');
+      if (customer && saveAddress) {
+        updateProfile({
+          phone: form.phone,
+          address: { line1: form.line1, city: form.city, state: form.state, postalCode: form.postalCode, country: form.country },
+        }).catch(() => {}); // a failed save mustn't block payment
+      }
     } catch (err) {
       toast.error(err.response?.data?.message || 'Could not start checkout. Please review your cart and try again.');
     } finally {
@@ -99,6 +117,15 @@ function CheckoutPage() {
       <div className="checkout-page__layout">
         {step === 'details' ? (
           <form className="checkout-page__form" onSubmit={handleCreateOrder}>
+            {customer ? (
+              <p className="checkout-page__account-note">
+                <UserCircle size={18} /> Signed in as <strong>{customer.email}</strong> — this order will appear in <Link to="/account/orders">your account</Link>.
+              </p>
+            ) : (
+              <p className="checkout-page__account-note">
+                <UserCircle size={18} /> Have an account? <Link to="/account/login?next=/checkout">Sign in</Link> for faster checkout — or continue as a guest.
+              </p>
+            )}
             <h3>Contact</h3>
             <div className="checkout-page__field-grid">
               {CONTACT_FIELDS.map((field) => (
@@ -129,6 +156,13 @@ function CheckoutPage() {
                 </label>
               ))}
             </div>
+
+            {customer && (
+              <label className="checkout-page__save-address">
+                <input type="checkbox" checked={saveAddress} onChange={(e) => setSaveAddress(e.target.checked)} />
+                Save this phone number and address to my account
+              </label>
+            )}
 
             <button type="submit" className="btn btn--primary checkout-page__submit" disabled={creatingOrder}>
               {creatingOrder ? 'Preparing checkout…' : 'Continue to Payment'}

@@ -24,8 +24,12 @@ const newsletterRoutes = require('./routes/newsletter.routes');
 const archiveRoutes = require('./routes/archive.routes');
 const contactRoutes = require('./routes/contact.routes');
 const searchRoutes = require('./routes/search.routes');
+const customerRoutes = require('./routes/customer.routes');
 
 const app = express();
+// Render sits one proxy in front of us; trust it so req.ip is the real
+// client (needed for per-IP rate limiting on customer sign-in).
+app.set('trust proxy', 1);
 
 app.use(helmet());
 app.use(cors({
@@ -62,6 +66,7 @@ app.use('/api/newsletter', newsletterRoutes);
 app.use('/api/archive', archiveRoutes);   // Media Gallery: archived legacy naturallyu.nl content
 app.use('/api/contact', contactRoutes);   // public contact form submissions
 app.use('/api/search', searchRoutes);     // site-wide search (products + CMS pages)
+app.use('/api/customers', customerRoutes); // shopper accounts, dashboard, order history
 
 app.use(notFound);
 app.use(errorHandler); // must be last

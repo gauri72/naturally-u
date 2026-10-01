@@ -54,6 +54,7 @@ const createOrder = asyncHandler(async (req, res) => {
     orderNumber,
     items: validatedItems,
     customer,
+    customerAccount: req.customer?._id, // set by optionalCustomer when signed in
     shippingAddress,
     subtotal,
     shippingCost,

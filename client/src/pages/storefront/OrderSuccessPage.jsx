@@ -3,6 +3,7 @@ import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { CheckCircle, XCircle, HourglassMedium, WarningCircle } from '@phosphor-icons/react';
 import { getOrderById } from '../../api/orders.api';
 import { getPaymentStatus } from '../../api/payments.api';
+import { useCustomer } from '../../context/CustomerContext.jsx';
 import './OrderSuccessPage.css';
 
 // Reached both from the mock-payment path (CheckoutPage navigates here
@@ -19,6 +20,7 @@ function OrderSuccessPage() {
   const [order, setOrder] = useState(null);
   const [status, setStatus] = useState(null); // 'paid' | 'pending' | 'failed'
   const [error, setError] = useState(null);
+  const { customer } = useCustomer();
 
   useEffect(() => {
     let cancelled = false;
@@ -119,7 +121,11 @@ function OrderSuccessPage() {
 
       <div className="order-success-page__actions">
         <Link to="/shop" className="btn btn--primary">Continue Shopping</Link>
-        <Link to={`/track-order?orderId=${order._id}`} className="btn btn--secondary">Track Order</Link>
+        {customer ? (
+          <Link to={`/account/orders/${order._id}`} className="btn btn--secondary">View in My Account</Link>
+        ) : (
+          <Link to={`/track-order?orderId=${order._id}`} className="btn btn--secondary">Track Order</Link>
+        )}
       </div>
     </section>
   );
