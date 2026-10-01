@@ -192,8 +192,8 @@ const run = async () => {
     ],
     shopLinks: [
       { label: 'All Products', path: '/shop' },
-      { label: 'Soaps', path: '/shop?category=soaps' },
-      { label: 'Skincare', path: '/shop?category=skincare' },
+      { label: 'Soaps', path: '/shop?tag=soap' },
+      { label: 'Skincare', path: '/shop?tag=skincare' },
       { label: 'Gift Sets', path: '/gift-sets' },
       { label: 'New Arrivals', path: '/shop?sort=new' },
     ],
