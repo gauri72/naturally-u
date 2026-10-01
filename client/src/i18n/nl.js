@@ -406,6 +406,13 @@ const strings = {
   'Interested in booking a workshop?': 'Interesse om een workshop te boeken?',
   "Get in touch and we'll help you plan the details — group size, timing, and location.":
     'Neem contact op en we helpen je de details te plannen — groepsgrootte, tijdstip en locatie.',
+
+  // ── App (PWA) status banners ───────────────────────────────────────
+  'You’re offline. Saved pages still work, but checkout needs a connection.':
+    'Je bent offline. Opgeslagen pagina’s werken nog, maar afrekenen vereist een verbinding.',
+  'A new version of NaturallyU is available.': 'Er is een nieuwe versie van NaturallyU beschikbaar.',
+  'Refresh': 'Vernieuwen',
+  'Dismiss': 'Sluiten',
 };
 
 const nl = { ...strings, ...catalog, ...admin };
