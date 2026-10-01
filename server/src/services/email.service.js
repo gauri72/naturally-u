@@ -219,4 +219,62 @@ async function sendAccountEmail({ to, subject, ...content }) {
   return { simulated: false, messageId: info.messageId };
 }
 
-module.exports = { sendOrderConfirmationEmail, sendAccountEmail };
+function renderNewOrderNotificationHtml(order) {
+  const { customer = {}, shippingAddress = {} } = order;
+  const address = [
+    shippingAddress.line1,
+    shippingAddress.line2,
+    [shippingAddress.postalCode, shippingAddress.city].filter(Boolean).join(' '),
+    shippingAddress.state,
+    shippingAddress.country,
+  ].filter(Boolean).map(escapeHtml).join('<br/>');
+  const itemsRows = (order.items || [])
+    .map(
+      (item) => `<tr><td style="padding:4px 0;">${escapeHtml(item.name)} &times; ${item.quantity}</td><td style="padding:4px 0;text-align:right;">${currency(item.price * item.quantity)}</td></tr>`
+    )
+    .join('');
+
+  return `
+  <div style="font-family:Verdana,Geneva,sans-serif;color:${COLORS.text};font-size:14px;line-height:1.6;max-width:560px;">
+    <h2 style="font-family:Georgia,'Times New Roman',serif;color:${COLORS.primary};margin:0 0 12px;">New order ${order.orderNumber}</h2>
+    <p style="margin:0 0 16px;">Paid ${currency(order.total)} (${order.paymentMode || 'unknown'} payment).</p>
+    <table role="presentation" width="100%" style="border-top:1px solid ${COLORS.border};border-bottom:1px solid ${COLORS.border};margin-bottom:16px;">
+      ${itemsRows}
+      <tr><td style="padding:4px 0;color:${COLORS.textMuted};">Shipping</td><td style="padding:4px 0;text-align:right;color:${COLORS.textMuted};">${order.shippingCost ? currency(order.shippingCost) : 'Free'}</td></tr>
+      <tr><td style="padding:4px 0;font-weight:700;">Total</td><td style="padding:4px 0;text-align:right;font-weight:700;">${currency(order.total)}</td></tr>
+    </table>
+    <p style="margin:0 0 4px;"><strong>Customer:</strong> ${escapeHtml(customer.name || '-')}</p>
+    <p style="margin:0 0 4px;"><strong>Email:</strong> ${escapeHtml(customer.email || '-')}</p>
+    <p style="margin:0 0 16px;"><strong>Phone:</strong> ${escapeHtml(customer.phone || '-')}</p>
+    <p style="margin:0;"><strong>Ship to:</strong><br/>${address || '-'}</p>
+  </div>`;
+}
+
+/**
+ * Notifies the shop that a paid order came in. Goes to ORDER_NOTIFY_EMAIL,
+ * falling back to SMTP_USER (the shop's own mailbox). Reply-To is the
+ * customer so the shop can answer them directly. Skipped (logged only) when
+ * SMTP isn't configured, same as the customer email.
+ */
+async function sendNewOrderNotificationEmail(order) {
+  const to = process.env.ORDER_NOTIFY_EMAIL || process.env.SMTP_USER;
+  const subject = `New order ${order.orderNumber} - ${currency(order.total)}`;
+
+  const client = getTransporter();
+  if (!client || devFallback || !to) {
+    logger.info(`[email:dev] SMTP not configured - would have sent shop notification "${subject}".`);
+    return { simulated: true };
+  }
+
+  const info = await client.sendMail({
+    from: process.env.EMAIL_FROM || '"NaturallyU" <orders@naturallyu.com>',
+    to,
+    replyTo: order.customer?.email,
+    subject,
+    html: renderNewOrderNotificationHtml(order),
+  });
+  logger.info(`[email] New order notification sent to ${to} (messageId=${info.messageId})`);
+  return { simulated: false, messageId: info.messageId };
+}
+
+module.exports = { sendOrderConfirmationEmail, sendAccountEmail, sendNewOrderNotificationEmail };

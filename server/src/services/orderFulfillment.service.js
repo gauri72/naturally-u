@@ -1,7 +1,7 @@
 const Order = require('../models/Order.model');
 const Product = require('../models/Product.model');
 const { generateReceiptPdf } = require('./pdf.service');
-const { sendOrderConfirmationEmail } = require('./email.service');
+const { sendOrderConfirmationEmail, sendNewOrderNotificationEmail } = require('./email.service');
 const logger = require('../utils/logger');
 
 /**
@@ -57,6 +57,14 @@ async function fulfillPaidOrder(orderId) {
     await order.save();
   } catch (err) {
     logger.error(`[fulfillment] Order ${order.orderNumber}: failed to send confirmation email - ${err.message}`);
+  }
+
+  // Separate try so a failed shop alert never affects the customer email
+  // (or vice versa).
+  try {
+    await sendNewOrderNotificationEmail(order);
+  } catch (err) {
+    logger.error(`[fulfillment] Order ${order.orderNumber}: failed to send shop notification email - ${err.message}`);
   }
 
   if (emailResult.simulated) {
