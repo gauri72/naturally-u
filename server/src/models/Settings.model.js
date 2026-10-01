@@ -52,9 +52,8 @@ const settingsSchema = new mongoose.Schema(
         social: {
           type: [{ platform: String, url: String }],
           default: [
-            { platform: 'facebook', url: 'https://facebook.com/naturallyu' },
-            { platform: 'instagram', url: 'https://instagram.com/naturallyu' },
-            { platform: 'pinterest', url: 'https://pinterest.com/naturallyu' },
+            { platform: 'facebook', url: 'https://www.facebook.com/naturallyu.nl' },
+            { platform: 'instagram', url: 'https://www.instagram.com/naturallyu2018' },
           ],
         },
       },

@@ -207,9 +207,8 @@ const run = async () => {
       email: 'hello@naturallyu.com',
       phone: '+1 555 123-4567',
       social: [
-        { platform: 'facebook', url: 'https://facebook.com/naturallyu' },
-        { platform: 'instagram', url: 'https://instagram.com/naturallyu' },
-        { platform: 'pinterest', url: 'https://pinterest.com/naturallyu' },
+        { platform: 'facebook', url: 'https://www.facebook.com/naturallyu.nl' },
+        { platform: 'instagram', url: 'https://www.instagram.com/naturallyu2018' },
       ],
     },
     copyrightText: '© 2026 NaturallyU. All rights reserved.',
