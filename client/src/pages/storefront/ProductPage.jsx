@@ -10,8 +10,8 @@ import {
 } from '@phosphor-icons/react';
 import { getProductBySlug } from '../../api/products.api';
 import { getPageBySlug } from '../../api/pages.api';
-import { useCart } from '../../context/CartContext.jsx';
 import { useLang } from '../../i18n/LanguageContext.jsx';
+import CartQuantityControl from '../../components/product/CartQuantityControl.jsx';
 import './ProductPage.css';
 
 // The product's own name/price/description/images are data-driven; the
@@ -49,7 +49,6 @@ function ProductPage() {
   const [product, setProduct] = useState(null);
   const [content, setContent] = useState(null);
   const [selectedImage, setSelectedImage] = useState(0);
-  const { addItem } = useCart();
 
   useEffect(() => {
     setSelectedImage(0);
@@ -112,13 +111,14 @@ function ProductPage() {
             </span>
           </div>
           <p className="product-page__tax-note">{t('Sales tax included.')}</p>
-          <button
+          <CartQuantityControl
+            product={product}
+            size="lg"
             className="btn btn--primary product-page__add-btn"
-            onClick={() => addItem(product)}
             disabled={!inStock}
           >
             {inStock ? t('Add to Cart') : t('Out of Stock')}
-          </button>
+          </CartQuantityControl>
         </div>
 
         <p className="product-page__description">{t(product.description)}</p>

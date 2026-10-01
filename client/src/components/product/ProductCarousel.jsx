@@ -8,8 +8,8 @@ import {
 } from 'react';
 import { Link } from 'react-router-dom';
 import { ShoppingCart, Info, CaretLeft, CaretRight } from '@phosphor-icons/react';
-import { useCart } from '../../context/CartContext.jsx';
 import { useLang } from '../../i18n/LanguageContext.jsx';
+import CartQuantityControl from './CartQuantityControl.jsx';
 import './ProductCarousel.css';
 
 // Portrait filmstrip carousel for the shop page — several 9:16 product
@@ -38,7 +38,6 @@ function ProductCarousel({
   nextButtonLabel = 'Next products',
   slidePickerLabel = 'Choose slide to display',
 }) {
-  const { addItem } = useCart();
   const { t } = useLang();
   const count = products.length;
 
@@ -261,15 +260,15 @@ function ProductCarousel({
                       {currencySymbol}{product.price.toFixed(priceDecimals)}
                     </span>
                     <div className="product-carousel__actions">
-                      <button
-                        type="button"
+                      <CartQuantityControl
+                        product={product}
+                        size="md"
                         className="product-carousel__cart"
-                        aria-label={`${t(addToCartLabel)} — ${t(product.name)}`}
-                        onClick={() => addItem(product)}
+                        ariaLabel={`${t(addToCartLabel)} — ${t(product.name)}`}
                       >
                         <ShoppingCart size={16} weight="bold" />
                         <span>{t(addToCartLabel)}</span>
-                      </button>
+                      </CartQuantityControl>
                       <Link
                         to={`/shop/${product.slug}`}
                         className="product-carousel__info"

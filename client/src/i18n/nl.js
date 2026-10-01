@@ -413,6 +413,13 @@ const strings = {
   'A new version of NaturallyU is available.': 'Er is een nieuwe versie van NaturallyU beschikbaar.',
   'Refresh': 'Vernieuwen',
   'Dismiss': 'Sluiten',
+
+  // ── Inline cart quantity stepper on products ───────────────────────
+  'Quantity in cart': 'Aantal in winkelwagen',
+  'in cart': 'in winkelwagen',
+  'Increase quantity': 'Aantal verhogen',
+  'Decrease quantity': 'Aantal verlagen',
+  'Remove from cart': 'Uit winkelwagen verwijderen',
 };
 
 const nl = { ...strings, ...catalog, ...admin };

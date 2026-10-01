@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ShoppingCart, Star } from '@phosphor-icons/react';
-import { useCart } from '../../context/CartContext.jsx';
 import { useLang } from '../../i18n/LanguageContext.jsx';
+import CartQuantityControl from './CartQuantityControl.jsx';
 import './ProductCard.css';
 
 function Stars({ rating }) {
@@ -16,7 +16,6 @@ function Stars({ rating }) {
 }
 
 function ProductCard({ product }) {
-  const { addItem } = useCart();
   const { t } = useLang();
 
   return (
@@ -35,14 +34,14 @@ function ProductCard({ product }) {
               </p>
             )}
           </div>
-          <button
-            type="button"
+          <CartQuantityControl
+            product={product}
+            size="sm"
             className="product-card__cart-btn"
-            aria-label={`${t('Add to cart')} — ${t(product.name)}`}
-            onClick={() => addItem(product)}
+            ariaLabel={`${t('Add to cart')} — ${t(product.name)}`}
           >
             <ShoppingCart size={17} weight="bold" />
-          </button>
+          </CartQuantityControl>
         </div>
       </div>
     </div>
