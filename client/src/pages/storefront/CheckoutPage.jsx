@@ -199,6 +199,7 @@ function CheckoutPage() {
                   submitting={paymentSubmitting}
                   setSubmitting={setPaymentSubmitting}
                   onError={setPaymentError}
+                  billingDetails={form}
                 />
               </StripeProvider>
             )}

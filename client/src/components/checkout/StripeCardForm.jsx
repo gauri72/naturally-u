@@ -8,7 +8,20 @@ import './PaymentForm.css';
 // stripe.confirmPayment redirects to `returnUrl` on success/failure, so the
 // success page re-checks payment status server-side rather than trusting
 // the redirect alone (see OrderSuccessPage.jsx).
-function StripeCardForm({ returnUrl, submitting, setSubmitting, onError }) {
+//
+// `billingDetails` (from the contact/shipping step) pre-fills the fields some
+// payment methods ask for again - e.g. iDEAL | Wero's "Full name" - so the
+// shopper doesn't retype them.
+function toStripeBillingDetails(details = {}) {
+  const { name, email, phone, line1, city, state, postalCode, country } = details;
+  const address = { line1, city, state, postal_code: postalCode };
+  // Stripe only accepts ISO country codes ("NL"); a typed "Netherlands" would
+  // be rejected, so it's left for the shopper to pick in that case.
+  if (/^[a-z]{2}$/i.test(country?.trim() || '')) address.country = country.trim().toUpperCase();
+  return { name, email, phone, address };
+}
+
+function StripeCardForm({ returnUrl, submitting, setSubmitting, onError, billingDetails }) {
   const stripe = useStripe();
   const elements = useElements();
   const [elementReady, setElementReady] = useState(false);
@@ -39,7 +52,10 @@ function StripeCardForm({ returnUrl, submitting, setSubmitting, onError }) {
         <CreditCard size={18} weight="regular" /> Payment
       </h3>
       <div className="payment-form__element-wrap">
-        <PaymentElement onReady={() => setElementReady(true)} />
+        <PaymentElement
+          onReady={() => setElementReady(true)}
+          options={{ defaultValues: { billingDetails: toStripeBillingDetails(billingDetails) } }}
+        />
       </div>
       <button
         type="submit"
