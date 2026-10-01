@@ -19,6 +19,20 @@ const currency = (n) => `€${Number(n).toFixed(2)}`;
 let transporter = null;
 let devFallback = true;
 
+// Sender shown in the inbox, e.g. NaturallyU <naturallyuindia@gmail.com>.
+// dotenv strips the outer quotes from EMAIL_FROM="..." in a .env file, but
+// a hosting dashboard (Render) keeps them - and a fully quoted value parses
+// as an address with NO display name, so Gmail showed the bare address.
+// Strip one pair of wrapping quotes here so both forms work. Without
+// EMAIL_FROM, send as the SMTP account itself (Gmail rewrites any other
+// address anyway).
+function fromAddress() {
+  const raw = (process.env.EMAIL_FROM || '').trim();
+  const value = /^(["']).*\1$/.test(raw) ? raw.slice(1, -1).trim() : raw;
+  if (value) return value;
+  return process.env.SMTP_USER ? `"NaturallyU" <${process.env.SMTP_USER}>` : '"NaturallyU" <orders@naturallyu.com>';
+}
+
 function getTransporter() {
   if (transporter) return transporter;
   if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASSWORD) {
@@ -142,7 +156,7 @@ async function sendOrderConfirmationEmail(order, pdfBuffer) {
   }
 
   const info = await client.sendMail({
-    from: process.env.EMAIL_FROM || '"NaturallyU" <orders@naturallyu.com>',
+    from: fromAddress(),
     to,
     subject,
     html,
@@ -210,7 +224,7 @@ async function sendAccountEmail({ to, subject, ...content }) {
     return { simulated: true, previewPath: file };
   }
   const info = await client.sendMail({
-    from: process.env.EMAIL_FROM || '"NaturallyU" <orders@naturallyu.com>',
+    from: fromAddress(),
     to,
     subject,
     html,
@@ -267,7 +281,7 @@ async function sendNewOrderNotificationEmail(order) {
   }
 
   const info = await client.sendMail({
-    from: process.env.EMAIL_FROM || '"NaturallyU" <orders@naturallyu.com>',
+    from: fromAddress(),
     to,
     replyTo: order.customer?.email,
     subject,
