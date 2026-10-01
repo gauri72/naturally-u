@@ -236,6 +236,25 @@
     order: 3;
   }
 
+  /* The logo is absolutely centred on mobile, so an inline search field
+     would slide underneath it (and push the cart off-screen). Drop it
+     below the header as a full-width bar instead, like the nav menu. */
+  .site-header__search-form {
+    position: absolute;
+    top: 100%;
+    left: var(--space-md);
+    right: var(--space-md);
+    z-index: 30;
+    box-shadow: 0 16px 32px rgba(43, 43, 40, 0.16);
+  }
+
+  .site-header__search-form input {
+    flex: 1;
+    min-width: 0;
+    width: auto;
+    font-size: 1rem; /* 16px+ stops iOS Safari zooming in on focus */
+  }
+
   .site-header__nav {
     order: 4;
     position: absolute;
