@@ -4,6 +4,7 @@ import { MagnifyingGlass, FileText } from '@phosphor-icons/react';
 import { searchSite } from '../../api/search.api';
 import { getPageBySlug } from '../../api/pages.api';
 import ProductCard from '../../components/product/ProductCard.jsx';
+import BackButton from '../../components/common/BackButton.jsx';
 import { useLang } from '../../i18n/LanguageContext.jsx';
 import './SearchPage.css';
 
@@ -45,6 +46,7 @@ function SearchPage() {
 
   return (
     <section className="search-page">
+      <BackButton fallback="/" className="search-page__back" />
       <div className="search-page__header">
         <p className="search-page__eyebrow">{t(content?.eyebrow)}</p>
         <h1>

@@ -421,6 +421,7 @@ const strings = {
   'Decrease quantity': 'Aantal verlagen',
   'Remove from cart': 'Uit winkelwagen verwijderen',
   'Sold out': 'Uitverkocht',
+  'Back': 'Terug',
   'Only': 'Nog maar',
   'left': 'over',
 };

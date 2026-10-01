@@ -12,6 +12,7 @@ import { getProductBySlug } from '../../api/products.api';
 import { getPageBySlug } from '../../api/pages.api';
 import { useLang } from '../../i18n/LanguageContext.jsx';
 import CartQuantityControl from '../../components/product/CartQuantityControl.jsx';
+import BackButton from '../../components/common/BackButton.jsx';
 import './ProductPage.css';
 
 // The product's own name/price/description/images are data-driven; the
@@ -71,6 +72,9 @@ function ProductPage() {
 
   return (
     <section className="product-page">
+      <div className="product-page__back">
+        <BackButton fallback="/shop" />
+      </div>
       <div className="product-page__gallery">
         <div className="product-page__main-image-wrap">
           <img

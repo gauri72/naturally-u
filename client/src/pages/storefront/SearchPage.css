@@ -4,6 +4,10 @@
   padding: var(--space-xl) var(--space-lg);
 }
 
+.search-page__back {
+  margin: calc(-1 * var(--space-md)) 0 var(--space-sm);
+}
+
 .search-page__header {
   margin-bottom: var(--space-xl);
 }

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { ArrowLeft } from '@phosphor-icons/react';
 import { createProduct, updateProduct, getProductBySlug } from '../../../api/products.api';
 import { uploadImage } from '../../../api/media.api';
 import toast from 'react-hot-toast';
@@ -38,6 +39,9 @@ function ProductFormPage() {
 
   return (
     <div>
+      <Link to="/admin/products" className="admin-page-header__back">
+        <ArrowLeft size={14} /> {t('Back to Products')}
+      </Link>
       <div className="admin-page-header">
         <h1>{isEdit ? t('Edit Product') : t('New Product')}</h1>
       </div>

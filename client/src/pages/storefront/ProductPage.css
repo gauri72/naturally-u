@@ -7,6 +7,13 @@
   flex-wrap: wrap;
 }
 
+/* Full-width first row above gallery + details. The negative margin
+   cancels most of the flex row gap so Back sits close to the content. */
+.product-page__back {
+  flex: 0 0 100%;
+  margin: calc(-1 * var(--space-md)) 0 calc(var(--space-sm) - var(--space-2xl));
+}
+
 .product-page__gallery { flex: 1 1 400px; }
 .product-page__details { flex: 1 1 420px; }
 
@@ -292,6 +299,10 @@
   .product-page {
     padding: var(--space-lg) var(--space-md) var(--space-xl);
     gap: var(--space-lg);
+  }
+
+  .product-page__back {
+    margin: calc(-1 * var(--space-md)) 0 calc(var(--space-xs) - var(--space-lg));
   }
 
   .product-page__details h1 {

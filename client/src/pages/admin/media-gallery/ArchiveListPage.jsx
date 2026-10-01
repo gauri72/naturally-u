@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import {
+  ArrowLeft,
   House, User, Package, ChatCircleText, Storefront, Globe, Archive,
   ArrowSquareOut, Rows, Images, FileText,
 } from '@phosphor-icons/react';
@@ -36,6 +37,9 @@ function ArchiveListPage() {
 
   return (
     <div>
+      <Link to="/admin/media-gallery" className="admin-page-header__back">
+        <ArrowLeft size={14} /> {t('Media Gallery')}
+      </Link>
       <div className="admin-page-header">
         <h1>{t('Archive')}</h1>
       </div>
