@@ -50,12 +50,18 @@ function CartPage() {
               <div className="cart-page__item-info">
                 <h4>{t(item.name)}</h4>
                 <p className="cart-page__item-price">€{item.price.toFixed(2)}</p>
+                {item.stock != null && item.quantity > item.stock && (
+                  <p className="cart-page__stock-note">
+                    {item.stock < 1 ? t('Out of stock') : `${t('Only')} ${item.stock} ${t('left')}`}
+                  </p>
+                )}
               </div>
               <div className="cart-page__qty">
                 <button
                   type="button"
                   className="icon-btn"
-                  onClick={() => updateQuantity(item.productId, Math.max(1, item.quantity - 1))}
+                  onClick={() => updateQuantity(item.productId, item.quantity - 1)}
+                  disabled={item.quantity <= 1}
                   aria-label="Decrease quantity"
                 >
                   <Minus size={14} weight="bold" />

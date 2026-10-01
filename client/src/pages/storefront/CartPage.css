@@ -42,6 +42,7 @@
 .cart-page__item-info { flex: 1; min-width: 0; }
 .cart-page__item-info h4 { font-family: var(--font-body); }
 .cart-page__item-price { color: var(--color-text-muted); font-size: 0.85rem; }
+.cart-page__stock-note { color: #B5433A; font-size: 0.8rem; font-weight: 600; margin-top: 2px; }
 
 .cart-page__qty {
   display: flex;
@@ -69,6 +70,7 @@
 }
 .cart-page .icon-btn:hover { background-color: rgba(63, 163, 77, 0.12); color: var(--color-primary); }
 .cart-page .icon-btn:active { transform: scale(0.92); }
+.cart-page .icon-btn:disabled { opacity: 0.35; cursor: not-allowed; background: none; color: inherit; transform: none; }
 .cart-page .icon-btn--danger:hover { background-color: rgba(181, 67, 58, 0.12); color: #B5433A; }
 
 .cart-page__summary {

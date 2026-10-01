@@ -12,7 +12,10 @@ async function buildValidatedOrderItems(items) {
   for (const { productId, quantity } of items || []) {
     const product = await Product.findById(productId);
     if (!product || !product.isActive) continue;
-    const qty = Math.max(1, Math.min(Number(quantity) || 1, product.stock));
+    // Cap at stock; a sold-out product (stock 0) yields 0 and is skipped.
+    // (Wrapping this in Math.max(1, ...) used to turn sold-out items into
+    // qty 1, so they were charged for even though none were available.)
+    const qty = Math.min(Math.max(1, Number(quantity) || 1), product.stock);
     if (qty <= 0) continue;
     subtotal += product.price * qty;
     validated.push({

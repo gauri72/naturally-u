@@ -31,7 +31,10 @@ function CartQuantityControl({ product, size = 'sm', className, ariaLabel, disab
     );
   }
 
-  const atMax = line.stock != null && line.quantity >= line.stock;
+  // Prefer the product's live stock over the snapshot saved on the cart
+  // line, which can be stale if the item sold down since it was added.
+  const stock = product.stock ?? line.stock;
+  const atMax = stock != null && line.quantity >= stock;
   const decrease = () => {
     if (line.quantity <= 1) removeItem(product._id);
     else updateQuantity(product._id, line.quantity - 1);
