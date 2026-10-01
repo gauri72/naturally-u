@@ -17,6 +17,13 @@ function CartQuantityControl({ product, size = 'sm', className, ariaLabel, disab
   const line = items.find((i) => i.productId === product._id);
   const outOfStock = product.stock != null && product.stock <= 0;
 
+  // A disabled cart button looked identical to a working one, so sold-out
+  // products seemed to "not add". Say so instead. The product page ('lg')
+  // keeps its own full-width "Out of Stock" button.
+  if (!line && outOfStock && size !== 'lg') {
+    return <span className={`cart-qty-soldout cart-qty-soldout--${size}`}>{t('Sold out')}</span>;
+  }
+
   if (!line) {
     return (
       <button

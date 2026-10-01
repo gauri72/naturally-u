@@ -420,6 +420,7 @@ const strings = {
   'Increase quantity': 'Aantal verhogen',
   'Decrease quantity': 'Aantal verlagen',
   'Remove from cart': 'Uit winkelwagen verwijderen',
+  'Sold out': 'Uitverkocht',
   'Only': 'Nog maar',
   'left': 'over',
 };
