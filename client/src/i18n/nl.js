@@ -538,6 +538,11 @@ const strings = {
   'An account with this email already exists. Sign in, or reset your password.':
     'Er bestaat al een account met dit e-mailadres. Log in of herstel je wachtwoord.',
   'Too many attempts. Please wait a few minutes and try again.': 'Te veel pogingen. Wacht een paar minuten en probeer het opnieuw.',
+
+  // ── Footer credit ──────────────────────────────────────────────────
+  'Proudly Designed & Developed By V.O.I.C.E. Venture Studio': 'Met trots ontworpen & ontwikkeld door V.O.I.C.E. Venture Studio',
+  'opens in a new tab': 'opent in een nieuw tabblad',
+
   'Only': 'Nog maar',
   'left': 'over',
 };

@@ -6,6 +6,7 @@ import {
 import { getSettings } from '../../api/settings.api';
 import { useLang } from '../../i18n/LanguageContext.jsx';
 import footerStamp from '../../assets/images/home/footer-stamp.png';
+import voiceStudioLogo from '../../assets/images/credits/voice-venture-studio.png';
 import './FooterBlock.css';
 
 const socialIcons = {
@@ -122,6 +123,18 @@ function FooterBlock() {
       </div>
 
       <div className="footer-block__bottom">
+        <div className="footer-block__credit">
+          <span>{t('Proudly Designed & Developed By V.O.I.C.E. Venture Studio')}</span>
+          <a
+            href="https://stichtingthevoice.nl/voice-venture-studio"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="footer-block__credit-logo"
+            aria-label={`V.O.I.C.E. Venture Studio (${t('opens in a new tab')})`}
+          >
+            <img src={voiceStudioLogo} alt="V.O.I.C.E. Venture Studio" loading="lazy" />
+          </a>
+        </div>
         <p className="footer-block__copyright">{t(settings.footer?.copyrightText)}</p>
       </div>
     </footer>
