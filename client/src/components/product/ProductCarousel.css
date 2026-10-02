@@ -1,4 +1,6 @@
 .product-carousel {
+  /* Card width; also used to centre the arrows on the square photos. */
+  --slide-w: clamp(170px, 15.5vw, 230px);
   position: relative;
   margin-top: var(--space-lg);
 }
@@ -19,40 +21,54 @@
   user-select: none;
 }
 
-/* Portrait card — image on top, text panel below, several visible at once. */
+/* Card — square image on top, text panel below, several visible at once. */
 .product-carousel__slide {
   display: flex;
   flex-direction: column;
-  flex: 0 0 clamp(170px, 15.5vw, 230px);
+  flex: 0 0 var(--slide-w);
   background: transparent;
 }
 
-/* 9:16 image area — the only place the badge overlays. */
+/* Square image area. Nothing overlays the photo (the category badge sits
+   in the panel below) so names printed on product photos stay readable. */
 .product-carousel__media {
   position: relative;
-  aspect-ratio: 9 / 16;
+  aspect-ratio: 1 / 1;
   overflow: hidden;
   border-radius: var(--radius-md);
   background: var(--color-border);
   box-shadow: var(--shadow-card);
 }
 
+/* The whole photo is always shown (contain), never cropped - many product
+   photos have the product name printed on them, and most aren't square. */
 .product-carousel__img {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
 }
 
-/* Category badge, top-left of the image. */
-.product-carousel__badge {
+/* Same photo, blurred and filling the square, behind the real one - so
+   the space left around non-square photos isn't flat empty bars. */
+.product-carousel__img-backdrop {
   position: absolute;
-  top: var(--space-sm);
-  left: var(--space-sm);
-  z-index: 2;
-  padding: 5px 12px;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(18px) saturate(1.1);
+  transform: scale(1.2);
+  opacity: 0.55;
+}
+
+/* Category badge, above the product name. */
+.product-carousel__badge {
+  align-self: flex-start;
+  margin-bottom: 6px;
+  padding: 4px 10px;
   border-radius: var(--radius-full);
   background: var(--color-primary);
   color: var(--color-white);
@@ -61,7 +77,6 @@
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
 
 /* Info panel — sits below the image on the card background. */
@@ -173,7 +188,9 @@
 /* Prev / next arrows. */
 .product-carousel__arrow {
   position: absolute;
-  top: 50%;
+  /* Middle of the square photo, not the whole card - the card is taller
+     than the photo now, and centring on it put the arrows over the text. */
+  top: calc(var(--slide-w) / 2);
   transform: translateY(-50%);
   z-index: 3;
   display: inline-flex;
@@ -239,8 +256,8 @@
 }
 
 @media (max-width: 768px) {
-  .product-carousel__slide {
-    flex-basis: 78vw;
+  .product-carousel {
+    --slide-w: 78vw;
   }
 
   .product-carousel__arrow { width: 38px; height: 38px; }

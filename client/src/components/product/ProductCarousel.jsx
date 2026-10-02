@@ -12,8 +12,8 @@ import { useLang } from '../../i18n/LanguageContext.jsx';
 import CartQuantityControl from './CartQuantityControl.jsx';
 import './ProductCarousel.css';
 
-// Portrait filmstrip carousel for the shop page — several 9:16 product
-// cards visible at once, each with a category badge on the image and the
+// Filmstrip carousel for the shop page — several product cards with a
+// square (1:1) photo visible at once, each with a category badge on the image and the
 // name / description / price / cart / info below it. Advances one card
 // every `autoplaySpeed`; pauses on hover, on keyboard focus inside
 // it, and while the tab is hidden. Supports arrow buttons, dot
@@ -181,7 +181,8 @@ function ProductCarousel({
       products.map((product) => ({
         product,
         badge: product.tags?.[0],
-        blurb: t(product.shortDescription || product.description || ''),
+        // Full description - the square photo leaves room for it below.
+        blurb: t(product.description || product.shortDescription || ''),
       })),
     [products, t],
   );
@@ -239,18 +240,26 @@ function ProductCarousel({
               >
                 <div className="product-carousel__media">
                   <img
+                    className="product-carousel__img-backdrop"
+                    src={product.images?.[0]?.url}
+                    alt=""
+                    aria-hidden="true"
+                    loading="lazy"
+                    draggable="false"
+                  />
+                  <img
                     className="product-carousel__img"
                     src={product.images?.[0]?.url}
                     alt={product.images?.[0]?.alt || t(product.name)}
                     loading="lazy"
                     draggable="false"
                   />
-                  {showCategoryBadge && badge && (
-                    <span className="product-carousel__badge">{t(badge)}</span>
-                  )}
                 </div>
 
                 <div className="product-carousel__panel">
+                  {showCategoryBadge && badge && (
+                    <span className="product-carousel__badge">{t(badge)}</span>
+                  )}
                   <h3 className="product-carousel__name">
                     <Link to={`/shop/${product.slug}`}>{t(product.name)}</Link>
                   </h3>
