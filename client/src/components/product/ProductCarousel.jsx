@@ -153,7 +153,11 @@ function ProductCarousel({
 
   // --- Pointer / touch swipe ---------------------------------------------
   const dragStart = useRef(null);
+  // Set when a touch drag moved sideways, so the click the browser may fire
+  // on lift doesn't open the product photo the swipe started on.
+  const justSwiped = useRef(false);
   const onPointerDown = (e) => {
+    justSwiped.current = false;
     if (!hasControls || e.pointerType === 'mouse') return; // let the mouse click links/buttons
     dragStart.current = { x: e.clientX, y: e.clientY };
     setDragging(true);
@@ -168,6 +172,7 @@ function ProductCarousel({
   const endDrag = () => {
     if (!dragStart.current) return;
     const dx = dragPx;
+    justSwiped.current = Math.abs(dx) > 8;
     dragStart.current = null;
     setDragPx(0);
     setDragging(false);
@@ -238,7 +243,22 @@ function ProductCarousel({
                 aria-hidden={!visible}
                 {...(!visible ? { inert: '' } : {})}
               >
-                <div className="product-carousel__media">
+                {/* The photo opens the product page. Out of the tab order:
+                    the name link below already offers the same destination
+                    to keyboard and screen-reader users. */}
+                <Link
+                  to={`/shop/${product.slug}`}
+                  className="product-carousel__media"
+                  tabIndex={-1}
+                  aria-hidden="true"
+                  draggable="false"
+                  onClick={(e) => {
+                    if (justSwiped.current) {
+                      e.preventDefault();
+                      justSwiped.current = false;
+                    }
+                  }}
+                >
                   <img
                     className="product-carousel__img-backdrop"
                     src={product.images?.[0]?.url}
@@ -254,7 +274,7 @@ function ProductCarousel({
                     loading="lazy"
                     draggable="false"
                   />
-                </div>
+                </Link>
 
                 <div className="product-carousel__panel">
                   {showCategoryBadge && badge && (

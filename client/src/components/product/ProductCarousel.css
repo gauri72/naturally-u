@@ -32,12 +32,14 @@
 /* Square image area. Nothing overlays the photo (the category badge sits
    in the panel below) so names printed on product photos stay readable. */
 .product-carousel__media {
+  display: block; /* a link to the product page */
   position: relative;
   aspect-ratio: 1 / 1;
   overflow: hidden;
   border-radius: var(--radius-md);
   background: var(--color-border);
   box-shadow: var(--shadow-card);
+  cursor: pointer;
 }
 
 /* The whole photo is always shown (contain), never cropped - many product
@@ -49,6 +51,14 @@
   height: 100%;
   object-fit: contain;
   object-position: center;
+  transition: transform 0.3s ease;
+}
+
+/* Gentle zoom hints that the photo is clickable (mouse only). */
+@media (hover: hover) {
+  .product-carousel__media:hover .product-carousel__img {
+    transform: scale(1.04);
+  }
 }
 
 /* Same photo, blurred and filling the square, behind the real one - so
